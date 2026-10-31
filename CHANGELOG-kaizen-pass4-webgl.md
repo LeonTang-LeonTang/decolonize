@@ -38,7 +38,7 @@ Academic rail unchanged: 定义 → 论证 → 例证 → 总结. Article-first 
 ## Recover
 
 - Pre-pass4 (do not overwrite): `recover/pre-webgl-museum-20261031` @ `bca9350`
-- Post-pass4: `recover/pass4-webgl-museum-20261031` @ `56ab1f4`
+- Post-pass4: `recover/pass4-webgl-museum-20261031` @ `f9b817e`
 
 ## Honest gaps vs full Kaizen / Kristallnacht / UNESCO
 
