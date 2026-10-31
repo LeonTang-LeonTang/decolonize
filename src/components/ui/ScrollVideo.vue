@@ -22,8 +22,8 @@ const { muted, unlocked, activeVoId } = useAudio()
 const root = ref<HTMLElement | null>(null)
 const video = ref<HTMLVideoElement | null>(null)
 let st: ScrollTrigger | null = null
-const CLIP_VOL = 0.12
-const CLIP_DUCK = 0.03
+const CLIP_VOL = 0.18
+const CLIP_DUCK = 0.04
 
 const syncAudio = () => {
   const el = video.value

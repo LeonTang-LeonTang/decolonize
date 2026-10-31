@@ -40,7 +40,7 @@ const ready = ref(false)
 const started = ref(false)
 const museumActive = ref(false)
 const { progress, activeId } = useScrollProgress()
-const { muted, init, toggleMute, unlockAndPlay, playVo } = useAudio()
+const { muted, init, toggleMute, unlockAndPlay, playVo, setCoreAmbient } = useAudio()
 const { reduced } = useReducedMotion()
 const { mode } = useViewMode()
 const { page, total, jumpTo } = useDeckNav(activeId)
@@ -111,9 +111,16 @@ watch(mode, () => {
   requestAnimationFrame(() => ScrollTrigger.refresh())
 })
 
+// Pass 10 — per-Core ambient bed swap (Kristallnacht chapter atmosphere)
+watch(activeId, (id) => {
+  if (!started.value) return
+  setCoreAmbient(id || "hero")
+})
+
 const onEnter = async () => {
   started.value = true
   unlockAndPlay()
+  setCoreAmbient(activeId.value || "hero")
   await nextTick()
   wireVoScroll()
   const hero = allVo.find((l) => l.id === "hero-enter")

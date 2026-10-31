@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Pass 7 — darker immersive rail-stage transitions (Kristallnacht-adjacent).
+ * Pass 10 — darker Kristallnacht-adjacent Act transitions.
  */
 import { onMounted, onUnmounted, ref } from "vue"
 import { gsap } from "gsap"
@@ -26,8 +26,8 @@ onMounted(() => {
   if (reduced.value || !root.value || !veil.value) return
   st = ScrollTrigger.create({
     trigger: root.value,
-    start: "top 88%",
-    end: "bottom 35%",
+    start: "top 90%",
+    end: "bottom 30%",
     onEnter: () => {
       if (typeof props.stinger === "number") playStinger(props.stinger)
       gsap.fromTo(
@@ -35,7 +35,7 @@ onMounted(() => {
         { opacity: 0 },
         {
           opacity: 1,
-          duration: 0.38,
+          duration: 0.48,
           yoyo: true,
           repeat: 1,
           ease: "power2.inOut",
@@ -53,7 +53,9 @@ onUnmounted(() => st?.kill())
     <div ref="veil" class="wipe__veil">
       <video :src="supportClips.wipe.src" muted playsinline autoplay loop preload="metadata" />
       <div class="wipe__shade" />
-      <span v-if="label">{{ label }}</span>
+      <div class="wipe__label-wrap">
+        <span v-if="label" class="wipe__label">{{ label }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -61,8 +63,8 @@ onUnmounted(() => st?.kill())
 <style scoped lang="scss">
 .wipe {
   position: relative;
-  height: 16vh;
-  min-height: 88px;
+  height: 22vh;
+  min-height: 120px;
   margin: 0;
   pointer-events: none;
   overflow: hidden;
@@ -81,22 +83,30 @@ onUnmounted(() => st?.kill())
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.4;
-    filter: grayscale(0.55) contrast(1.15) brightness(0.55);
+    opacity: 0.28;
+    filter: grayscale(0.72) contrast(1.25) brightness(0.38);
   }
   .wipe__shade {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at center, transparent 10%, rgba(0, 0, 0, 0.85) 75%);
+    background:
+      radial-gradient(ellipse at center, transparent 8%, rgba(0, 0, 0, 0.92) 72%),
+      linear-gradient(180deg, #000 0%, transparent 35%, transparent 65%, #000 100%);
   }
-  span {
-    position: relative;
-    z-index: 1;
-    font-size: 0.72rem;
-    letter-spacing: 0.24em;
-    color: var(--accent-soft);
-    text-transform: uppercase;
-    text-shadow: 0 0 24px rgba(0, 0, 0, 0.9);
-  }
+}
+.wipe__label-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid rgba(196, 165, 116, 0.28);
+  background: rgba(0, 0, 0, 0.55);
+}
+.wipe__label {
+  font-size: clamp(0.72rem, 1.6vw, 0.88rem);
+  letter-spacing: 0.28em;
+  color: var(--accent-soft);
+  text-transform: uppercase;
+  text-shadow: 0 0 28px rgba(0, 0, 0, 0.95);
+  font-weight: 600;
 }
 </style>

@@ -21,7 +21,7 @@ export type HoldDirectorDef = {
 }
 
 const ROLE_LABEL: Record<HoldBeatRole, string> = {
-  claim: "定格 1 · 主张",
+  claim: "定格 1 · 主张卡",
   artwork: "定格 2 · 作品现身",
   effect: "定格 3 · 机制／效果",
 }
@@ -41,7 +41,7 @@ export const holdDirectors: HoldDirectorDef[] = [
         role: "claim",
         src: "/media/a/saleh.jpg",
         alt: "Raden Saleh, The Capture of Prince Diponegoro",
-        caption: "主张：同一场面，两套观看合同——标题本身就是权力装置。",
+        caption: "同一场面，两套观看合同——标题本身就是权力装置。",
       },
       {
         role: "artwork",
@@ -67,7 +67,7 @@ export const holdDirectors: HoldDirectorDef[] = [
         role: "claim",
         src: "/media/b/pacific-war-se-asia-1941.jpg",
         alt: "Pacific War SE Asia map 1941",
-        caption: "主张：区域名字是可观看的知识生产，不是中性地理。",
+        caption: "区域名字是可观看的知识生产，不是中性地理。",
       },
       {
         role: "artwork",
@@ -93,7 +93,7 @@ export const holdDirectors: HoldDirectorDef[] = [
         role: "claim",
         src: "/media/c/champa-locator.jpg",
         alt: "Champa locator map",
-        caption: "主张：省略与缺席也是一种展示伦理——谁被画进「东南亚」叙事。",
+        caption: "省略与缺席也是展示伦理——谁被画进「东南亚」叙事。",
       },
       {
         role: "artwork",
@@ -119,7 +119,7 @@ export const holdDirectors: HoldDirectorDef[] = [
         role: "claim",
         src: "/media/d/democracy-monument-bangkok.jpg",
         alt: "Democracy Monument Bangkok",
-        caption: "主张：纪念碑数字是可点读的政治语法——不是另一条铁路的故事。",
+        caption: "纪念碑数字是可点读的政治语法——不是另一条铁路的故事。",
       },
       {
         role: "artwork",
@@ -145,7 +145,7 @@ export const holdDirectors: HoldDirectorDef[] = [
         role: "claim",
         src: "/media/e/dalrymple-borneo-sulu-1769.jpg",
         alt: "Dalrymple Borneo Sulu chart 1769",
-        caption: "主张：海图接缝处，主权与航线被同时画出。",
+        caption: "海图接缝处，主权与航线被同时画出。",
       },
       {
         role: "artwork",
@@ -171,7 +171,7 @@ export const holdDirectors: HoldDirectorDef[] = [
         role: "claim",
         src: "/media/f/raffles-statue-front.jpg",
         alt: "Raffles statue Singapore",
-        caption: "主张：展览与雕像是同一套帝国纪念工程的两端。",
+        caption: "展览与雕像是同一套帝国纪念工程的两端。",
       },
       {
         role: "artwork",

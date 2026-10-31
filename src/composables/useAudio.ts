@@ -1,11 +1,17 @@
 import { Howl } from "howler"
 import { onUnmounted, ref } from "vue"
-import { allVo, ambientBed } from "../content/media"
+import {
+  allVo,
+  ambientBed,
+  ambientKeyForChapter,
+  coreAmbientBeds,
+  type CoreAmbientId,
+} from "../content/media"
 
 /**
  * Layered ambient bed + scroll-synced Chinese VO (Howler).
+ * Pass 10: per-Core ambient bed swaps; VO duck still gates the active bed.
  * Mute toggle persists in localStorage and gates both ambient and VO.
- * Soft chapter stingers duck under VO with the bed.
  */
 
 const STORAGE_KEY = "decolonial-muted"
@@ -15,10 +21,13 @@ const muted = ref(true)
 const activeVoId = ref<string | null>(null)
 const activeCaption = ref("")
 const unlocked = ref(false)
+const activeBedKey = ref<CoreAmbientId>("default")
 
 let ambient: Howl | null = null
+let ambientKey: CoreAmbientId = "default"
 const voCache = new Map<string, Howl>()
 const stingerCache = new Map<number, Howl>()
+const bedCache = new Map<CoreAmbientId, Howl>()
 let currentVo: Howl | null = null
 let lastPlayedId: string | null = null
 let duckTimer: ReturnType<typeof setTimeout> | null = null
@@ -26,16 +35,27 @@ let duckTimer: ReturnType<typeof setTimeout> | null = null
 const AMBIENT_VOL = 0.14
 const AMBIENT_DUCK = 0.04
 
-function ensureAmbient() {
-  if (ambient) return ambient
-  ambient = new Howl({
-    src: [ambientBed.mp3, ambientBed.ogg],
+function makeBed(key: CoreAmbientId) {
+  const src = coreAmbientBeds[key] || coreAmbientBeds.default
+  return new Howl({
+    src: [src.mp3, src.ogg],
     loop: true,
     volume: AMBIENT_VOL,
     html5: true,
     preload: true,
   })
-  return ambient
+}
+
+function ensureAmbient(key: CoreAmbientId = ambientKey) {
+  let h = bedCache.get(key)
+  if (!h) {
+    h = makeBed(key)
+    bedCache.set(key, h)
+  }
+  ambient = h
+  ambientKey = key
+  activeBedKey.value = key
+  return h
 }
 
 function getVo(id: string, src: string) {
@@ -65,19 +85,48 @@ function setAmbientVolume(v: number) {
 }
 
 function applyMute() {
-  const h = ensureAmbient()
+  const h = ensureAmbient(ambientKey)
   if (muted.value) {
     h.pause()
+    // Pause other cached beds too
+    bedCache.forEach((bed) => {
+      if (bed !== h) bed.pause()
+    })
     currentVo?.stop()
     activeVoId.value = null
   } else if (unlocked.value) {
+    bedCache.forEach((bed) => {
+      if (bed !== h && bed.playing()) bed.pause()
+    })
     if (!h.playing()) h.play()
-    setAmbientVolume(AMBIENT_VOL)
+    setAmbientVolume(activeVoId.value ? AMBIENT_DUCK : AMBIENT_VOL)
   }
   try {
     localStorage.setItem(STORAGE_KEY, muted.value ? "1" : "0")
   } catch {
     /* ignore */
+  }
+}
+
+/** Pass 10 — swap ambient bed when entering a Core chapter (keeps VO duck). */
+export function setCoreAmbient(chapterId: string) {
+  const key = ambientKeyForChapter(chapterId)
+  if (key === ambientKey && ambient) {
+    activeBedKey.value = key
+    return
+  }
+  const wasPlaying = !!ambient?.playing()
+  const vol = ambient?.volume() ?? AMBIENT_VOL
+  const prev = ambient
+  const next = ensureAmbient(key)
+  if (prev && prev !== next) {
+    prev.fade(prev.volume(), 0, 280)
+    window.setTimeout(() => prev.pause(), 300)
+  }
+  if (!muted.value && unlocked.value && (wasPlaying || !prev)) {
+    next.volume(0)
+    if (!next.playing()) next.play()
+    next.fade(0, activeVoId.value ? AMBIENT_DUCK : vol || AMBIENT_VOL, 420)
   }
 }
 
@@ -136,12 +185,16 @@ export function useAudio() {
     } catch {
       muted.value = true
     }
-    ensureAmbient()
+    ensureAmbient("default")
     // Preload VO quietly
     for (const line of allVo) {
       getVo(line.id, line.src)
     }
     ambientBed.stingers.forEach((_, i) => getStinger(i))
+    // Warm core beds in background (light)
+    ;(["A", "B", "C", "D", "E", "F"] as CoreAmbientId[]).forEach((k) => {
+      if (!bedCache.has(k)) bedCache.set(k, makeBed(k))
+    })
   }
 
   const toggleMute = () => {
@@ -173,6 +226,7 @@ export function useAudio() {
     activeVoId,
     activeCaption,
     unlocked,
+    activeBedKey,
     init,
     toggleMute,
     unlockAndPlay,
@@ -181,5 +235,6 @@ export function useAudio() {
     playVo,
     stopVo,
     playStinger,
+    setCoreAmbient,
   }
 }

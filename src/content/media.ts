@@ -415,6 +415,37 @@ export const ambientBed = {
   ),
 }
 
+/** Pass 10 — per-Core ambient bed swaps (EQ variants of layered bed; real audio only). */
+export type CoreAmbientId = "default" | "A" | "B" | "C" | "D" | "E" | "F"
+
+export const coreAmbientBeds: Record<
+  CoreAmbientId,
+  { mp3: string; ogg: string }
+> = {
+  default: {
+    mp3: "/media/ambient/bed-layered.mp3",
+    ogg: "/media/ambient/bed-layered.ogg",
+  },
+  A: { mp3: "/media/ambient/bed-core-a.mp3", ogg: "/media/ambient/bed-core-a.ogg" },
+  B: { mp3: "/media/ambient/bed-core-b.mp3", ogg: "/media/ambient/bed-core-b.ogg" },
+  C: { mp3: "/media/ambient/bed-core-c.mp3", ogg: "/media/ambient/bed-core-c.ogg" },
+  D: { mp3: "/media/ambient/bed-core-d.mp3", ogg: "/media/ambient/bed-core-d.ogg" },
+  E: { mp3: "/media/ambient/bed-core-e.mp3", ogg: "/media/ambient/bed-core-e.ogg" },
+  F: { mp3: "/media/ambient/bed-core-f.mp3", ogg: "/media/ambient/bed-core-f.ogg" },
+}
+
+/** Map data-chapter / section id → core ambient key */
+export function ambientKeyForChapter(chapterId: string): CoreAmbientId {
+  const id = chapterId.toLowerCase()
+  if (id === "act2a" || id === "a") return "A"
+  if (id === "act2b" || id === "b") return "B"
+  if (id === "act2c" || id === "c") return "C"
+  if (id === "act2d" || id === "d") return "D"
+  if (id === "act2e" || id === "e") return "E"
+  if (id === "act2f" || id === "f") return "F"
+  return "default"
+}
+
 export function clipForSection(sectionId: string) {
   return chapterClips.find((c) => c.sectionId === sectionId)
 }

@@ -79,7 +79,7 @@ const syncBeatFromScrub = (p: number) => {
     requestAnimationFrame(() => {
       const start = performance.now()
       const tick = (now: number) => {
-        const t = Math.min(1, (now - start) / 420)
+        const t = Math.min(1, (now - start) / 560)
         darkFlash.value = 1 - t
         if (t < 1) requestAnimationFrame(tick)
         else darkFlash.value = 0
@@ -110,7 +110,7 @@ const startHold = () => {
         requestAnimationFrame(() => {
           const start = performance.now()
           const fade = (tnow: number) => {
-            const t = Math.min(1, (tnow - start) / 380)
+            const t = Math.min(1, (tnow - start) / 520)
             darkFlash.value = 1 - t
             if (t < 1) requestAnimationFrame(fade)
             else darkFlash.value = 0
@@ -223,7 +223,7 @@ void lastBeat
     <div class="hold__stage">
       <div
         class="hold__veil"
-        :style="{ opacity: 0.5 * (1 - Math.min(1, scrub * 1.35)) + darkFlash * 0.85 }"
+        :style="{ opacity: 0.58 * (1 - Math.min(1, scrub * 1.35)) + darkFlash * 0.92 }"
         aria-hidden="true"
       />
       <div class="hold__dark" :style="{ opacity: darkFlash }" aria-hidden="true" />
@@ -234,10 +234,14 @@ void lastBeat
           v-for="(b, i) in beats"
           :key="i"
           class="hold__beat"
-          :class="{ 'is-active': i === beatIdx }"
+          :class="{ 'is-active': i === beatIdx, 'hold__beat--claim': b.role === 'claim' }"
           :data-role="b.role"
         >
           <img :src="b.src" :alt="b.alt" draggable="false" />
+          <div v-if="b.role === 'claim'" class="hold__claim-card" aria-hidden="false">
+            <span class="hold__claim-kicker">主张卡 · 课堂清晰度</span>
+            <p class="hold__claim-text">{{ b.caption }}</p>
+          </div>
         </figure>
       </div>
       <!-- Single-slot Pass 7 fallback -->
@@ -264,8 +268,14 @@ void lastBeat
           </div>
         </div>
 
-        <div class="hold__caption">
-          <template v-if="multi && activeBeat">{{ activeBeat.caption }}</template>
+        <div
+          class="hold__caption"
+          :class="{ 'hold__caption--claim': multi && activeBeat?.role === 'claim' }"
+        >
+          <template v-if="multi && activeBeat && activeBeat.role !== 'claim'">{{ activeBeat.caption }}</template>
+          <template v-else-if="multi && activeBeat?.role === 'claim'">
+            <span class="hold__caption-hint">向下滚动或长按进入下一拍</span>
+          </template>
           <slot v-else name="caption" />
         </div>
 
@@ -493,5 +503,53 @@ void lastBeat
     opacity: 1 !important;
     margin-bottom: 0.5rem;
   }
+}
+
+.hold__beat--claim img {
+  filter: brightness(0.42) contrast(1.08) saturate(0.85);
+}
+.hold__claim-card {
+  position: absolute;
+  inset: 12% 8% auto 8%;
+  z-index: 2;
+  max-width: 36em;
+  padding: 1.35rem 1.5rem 1.5rem;
+  background: rgba(2, 1, 0, 0.82);
+  border: 1px solid rgba(196, 165, 116, 0.38);
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+.hold__claim-kicker {
+  display: block;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.65rem;
+}
+.hold__claim-text {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 3.2vw, 1.85rem);
+  line-height: 1.4;
+  color: var(--ink);
+  font-weight: 600;
+  text-wrap: balance;
+}
+.hold__caption--claim {
+  opacity: 0.75;
+}
+.hold__caption-hint {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+  font-family: var(--sans, system-ui, sans-serif);
+}
+.hold__stage {
+  background: #010100;
+}
+.hold__dark {
+  background: #000;
 }
 </style>
