@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass5 (do not overwrite): `recover/pre-pass5-kaizen-depth-20261031` @ `61462e2` (verified on origin)
-- Post-pass5: `recover/pass5-kaizen-depth-20261031` (created after this land)
+- Post-pass5: `recover/pass5-kaizen-depth-20261031` @ `512e1bd`
 
 ## What shipped
 
