@@ -4,7 +4,7 @@ withDefaults(
     heightVh?: number
     label?: string
   }>(),
-  { heightVh: 140 },
+  { heightVh: 95 },
 )
 </script>
 
@@ -15,6 +15,7 @@ withDefaults(
         <slot />
       </div>
       <div v-if="label || $slots.caption" class="hold__hud">
+        <span class="hold__role">沉浸辅证</span>
         <span v-if="label" class="hold__label">{{ label }}</span>
         <div class="hold__caption">
           <slot name="caption" />
@@ -32,7 +33,8 @@ withDefaults(
 .hold__stage {
   position: sticky;
   top: calc(var(--nav-h) + var(--progress-h));
-  height: calc(100vh - var(--nav-h) - var(--progress-h));
+  height: calc(72vh - var(--nav-h) - var(--progress-h));
+  min-height: 280px;
   overflow: hidden;
   background: #050403;
 }
@@ -61,6 +63,11 @@ withDefaults(
   background: linear-gradient(transparent, rgba(5, 4, 3, 0.92) 55%);
   display: grid;
   gap: 0.45rem;
+}
+.hold__role {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-dim);
 }
 .hold__label {
   font-size: 0.7rem;

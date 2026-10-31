@@ -4,6 +4,7 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import ChapterNav from "./components/ui/ChapterNav.vue"
 import ChapterWipe from "./components/ui/ChapterWipe.vue"
+import BridgeCaption from "./components/ui/BridgeCaption.vue"
 import LoadingScreen from "./components/ui/LoadingScreen.vue"
 import MuteToggle from "./components/ui/MuteToggle.vue"
 import ProgressBar from "./components/ui/ProgressBar.vue"
@@ -19,6 +20,7 @@ import Act2Support from "./components/sections/Act2Support.vue"
 import Act3Section from "./components/sections/Act3Section.vue"
 import CreditsSection from "./components/sections/CreditsSection.vue"
 import HeroSection from "./components/sections/HeroSection.vue"
+import { bridgeByTo } from "./content/rail"
 import { allVo } from "./content/media"
 import { useAudio } from "./composables/useAudio"
 import { useLenis } from "./composables/useLenis"
@@ -81,7 +83,7 @@ const onEnter = async () => {
 
   if (!reduced.value) {
     const targets = gsap.utils.toArray<HTMLElement>(
-      ".section h2, .section .lead, .hero h1, .vo, .thesis",
+      ".section h2, .section .lead, .hero h1, .vo, .thesis, .bridge",
     )
     targets.forEach((el) => {
       gsap.fromTo(
@@ -107,34 +109,110 @@ const onEnter = async () => {
 const onToggleMute = () => {
   toggleMute()
 }
+
+const b = bridgeByTo
 </script>
 
 <template>
   <LoadingScreen :ready="ready" @enter="onEnter" />
-  <ProgressBar :progress="progress" />
+  <ProgressBar :progress="progress" :active-id="activeId" />
   <ChapterNav :active-id="activeId">
     <MuteToggle :muted="muted" @toggle="onToggleMute" />
   </ChapterNav>
   <div class="grain" aria-hidden="true" />
   <main>
     <HeroSection />
-    <ChapterWipe label="I · 概念" />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act1']?.wipe || 'Ⅰ · 定义'" />
+      <BridgeCaption
+        v-if="b['act1']"
+        :wipe="b['act1'].wipe"
+        :move="b['act1'].move"
+        :why="b['act1'].why"
+      />
+    </div>
     <Act1Section />
-    <ChapterWipe label="II · 六案" />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act2intro']?.wipe || 'Ⅱ · 论证'" />
+      <BridgeCaption
+        v-if="b['act2intro']"
+        :wipe="b['act2intro'].wipe"
+        :move="b['act2intro'].move"
+        :why="b['act2intro'].why"
+      />
+    </div>
     <Act2Intro />
+
     <Act2A />
-    <ChapterWipe />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act2b']?.wipe || '例证 B'" />
+      <BridgeCaption
+        v-if="b['act2b']"
+        :wipe="b['act2b'].wipe"
+        :move="b['act2b'].move"
+        :why="b['act2b'].why"
+      />
+    </div>
     <Act2B />
-    <ChapterWipe />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act2c']?.wipe || '例证 C'" />
+      <BridgeCaption
+        v-if="b['act2c']"
+        :wipe="b['act2c'].wipe"
+        :move="b['act2c'].move"
+        :why="b['act2c'].why"
+      />
+    </div>
     <Act2C />
-    <ChapterWipe />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act2d']?.wipe || '例证 D'" />
+      <BridgeCaption
+        v-if="b['act2d']"
+        :wipe="b['act2d'].wipe"
+        :move="b['act2d'].move"
+        :why="b['act2d'].why"
+      />
+    </div>
     <Act2D />
-    <ChapterWipe />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act2e']?.wipe || '例证 E'" />
+      <BridgeCaption
+        v-if="b['act2e']"
+        :wipe="b['act2e'].wipe"
+        :move="b['act2e'].move"
+        :why="b['act2e'].why"
+      />
+    </div>
     <Act2E />
-    <ChapterWipe />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act2f']?.wipe || '例证 F'" />
+      <BridgeCaption
+        v-if="b['act2f']"
+        :wipe="b['act2f'].wipe"
+        :move="b['act2f'].move"
+        :why="b['act2f'].why"
+      />
+    </div>
     <Act2F />
+
     <Act2Support />
-    <ChapterWipe label="III · 学术" />
+
+    <div class="rail-bridge">
+      <ChapterWipe :label="b['act3']?.wipe || 'Ⅳ · 总结'" />
+      <BridgeCaption
+        v-if="b['act3']"
+        :wipe="b['act3'].wipe"
+        :move="b['act3'].move"
+        :why="b['act3'].why"
+      />
+    </div>
     <Act3Section />
     <CreditsSection />
   </main>
@@ -143,5 +221,10 @@ const onToggleMute = () => {
 <style scoped>
 main {
   padding-top: 0;
+}
+.rail-bridge {
+  padding: 0 1.25rem;
+  max-width: 920px;
+  margin: 0 auto;
 }
 </style>

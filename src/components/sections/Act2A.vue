@@ -28,19 +28,26 @@ const hint = voById("a-slider-hint")
     <div class="section-inner">
       <p class="eyebrow">{{ nodeA.eyebrow }}</p>
       <h2>{{ nodeA.title }}</h2>
+      <p v-if="nodeA.railCallback" class="rail-callback">{{ nodeA.railCallback }}</p>
+
+      <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeA.lead }}</p>
+      <p class="thesis-block"><span class="thesis-block__label">本证论点</span>{{ nodeA.thesis }}</p>
+      <WorkCard :work="nodeA.work" :contrast="nodeA.workContrast" />
       <VoCaption :text="nodeA.vo" vo-id="a-enter" />
-      <ScrollVideo
-        v-if="clip"
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 章节影像</p>
+        <ScrollVideo
+          v-if="clip"
         :src="clip.src"
         :poster="clip.poster"
         :kind="clip.kind"
         :credit="clip.credit"
-      />
-      <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeA.lead }}</p>
-      <WorkCard :work="nodeA.work" :contrast="nodeA.workContrast" />
+        />
+      </div>
+
     </div>
 
-    <ChapterHold label="Core A · 两幅画对决" :height-vh="130">
+    <ChapterHold label="Core A · 两幅画对决" :height-vh="100">
       <img :src="left.src" :alt="left.title" />
       <template #caption>{{ nodeA.vo }}</template>
     </ChapterHold>
@@ -51,7 +58,7 @@ const hint = voById("a-slider-hint")
       :kind="scrub.kind"
       :credit="scrub.credit"
       label="捕获 ↔ 投降"
-      :height-vh="170"
+      :height-vh="100"
     />
 
     <div class="section-inner">
@@ -132,5 +139,15 @@ h2 {
   color: var(--ink-muted);
   font-size: 0.92rem;
   background: rgba(196, 165, 116, 0.05);
+}
+
+.rail-callback {
+  margin: 0.5rem 0 0.25rem;
+  max-width: 42em;
+  font-size: 0.84rem;
+  color: var(--accent-soft);
+  line-height: 1.6;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--accent-dim);
 }
 </style>

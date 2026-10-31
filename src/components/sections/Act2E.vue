@@ -24,19 +24,26 @@ const seam = voById("e-seam")
     <div class="section-inner">
       <p class="eyebrow">{{ nodeE.eyebrow }}</p>
       <h2>{{ nodeE.title }}</h2>
+      <p v-if="nodeE.railCallback" class="rail-callback">{{ nodeE.railCallback }}</p>
+
+      <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeE.lead }}</p>
+      <p class="thesis-block"><span class="thesis-block__label">本证论点</span>{{ nodeE.thesis }}</p>
+      <WorkCard :work="nodeE.work" />
       <VoCaption :text="nodeE.vo" vo-id="e-enter" />
-      <ScrollVideo
-        v-if="clip"
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 章节影像</p>
+        <ScrollVideo
+          v-if="clip"
         :src="clip.src"
         :poster="clip.poster"
         :kind="clip.kind"
         :credit="clip.credit"
-      />
-      <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeE.lead }}</p>
-      <WorkCard :work="nodeE.work" />
+        />
+      </div>
+
     </div>
 
-    <ChapterHold label="Core E · Sulu Stories" :height-vh="140">
+    <ChapterHold label="Core E · Sulu Stories" :height-vh="100">
       <img :src="nodeE.embeds[0].src" :alt="nodeE.embeds[0].title" />
       <template #caption>{{ nodeE.vo }}</template>
     </ChapterHold>
@@ -89,5 +96,15 @@ h2 {
   h3 {
     margin-bottom: 1rem;
   }
+}
+
+.rail-callback {
+  margin: 0.5rem 0 0.25rem;
+  max-width: 42em;
+  font-size: 0.84rem;
+  color: var(--accent-soft);
+  line-height: 1.6;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--accent-dim);
 }
 </style>

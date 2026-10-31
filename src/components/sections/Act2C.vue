@@ -20,19 +20,26 @@ const letters = voById("c-letters")
     <div class="section-inner">
       <p class="eyebrow">{{ nodeC.eyebrow }}</p>
       <h2>{{ nodeC.title }}</h2>
+      <p v-if="nodeC.railCallback" class="rail-callback">{{ nodeC.railCallback }}</p>
+
+      <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeC.lead }}</p>
+      <p class="thesis-block"><span class="thesis-block__label">本证论点</span>{{ nodeC.thesis }}</p>
+      <WorkCard :work="nodeC.work" :contrast="nodeC.workContrast" />
       <VoCaption :text="nodeC.vo" vo-id="c-enter" />
-      <ScrollVideo
-        v-if="clip"
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 章节影像</p>
+        <ScrollVideo
+          v-if="clip"
         :src="clip.src"
         :poster="clip.poster"
         :kind="clip.kind"
         :credit="clip.credit"
-      />
-      <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeC.lead }}</p>
-      <WorkCard :work="nodeC.work" :contrast="nodeC.workContrast" />
+        />
+      </div>
+
     </div>
 
-    <ChapterHold label="Core C · Letters from Panduranga" :height-vh="135">
+    <ChapterHold label="Core C · Letters from Panduranga" :height-vh="100">
       <img :src="nodeC.embeds[0].src" :alt="nodeC.embeds[0].title" />
       <template #caption>{{ nodeC.vo }}</template>
     </ChapterHold>
@@ -121,5 +128,15 @@ h2 {
   color: var(--ink-muted);
   font-size: 0.92rem;
   background: rgba(196, 165, 116, 0.05);
+}
+
+.rail-callback {
+  margin: 0.5rem 0 0.25rem;
+  max-width: 42em;
+  font-size: 0.84rem;
+  color: var(--accent-soft);
+  line-height: 1.6;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--accent-dim);
 }
 </style>

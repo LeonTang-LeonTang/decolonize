@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { siteMeta } from "../../content/site"
+import { railMap, reportThesis } from "../../content/rail"
 import { scrubClips } from "../../content/media"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
 import MuteToggle from "../ui/MuteToggle.vue"
@@ -17,7 +18,14 @@ const scrub = scrubClips.hero
       <h1>{{ siteMeta.title }}</h1>
       <p class="hero__sub">{{ siteMeta.subtitle }}</p>
       <p class="lead hero__lead">{{ siteMeta.tagline }}</p>
-      <p class="hero__thesis">{{ siteMeta.thesis }}</p>
+
+      <div class="hero__question">
+        <p class="hero__q-label">问题提出</p>
+        <p class="hero__q-body">{{ reportThesis.question }}</p>
+      </div>
+
+      <p class="hero__thesis"><strong>论点。</strong>{{ siteMeta.thesis }}</p>
+      <p class="hero__method">{{ reportThesis.method }}</p>
 
       <div class="hero__audio" :data-muted="muted ? '1' : '0'">
         <MuteToggle :muted="muted" @toggle="toggleMute" />
@@ -28,12 +36,21 @@ const scrub = scrubClips.hero
         </p>
       </div>
 
-      <div class="hero__acts">
-        <div><span>I</span>概念区分</div>
-        <div><span>II</span>东南亚六案 A–F</div>
-        <div><span>III</span>学术状况</div>
+      <div class="hero__rail" aria-label="报告如何读">
+        <p class="hero__rail-title">报告如何读 · 逻辑轨</p>
+        <ol class="hero__rail-list">
+          <li v-for="s in railMap" :key="s.key">
+            <span class="hero__rail-roman">{{ s.roman }}</span>
+            <div>
+              <strong>{{ s.title }}</strong>
+              <p>{{ s.body }}</p>
+            </div>
+          </li>
+        </ol>
       </div>
-      <p class="hero__scroll">向下滚动 · 粘住画面以推进视频</p>
+
+      <p class="hero__article-note">文章优先：正文与论点先行；影像／静帧为证据与沉浸辅叙，不替代论证。</p>
+      <p class="hero__scroll">向下滚动 · 沿报告轨阅读（定义 → 论证 → 例证 → 总结）</p>
     </div>
 
     <StickyScrubVideo
@@ -42,7 +59,7 @@ const scrub = scrubClips.hero
       :kind="scrub.kind"
       :credit="scrub.credit"
       label="零点 · 河畔"
-      :height-vh="200"
+      :height-vh="130"
     />
   </header>
 </template>
@@ -78,12 +95,43 @@ h1 {
 .hero__lead {
   max-width: 36em;
 }
+.hero__question {
+  margin-top: 1.5rem;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(196, 165, 116, 0.06);
+  border-radius: 0 6px 6px 0;
+}
+.hero__q-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.hero__q-body {
+  font-family: var(--serif);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: var(--ink);
+  line-height: 1.7;
+}
 .hero__thesis {
   margin-top: 1.1rem;
-  max-width: 40em;
+  max-width: 42em;
   font-size: 0.92rem;
   color: var(--ink-dim);
   line-height: 1.75;
+  strong {
+    color: var(--accent-soft);
+    font-weight: 600;
+    margin-right: 0.35rem;
+  }
+}
+.hero__method {
+  margin-top: 0.65rem;
+  max-width: 42em;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.65;
 }
 .hero__audio {
   display: flex;
@@ -109,25 +157,56 @@ h1 {
 .hero__unlock {
   color: var(--ink-dim);
 }
-.hero__acts {
-  display: flex;
-  flex-wrap: wrap;
+.hero__rail {
+  margin-top: 1.75rem;
+  padding: 1.15rem 1.2rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+}
+.hero__rail-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--accent-soft);
+  margin-bottom: 0.85rem;
+}
+.hero__rail-list {
+  list-style: none;
+  display: grid;
   gap: 0.75rem;
-  margin-top: 1.5rem;
-  div {
-    border: 1px solid var(--line);
-    padding: 0.65rem 1rem;
-    font-size: 0.85rem;
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  strong {
+    display: block;
+    font-family: var(--serif);
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+  p {
+    font-size: 0.82rem;
     color: var(--ink-muted);
-    span {
-      color: var(--accent);
-      margin-right: 0.55rem;
-      font-family: var(--serif);
-    }
+    line-height: 1.55;
   }
 }
+.hero__rail-roman {
+  font-family: var(--serif);
+  color: var(--accent);
+  font-size: 0.95rem;
+  min-width: 1.5rem;
+}
+.hero__article-note {
+  margin-top: 1.25rem;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  max-width: 36em;
+  line-height: 1.6;
+}
 .hero__scroll {
-  margin-top: 2rem;
+  margin-top: 1.25rem;
   margin-bottom: 1rem;
   font-size: 0.75rem;
   letter-spacing: 0.18em;

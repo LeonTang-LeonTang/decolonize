@@ -24,19 +24,26 @@ const cdosea = voById("b-cdosea")
     <div class="section-inner">
       <p class="eyebrow">{{ nodeB.eyebrow }}</p>
       <h2>{{ nodeB.title }}</h2>
+      <p v-if="nodeB.railCallback" class="rail-callback">{{ nodeB.railCallback }}</p>
+
+      <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeB.lead }}</p>
+      <p class="thesis-block"><span class="thesis-block__label">本证论点</span>{{ nodeB.thesis }}</p>
+      <WorkCard :work="nodeB.work" />
       <VoCaption :text="nodeB.vo" vo-id="b-enter" />
-      <ScrollVideo
-        v-if="clip"
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 章节影像</p>
+        <ScrollVideo
+          v-if="clip"
         :src="clip.src"
         :poster="clip.poster"
         :kind="clip.kind"
         :credit="clip.credit"
-      />
-      <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeB.lead }}</p>
-      <WorkCard :work="nodeB.work" />
+        />
+      </div>
+
     </div>
 
-    <ChapterHold label="Core B · 何子彦作品簇" :height-vh="125">
+    <ChapterHold label="Core B · 何子彦作品簇" :height-vh="100">
       <img :src="nodeB.maps[1].src" :alt="nodeB.maps[1].label" />
       <template #caption>{{ nodeB.vo }}</template>
     </ChapterHold>
@@ -47,7 +54,7 @@ const cdosea = voById("b-cdosea")
       :kind="scrub.kind"
       :credit="scrub.credit"
       label="作战区先于名字"
-      :height-vh="160"
+      :height-vh="100"
     />
 
     <div class="section-inner">
@@ -113,5 +120,15 @@ h2 {
   h3 {
     margin-bottom: 1rem;
   }
+}
+
+.rail-callback {
+  margin: 0.5rem 0 0.25rem;
+  max-width: 42em;
+  font-size: 0.84rem;
+  color: var(--accent-soft);
+  line-height: 1.6;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--accent-dim);
 }
 </style>

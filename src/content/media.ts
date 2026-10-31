@@ -29,7 +29,7 @@ export const allVo: VoLine[] = [
   {
     id: "hero-enter",
     core: "hero",
-    zh: "这不是展览导览。六个东南亚案例，从一张图、一幅画、一座碑开始，追问谁在命名、谁被写掉。",
+    zh: "这是一份学术报告，不是展览导览。先立定义，再沿六案证据链追问：谁在命名、谁被写掉、谁展示、谁回收。",
     src: "/media/vo/hero-enter.mp3",
     section: "#hero",
     start: "top 55%",
@@ -38,7 +38,7 @@ export const allVo: VoLine[] = [
   {
     id: "act1-enter",
     core: "act1",
-    zh: "五个容易混用的词：殖民主义、殖民性、反殖民、解殖民、后殖民。先摊开，再进东南亚现场。",
+    zh: "第一幕是定义：殖民主义、殖民性、反殖民、解殖民、后殖民。先摊开，再进入论证与例证。",
     src: "/media/vo/act1-enter.mp3",
     section: "#act1",
     start: "top 60%",
@@ -71,7 +71,7 @@ export const allVo: VoLine[] = [
   {
     id: "act1-devices",
     core: "act1",
-    zh: "命名、收藏、展示、纪念——权力的柔性装置，贯穿六个案例。",
+    zh: "命名、收藏、展示、纪念——展示与回收的柔性装置，将贯穿六案证据链。",
     src: "/media/vo/act1-devices.mp3",
     section: "#act1-devices",
     start: "top 72%",

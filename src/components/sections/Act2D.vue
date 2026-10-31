@@ -22,19 +22,26 @@ const showCorrection = ref(true)
     <div class="section-inner">
       <p class="eyebrow">{{ nodeD.eyebrow }}</p>
       <h2>{{ nodeD.title }}</h2>
+      <p v-if="nodeD.railCallback" class="rail-callback">{{ nodeD.railCallback }}</p>
+
+      <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeD.lead }}</p>
+      <p class="thesis-block"><span class="thesis-block__label">本证论点</span>{{ nodeD.thesis }}</p>
+      <WorkCard :work="nodeD.work" />
       <VoCaption :text="nodeD.vo" vo-id="d-enter" />
-      <ScrollVideo
-        v-if="clip"
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 章节影像</p>
+        <ScrollVideo
+          v-if="clip"
         :src="clip.src"
         :poster="clip.poster"
         :kind="clip.kind"
         :credit="clip.credit"
-      />
-      <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeD.lead }}</p>
-      <WorkCard :work="nodeD.work" />
+        />
+      </div>
+
     </div>
 
-    <ChapterHold label="Core D · 246247… 装置母题" :height-vh="145">
+    <ChapterHold label="Core D · 246247… 装置母题" :height-vh="100">
       <img :src="nodeD.hero.src" :alt="nodeD.hero.alt" />
       <template #caption>{{ nodeD.vo }}</template>
     </ChapterHold>
@@ -185,5 +192,15 @@ h2 {
   color: var(--ink-muted);
   font-size: 0.92rem;
   background: rgba(196, 165, 116, 0.05);
+}
+
+.rail-callback {
+  margin: 0.5rem 0 0.25rem;
+  max-width: 42em;
+  font-size: 0.84rem;
+  color: var(--accent-soft);
+  line-height: 1.6;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--accent-dim);
 }
 </style>

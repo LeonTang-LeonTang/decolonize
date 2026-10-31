@@ -90,6 +90,7 @@ watch([muted, unlocked, activeVoId], () => syncAudio())
         preload="metadata"
         disablepictureinpicture
       />
+      <span class="sv__role">证据／辅叙</span>
       <span v-if="kind === 'generated-atmosphere'" class="sv__badge">generated-atmosphere</span>
       <span v-else-if="kind === 'oa-archival'" class="sv__badge sv__badge--oa">OA archival</span>
     </div>
@@ -110,9 +111,22 @@ watch([muted, unlocked, activeVoId], () => syncAudio())
   video {
     width: 100%;
     display: block;
-    max-height: 72vh;
+    max-height: 48vh;
     object-fit: cover;
   }
+}
+.sv__role {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+  background: rgba(5, 4, 3, 0.75);
+  color: var(--accent-soft);
+  border: 1px solid var(--line);
+  z-index: 1;
 }
 .sv__badge {
   position: absolute;

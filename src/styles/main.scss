@@ -141,3 +141,39 @@ h3 {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* —— Article first (pass3c): prose rail leads; media = evidence inserts —— */
+.thesis-block {
+  margin: 0.85rem 0 1.35rem;
+  max-width: 42em;
+  padding: 0.95rem 1.1rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(196, 165, 116, 0.07);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.75;
+}
+.thesis-block__label {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+.article-prose {
+  max-width: 42em;
+}
+.media-insert {
+  margin: 1.5rem 0 1.75rem;
+}
+.media-insert__role {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-dim);
+  margin-bottom: 0.45rem;
+}
+.section.chapter .lead {
+  color: var(--ink-muted);
+}
