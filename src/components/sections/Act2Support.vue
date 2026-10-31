@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { supportStrip } from "../../content/act2"
 </script>
 
 <template>
   <section :id="supportStrip.id" :data-chapter="supportStrip.id" class="section chapter">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act2support" />
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ supportStrip.eyebrow }}</p>
-      <h2>{{ supportStrip.title }}</h2>
+      <h2 class="sr-only">{{ supportStrip.title }}</h2>
       <p class="lead" style="margin: 1rem 0 1.5rem; max-width: 42em">{{ supportStrip.lead }}</p>
       <div class="grid">
         <article v-for="item in supportStrip.items" :key="item.title">

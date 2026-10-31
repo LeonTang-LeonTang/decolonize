@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { nodeB } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
@@ -22,9 +24,11 @@ const cdosea = voById("b-cdosea")
 
 <template>
   <section :id="nodeB.id" :data-chapter="nodeB.id" class="section chapter">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act2b" />
+    <p class="slide-evidence-label">证据层 · Core B 展厅／地图／词典</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeB.eyebrow }}</p>
-      <h2>{{ nodeB.title }}</h2>
+      <h2 class="sr-only">{{ nodeB.title }}</h2>
       <p v-if="nodeB.railCallback" class="rail-callback">{{ nodeB.railCallback }}</p>
 
       <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeB.lead }}</p>

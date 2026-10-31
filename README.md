@@ -18,6 +18,7 @@ npm run preview -- --host 127.0.0.1 --port 4175
 - Vite + Vue 3 + TypeScript
 - GSAP ScrollTrigger · Lenis · Howler · Sass
 - Chinese UI · desktop ~1280 first
+- Pass 6: article×PPT slide grammar + 阅读/展厅 dual mode (default 阅读)
 
 ## Locked Core (Act 2)
 

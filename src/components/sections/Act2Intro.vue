@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { act2Intro } from "../../content/act2"
 import { evidenceChain, bridgeByTo } from "../../content/rail"
 import BridgeCaption from "../ui/BridgeCaption.vue"
@@ -10,9 +12,12 @@ const intoA = bridgeByTo["act2a"]
 
 <template>
   <section id="act2intro" data-chapter="act2intro" class="section">
-    <div class="section-inner narrow prose-card">
+
+  <SlideChapter :slide="slideById['act2intro']" />
+  <p class="slide-evidence-label">证据层 · 正文与展厅辅证（论点见上页）</p>
+    <div class="section-inner narrow prose-card evidence-body">
       <p class="eyebrow">{{ act2Intro.eyebrow }}</p>
-      <h2>{{ act2Intro.title }}</h2>
+      <h2 class="sr-only">{{ act2Intro.title }}</h2>
       <p class="lead" style="margin-top: 1rem">{{ act2Intro.lead }}</p>
       <p class="order">{{ act2Intro.orderNote }}</p>
 

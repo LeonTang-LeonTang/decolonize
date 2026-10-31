@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { nodeF } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
@@ -21,9 +23,11 @@ const invisible = voById("f-invisible")
 
 <template>
   <section :id="nodeF.id" :data-chapter="nodeF.id" class="section chapter">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act2f" />
+    <p class="slide-evidence-label">证据层 · Core F 展厅／作品读解</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeF.eyebrow }}</p>
-      <h2>{{ nodeF.title }}</h2>
+      <h2 class="sr-only">{{ nodeF.title }}</h2>
       <p v-if="nodeF.railCallback" class="rail-callback">{{ nodeF.railCallback }}</p>
 
       <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeF.lead }}</p>

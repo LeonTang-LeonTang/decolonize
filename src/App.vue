@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref } from "vue"
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import ChapterNav from "./components/ui/ChapterNav.vue"
@@ -8,6 +8,9 @@ import BridgeCaption from "./components/ui/BridgeCaption.vue"
 import LoadingScreen from "./components/ui/LoadingScreen.vue"
 import MuteToggle from "./components/ui/MuteToggle.vue"
 import ProgressBar from "./components/ui/ProgressBar.vue"
+import ModeToggle from "./components/ui/ModeToggle.vue"
+import DeckProgress from "./components/ui/DeckProgress.vue"
+import ThesisStrip from "./components/ui/ThesisStrip.vue"
 import WebGLMuseumLayer from "./components/webgl/WebGLMuseumLayer.vue"
 import Act1Section from "./components/sections/Act1Section.vue"
 import Act2A from "./components/sections/Act2A.vue"
@@ -27,18 +30,25 @@ import { useAudio } from "./composables/useAudio"
 import { useLenis } from "./composables/useLenis"
 import { useReducedMotion } from "./composables/useReducedMotion"
 import { useScrollProgress } from "./composables/useScrollProgress"
+import { useViewMode, hydrateViewMode } from "./composables/useViewMode"
+import { useDeckNav } from "./composables/useDeckNav"
+import { getMuseumApp } from "./composables/useMuseumWebGL"
 
 gsap.registerPlugin(ScrollTrigger)
 
 const ready = ref(false)
 const started = ref(false)
+const museumActive = ref(false)
 const { progress, activeId } = useScrollProgress()
 const { muted, init, toggleMute, unlockAndPlay, playVo } = useAudio()
 const { reduced } = useReducedMotion()
+const { mode } = useViewMode()
+const { page, total, jumpTo } = useDeckNav(activeId)
 useLenis()
 
 const voTriggers: ScrollTrigger[] = []
 const playedOnce = new Set<string>()
+let museumPoll = 0
 
 const wireVoScroll = () => {
   voTriggers.forEach((t) => t.kill())
@@ -64,14 +74,36 @@ const wireVoScroll = () => {
 }
 
 onMounted(() => {
+  hydrateViewMode()
   init()
   requestAnimationFrame(() => {
     ready.value = true
   })
+  museumPoll = window.setInterval(() => {
+    const app = getMuseumApp()
+    const canvas = document.querySelector("canvas.museum-gl") as HTMLCanvasElement | null
+    if (!app || !canvas) {
+      museumActive.value = false
+      return
+    }
+    const st = app.getState()
+    museumActive.value =
+      canvas.dataset.museumActive === "1" || (!!st.portal && st.portalT > 0.05)
+  }, 150)
 })
 
 onUnmounted(() => {
   voTriggers.forEach((t) => t.kill())
+  if (museumPoll) window.clearInterval(museumPoll)
+})
+
+watch(mode, () => {
+  // Re-push scale when museum app becomes ready later
+  const m = mode.value
+  getMuseumApp()?.setState({
+    viewMode: m,
+    immersionScale: m === "reading" ? 0.35 : 1,
+  })
 })
 
 const onEnter = async () => {
@@ -84,7 +116,7 @@ const onEnter = async () => {
 
   if (!reduced.value) {
     const targets = gsap.utils.toArray<HTMLElement>(
-      ".section h2, .section .lead, .hero h1, .vo, .thesis, .bridge",
+      ".section h2, .section .lead, .hero h1, .vo, .thesis, .bridge, .slide__claim",
     )
     targets.forEach((el) => {
       gsap.fromTo(
@@ -118,12 +150,15 @@ const b = bridgeByTo
   <LoadingScreen :ready="ready" @enter="onEnter" />
   <ProgressBar :progress="progress" :active-id="activeId" />
   <ChapterNav :active-id="activeId">
+    <ModeToggle />
     <MuteToggle :muted="muted" @toggle="onToggleMute" />
   </ChapterNav>
-  <!-- WebGL scroll museum — behind article; portals raise immersion -->
+  <DeckProgress :active-id="activeId" :page="page" :total="total" @jump="jumpTo" />
+  <ThesisStrip :active-id="activeId" :museum-active="museumActive" />
+  <!-- WebGL scroll museum — evidence layer behind article -->
   <WebGLMuseumLayer />
   <div class="grain" aria-hidden="true" />
-  <main class="article-rail">
+  <main class="article-rail" :data-view-mode="mode">
     <HeroSection />
 
     <div class="rail-bridge">
@@ -226,6 +261,8 @@ const b = bridgeByTo
   position: relative;
   z-index: 1;
   padding-top: 0;
+  /* room for deck progress under nav */
+  padding-bottom: 3.5rem;
 }
 .rail-bridge {
   padding: 0 1.25rem;

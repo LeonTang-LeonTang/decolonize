@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { act1Intro, flipTerms, powerDevices } from "../../content/act1"
 import { clipForSection, voById } from "../../content/media"
 import FlipCard from "../ui/FlipCard.vue"
@@ -21,9 +23,12 @@ const voFor = (id: string) => {
 
 <template>
   <section id="act1" data-chapter="act1" class="section act1">
-    <div class="section-inner">
+
+  <SlideChapter :slide="slideById['act1']" />
+  <p class="slide-evidence-label">证据层 · 正文与展厅辅证（论点见上页）</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ act1Intro.eyebrow }}</p>
-      <h2>{{ act1Intro.title }}</h2>
+      <h2 class="sr-only">{{ act1Intro.title }}</h2>
       <p class="lead narrow article-prose" style="margin: 1rem 0 1.25rem">{{ act1Intro.lead }}</p>
       <p class="setup">{{ act1Intro.argumentSetup }}</p>
       <VoCaption v-if="enter" :text="enter.zh" vo-id="act1-enter" />

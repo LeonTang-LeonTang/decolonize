@@ -38,6 +38,9 @@ export type MuseumState = {
   portal: PortalId
   portalT: number
   immersion: number
+  /** Pass6: 1 = 展厅模式 full immersion; ~0.35 = 阅读模式 subdued */
+  immersionScale: number
+  viewMode: "reading" | "museum"
 }
 
 /**
@@ -64,6 +67,8 @@ export class MuseumApp {
     portal: null,
     portalT: 0,
     immersion: 0,
+    immersionScale: 0.35,
+    viewMode: "reading",
   }
   private ambientCam = {
     position: new THREE.Vector3(0, 1.8, 8),
@@ -213,8 +218,9 @@ export class MuseumApp {
     const { portal, portalT, activeChapter } = this.state
     if (portal && PORTAL_TO_MODE[portal]) {
       this.gallery.setMode(PORTAL_TO_MODE[portal])
-      // Pass5b: portal immersion ~1.0 so walls/frames/pedestals are unmistakable
-      this.targetImmersion = 0.94 + portalT * 0.06
+      // Pass5b/6: portal immersion high; reading mode softens slightly but stays visible
+      const scale = this.state.viewMode === "reading" ? 0.82 : 1
+      this.targetImmersion = (0.94 + portalT * 0.06) * scale
       const coreId = PORTAL_TO_CORE[portal]
       if (coreId) {
         void this.layers.setCore(coreId)
@@ -229,13 +235,13 @@ export class MuseumApp {
       if (coreMatch) {
         void this.layers.setCore(coreMatch[1])
         this.layers.setTargetOpacity(0.42)
-        this.targetImmersion = 0.48
+        this.targetImmersion = 0.48 * (this.state.immersionScale ?? 1)
       } else if (activeChapter === "act2intro") {
         this.layers.setTargetOpacity(0.28)
-        this.targetImmersion = 0.36
+        this.targetImmersion = 0.36 * (this.state.immersionScale ?? 1)
       } else {
         this.layers.setTargetOpacity(0.08)
-        this.targetImmersion = activeChapter === "hero" ? 0.22 : 0.16
+        this.targetImmersion = (activeChapter === "hero" ? 0.22 : 0.16) * (this.state.immersionScale ?? 1)
       }
     }
   }
@@ -261,7 +267,9 @@ export class MuseumApp {
       this.post?.setEnabled(true)
     } else {
       // Floor ambient so layered planes / corridor peek stay readable (was ~0.05 = invisible)
-      this.canvas.style.opacity = String(THREE.MathUtils.clamp(this.immersion, 0.18, 0.85))
+      const floor = this.state.viewMode === "reading" ? 0.06 : 0.18
+      const ceil = this.state.viewMode === "reading" ? 0.42 : 0.85
+      this.canvas.style.opacity = String(THREE.MathUtils.clamp(this.immersion, floor, ceil))
       this.renderer.setClearColor(0x1a1610, 0)
       this.scene.background = null
       this.post?.setPortalMode(false)

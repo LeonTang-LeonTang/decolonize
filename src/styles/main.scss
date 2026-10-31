@@ -195,3 +195,38 @@ h3 {
 .article-rail .section-inner {
   position: relative;
 }
+
+
+/* —— Pass6 article×PPT×Kaizen hybrid —— */
+:root {
+  --deck-h: 28px;
+}
+html[data-view-mode="reading"] .museum-gl--ready:not(.museum-gl--active) {
+  opacity: 0.1 !important;
+}
+html[data-view-mode="museum"] .museum-gl--ready:not(.museum-gl--active) {
+  opacity: 0.32 !important;
+}
+body.mode-reading .article-rail {
+  /* Keep prose dominant */
+}
+body.mode-museum .prose-card {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 11, 9, 0.68) 0%,
+    rgba(12, 11, 9, 0.55) 100%
+  );
+}
+.evidence-body {
+  position: relative;
+  scroll-margin-top: calc(var(--nav-h) + var(--progress-h) + var(--deck-h) + 0.75rem);
+}
+.slide-evidence-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-dim);
+  margin: 0.5rem 0 0.75rem;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: 0 1.25rem;
+}

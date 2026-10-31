@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import {
   act3Intro,
   scholars,
@@ -20,9 +22,11 @@ const empireVo = voById("act3-empire")
 
 <template>
   <section id="act3" data-chapter="act3" class="section act3">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act3" />
+    <p class="slide-evidence-label">证据层 · 合证表格／学术对照／开放问题</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ act3Intro.eyebrow }}</p>
-      <h2>{{ act3Intro.title }}</h2>
+      <h2 class="sr-only">{{ act3Intro.title }}</h2>
       <p class="lead article-prose" style="margin: 1rem 0 1.5rem; max-width: 42em">{{ act3Intro.lead }}</p>
       <VoCaption v-if="enter" :text="enter.zh" vo-id="act3-enter" />
       <div class="media-insert">

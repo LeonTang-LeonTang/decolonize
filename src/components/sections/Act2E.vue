@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { nodeE } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
 import PanZoomImage from "../ui/PanZoomImage.vue"
@@ -22,9 +24,11 @@ const seam = voById("e-seam")
 
 <template>
   <section :id="nodeE.id" :data-chapter="nodeE.id" class="section chapter">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act2e" />
+    <p class="slide-evidence-label">证据层 · Core E 展厅／作品读解</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeE.eyebrow }}</p>
-      <h2>{{ nodeE.title }}</h2>
+      <h2 class="sr-only">{{ nodeE.title }}</h2>
       <p v-if="nodeE.railCallback" class="rail-callback">{{ nodeE.railCallback }}</p>
 
       <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeE.lead }}</p>

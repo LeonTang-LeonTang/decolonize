@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { nodeA } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
 import { clipForSection, scrubClips, supportClips, voById } from "../../content/media"
@@ -26,9 +28,11 @@ const hint = voById("a-slider-hint")
 
 <template>
   <section :id="nodeA.id" :data-chapter="nodeA.id" class="section chapter">
-    <div class="section-inner prose-card">
+    <SlideChapter :slide="slideById.act2a" />
+    <p class="slide-evidence-label">证据层 · Core A 展厅／compare／读解</p>
+    <div class="section-inner prose-card evidence-body">
       <p class="eyebrow">{{ nodeA.eyebrow }}</p>
-      <h2>{{ nodeA.title }}</h2>
+      <h2 class="sr-only">{{ nodeA.title }}</h2>
       <p v-if="nodeA.railCallback" class="rail-callback">{{ nodeA.railCallback }}</p>
 
       <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeA.lead }}</p>

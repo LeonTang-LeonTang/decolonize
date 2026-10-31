@@ -1,31 +1,29 @@
 <script setup lang="ts">
 import { siteMeta } from "../../content/site"
-import { railMap, reportThesis } from "../../content/rail"
+import { railMap } from "../../content/rail"
 import { scrubClips } from "../../content/media"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
 import MuteToggle from "../ui/MuteToggle.vue"
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { useAudio } from "../../composables/useAudio"
 
 const { muted, toggleMute, unlocked } = useAudio()
 const scrub = scrubClips.hero
+const slide = slideById.hero
 </script>
 
 <template>
   <header id="hero" data-chapter="hero" class="hero section">
     <div class="hero__glow" aria-hidden="true" />
-    <div class="section-inner hero__inner">
+    <SlideChapter :slide="slide" />
+
+    <div class="section-inner hero__inner evidence-body">
+      <p class="slide-evidence-label" style="padding:0;margin:0 0 1rem">证据／辅叙 · 标题页细节</p>
       <p class="eyebrow">{{ siteMeta.course }} · {{ siteMeta.date }}</p>
       <h1>{{ siteMeta.title }}</h1>
       <p class="hero__sub">{{ siteMeta.subtitle }}</p>
       <p class="lead hero__lead">{{ siteMeta.tagline }}</p>
-
-      <div class="hero__question">
-        <p class="hero__q-label">问题提出</p>
-        <p class="hero__q-body">{{ reportThesis.question }}</p>
-      </div>
-
-      <p class="hero__thesis"><strong>论点。</strong>{{ siteMeta.thesis }}</p>
-      <p class="hero__method">{{ reportThesis.method }}</p>
 
       <div class="hero__audio" :data-muted="muted ? '1' : '0'">
         <MuteToggle :muted="muted" @toggle="toggleMute" />
@@ -49,8 +47,8 @@ const scrub = scrubClips.hero
         </ol>
       </div>
 
-      <p class="hero__article-note">文章优先：正文与论点先行；影像／静帧为证据与沉浸辅叙，不替代论证。</p>
-      <p class="hero__scroll">向下滚动 · 沿报告轨阅读（定义 → 论证 → 例证 → 总结）</p>
+      <p class="hero__article-note">文章优先 · 默认阅读模式：正文与论点先行；影像／三维展厅为证据与沉浸辅叙。</p>
+      <p class="hero__scroll">向下滚动或按空格 · 沿报告轨翻页（定义 → 论证 → 例证 → 总结）</p>
     </div>
 
     <StickyScrubVideo
@@ -67,7 +65,7 @@ const scrub = scrubClips.hero
 <style scoped lang="scss">
 .hero {
   min-height: 100vh;
-  padding-top: calc(var(--nav-h) + var(--progress-h) + 3rem);
+  padding-top: calc(var(--nav-h) + var(--progress-h) + var(--deck-h, 28px));
   overflow: visible;
 }
 .hero__glow {

@@ -36,7 +36,7 @@ const jump = (id: string) => {
         </button>
       </li>
     </ul>
-    <slot />
+    <div class="nav__tools"><slot /></div>
   </nav>
 </template>
 
@@ -100,6 +100,13 @@ const jump = (id: string) => {
       background: rgba(196, 165, 116, 0.08);
     }
   }
+}
+.nav__tools {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 @media (max-width: 720px) {
   .nav__brand small {

@@ -37,7 +37,7 @@ const enter = () => {
       <button class="loader__btn" type="button" @click="enter">
         {{ pct < 100 ? `准备中 ${pct}%` : "进入叙事 · 开启声场" }}
       </button>
-      <p class="loader__hint">进入即解锁中文 VO + 分层环境声 · 可随时静音<br />建议竖屏阅读 · 支持减弱动效</p>
+      <p class="loader__hint">默认「阅读模式」：论点／PPT 页先行，展厅为证据层 · 可切「展厅模式」<br />进入即解锁中文 VO · ←/→ 或空格翻页 · 可随时静音</p>
     </div>
   </Transition>
 </template>

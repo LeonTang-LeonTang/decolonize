@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { nodeC } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
@@ -18,9 +20,11 @@ const letters = voById("c-letters")
 
 <template>
   <section :id="nodeC.id" :data-chapter="nodeC.id" class="section chapter">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act2c" />
+    <p class="slide-evidence-label">证据层 · Core C 展厅／作品读解</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeC.eyebrow }}</p>
-      <h2>{{ nodeC.title }}</h2>
+      <h2 class="sr-only">{{ nodeC.title }}</h2>
       <p v-if="nodeC.railCallback" class="rail-callback">{{ nodeC.railCallback }}</p>
 
       <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeC.lead }}</p>

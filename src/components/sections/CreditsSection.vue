@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 </script>
 
 <template>
   <footer id="credits" data-chapter="credits" class="section credits">
-    <div class="section-inner narrow">
+    <SlideChapter :slide="slideById.credits" />
+    <div class="section-inner narrow evidence-body">
       <p class="eyebrow">证据来源 · 致谢</p>
-      <h2>证据与版权</h2>
+      <h2 class="sr-only">证据与版权</h2>
       <p>
         本报告证据来源如下（作品静帧／公版图／展览材料）。媒体优先滚动论文。Tier1 公版／CC 历史图内嵌自
         <code>public/media/{a–f}/</code>；教育用途嵌入公版图与博物馆／展览／新闻公开静帧；禁止 AI 伪造艺术品。完整来源表见仓库

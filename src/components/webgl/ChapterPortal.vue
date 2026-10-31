@@ -4,6 +4,7 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { getMuseumApp } from "../../composables/useMuseumWebGL"
 import { useReducedMotion } from "../../composables/useReducedMotion"
+import { useViewMode } from "../../composables/useViewMode"
 import type { PortalId } from "../../webgl/MuseumApp"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -26,6 +27,7 @@ const props = withDefaults(
 const root = ref<HTMLElement | null>(null)
 const t = ref(0)
 const { reduced } = useReducedMotion()
+const { isReading } = useViewMode()
 let st: ScrollTrigger | null = null
 
 onMounted(() => {
@@ -78,12 +80,12 @@ onUnmounted(() => {
     v-else
     ref="root"
     class="portal"
-    :style="{ height: heightVh + 'vh' }"
+    :style="{ height: (isReading ? Math.max(120, heightVh * 0.85) : heightVh) + 'vh' }"
     :data-portal="portal"
   >
     <div ref="stage" class="portal__stage">
       <div class="portal__hud">
-        <span class="portal__role">章节传送门 · Chapter portal</span>
+        <span class="portal__role">{{ isReading ? "展开证据 · 三维展厅（辅）" : "章节传送门 · 展厅模式" }}</span>
         <span class="portal__label">{{ label }}</span>
         <p class="portal__hint">{{ hint }}</p>
         <div class="portal__meter" aria-hidden="true">

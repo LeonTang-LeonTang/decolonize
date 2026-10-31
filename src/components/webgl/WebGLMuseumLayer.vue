@@ -2,10 +2,12 @@
 import { onMounted, onUnmounted, ref, watch } from "vue"
 import { useMuseumWebGL, getMuseumApp } from "../../composables/useMuseumWebGL"
 import { useScrollProgress } from "../../composables/useScrollProgress"
+import { useViewMode } from "../../composables/useViewMode"
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const { ready, reduced, pushState } = useMuseumWebGL(canvasRef)
 const { progress, activeId } = useScrollProgress()
+const { mode } = useViewMode()
 const xrOk = ref(false)
 const xrBusy = ref(false)
 const museumActive = ref(false)
@@ -24,6 +26,11 @@ watch(
 
 watch(ready, () => {
   xrOk.value = !!getMuseumApp()?.xrAvailable
+  const m = mode.value
+  getMuseumApp()?.setState({
+    viewMode: m,
+    immersionScale: m === "reading" ? 0.35 : 1,
+  })
 })
 
 onMounted(() => {

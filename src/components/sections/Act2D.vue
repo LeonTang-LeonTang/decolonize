@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { ref } from "vue"
 import { nodeD } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
@@ -20,9 +22,11 @@ const showCorrection = ref(true)
 
 <template>
   <section :id="nodeD.id" :data-chapter="nodeD.id" class="section chapter">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act2d" />
+    <p class="slide-evidence-label">证据层 · Core D 展厅／作品读解</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeD.eyebrow }}</p>
-      <h2>{{ nodeD.title }}</h2>
+      <h2 class="sr-only">{{ nodeD.title }}</h2>
       <p v-if="nodeD.railCallback" class="rail-callback">{{ nodeD.railCallback }}</p>
 
       <p class="lead article-prose" style="margin: 0.75rem 0 1rem; max-width: 42em">{{ nodeD.lead }}</p>
