@@ -10,8 +10,8 @@ defineProps<{
 </script>
 
 <template>
-  <aside class="ph" aria-label="待许可媒体框">
-    <div class="ph__badge">待许可 · Tier2</div>
+  <aside class="ph" aria-label="外链参考媒体">
+    <div class="ph__badge">外链参考</div>
     <h4>{{ title }}</h4>
     <p>{{ description }}</p>
     <div class="ph__links">

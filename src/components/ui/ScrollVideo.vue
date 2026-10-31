@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref, watch } from "vue"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useAudio } from "../../composables/useAudio"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -11,25 +12,36 @@ const props = withDefaults(
     poster?: string
     credit?: string
     kind?: "oa-archival" | "generated-atmosphere"
-    /** Play when this fraction of the video enters the viewport */
     playWhen?: number
     loop?: boolean
   }>(),
   { playWhen: 0.35, loop: true },
 )
 
+const { muted, unlocked, activeVoId } = useAudio()
 const root = ref<HTMLElement | null>(null)
 const video = ref<HTMLVideoElement | null>(null)
 let st: ScrollTrigger | null = null
+const CLIP_VOL = 0.12
+const CLIP_DUCK = 0.03
+
+const syncAudio = () => {
+  const el = video.value
+  if (!el) return
+  // Soft bed under clip when site sound is on; duck under VO narration
+  const wantSound = unlocked.value && !muted.value
+  el.muted = !wantSound
+  el.volume = activeVoId.value ? CLIP_DUCK : CLIP_VOL
+}
 
 const tryPlay = async () => {
   const el = video.value
   if (!el) return
+  syncAudio()
   try {
-    el.muted = true
     await el.play()
   } catch {
-    /* autoplay policy — stay paused until user gesture / retry on scroll */
+    /* autoplay policy */
   }
 }
 
@@ -39,6 +51,7 @@ const pause = () => {
 
 onMounted(() => {
   if (!root.value || !video.value) return
+  syncAudio()
   st = ScrollTrigger.create({
     trigger: root.value,
     start: "top 75%",
@@ -61,6 +74,8 @@ watch(
     requestAnimationFrame(() => tryPlay())
   },
 )
+
+watch([muted, unlocked, activeVoId], () => syncAudio())
 </script>
 
 <template>
@@ -70,7 +85,6 @@ watch(
         ref="video"
         :src="src"
         :poster="poster"
-        muted
         playsinline
         :loop="loop"
         preload="metadata"
@@ -79,7 +93,7 @@ watch(
       <span v-if="kind === 'generated-atmosphere'" class="sv__badge">generated-atmosphere</span>
       <span v-else-if="kind === 'oa-archival'" class="sv__badge sv__badge--oa">OA archival</span>
     </div>
-    <figcaption v-if="credit" class="sv__credit">{{ credit }}</figcaption>
+    <figcaption v-if="credit">{{ credit }}</figcaption>
   </figure>
 </template>
 
@@ -89,40 +103,37 @@ watch(
 }
 .sv__frame {
   position: relative;
-  overflow: hidden;
-  border-radius: 4px;
   border: 1px solid var(--line);
-  background: #000;
-  aspect-ratio: 16 / 9;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #050403;
   video {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
     display: block;
+    max-height: 72vh;
+    object-fit: cover;
   }
 }
 .sv__badge {
   position: absolute;
+  top: 0.65rem;
   left: 0.65rem;
-  bottom: 0.65rem;
-  padding: 0.2rem 0.5rem;
   font-size: 0.62rem;
   letter-spacing: 0.1em;
-  text-transform: lowercase;
-  color: var(--accent-soft);
-  background: rgba(12, 11, 9, 0.72);
-  border: 1px solid rgba(232, 213, 163, 0.25);
-  border-radius: 2px;
-  backdrop-filter: blur(6px);
-}
-.sv__badge--oa {
-  color: #b8d4c8;
-  border-color: rgba(184, 212, 200, 0.35);
-}
-.sv__credit {
-  margin-top: 0.45rem;
-  font-size: 0.72rem;
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(5, 4, 3, 0.7);
+  border: 1px solid var(--line);
   color: var(--ink-dim);
-  line-height: 1.5;
+  &--oa {
+    color: var(--accent-soft);
+    border-color: var(--accent-dim);
+  }
+}
+figcaption {
+  margin-top: 0.4rem;
+  font-size: 0.68rem;
+  color: var(--ink-dim);
+  line-height: 1.45;
 }
 </style>

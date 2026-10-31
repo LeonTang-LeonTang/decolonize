@@ -4,14 +4,15 @@ import { clipForSection, scrubClips, supportClips, voById } from "../../content/
 import CompareSlider from "../ui/CompareSlider.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
-import PlaceholderStill from "../ui/PlaceholderStill.vue"
+import EmbeddedStill from "../ui/EmbeddedStill.vue"
+import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
+import ChapterHold from "../ui/ChapterHold.vue"
 
 const left = nodeA.paintings[0]
 const right = nodeA.paintings[1]
 const timeline = nodeA.timeline
-const revolusiNote = nodeA.revolusiNote
 const elsewhere = nodeA.elsewhere
 const clip = clipForSection("act2a")
 const scrub = scrubClips.a
@@ -35,8 +36,12 @@ const hint = voById("a-slider-hint")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeA.lead }}</p>
-      <p class="thesis">{{ nodeA.thesis }}</p>
     </div>
+
+    <ChapterHold label="Core A · 捕获 ↔ 投降" :height-vh="130">
+      <img :src="left.src" :alt="left.title" />
+      <template #caption>{{ nodeA.vo }}</template>
+    </ChapterHold>
 
     <StickyScrubVideo
       :src="scrub.src"
@@ -57,6 +62,8 @@ const hint = voById("a-slider-hint")
         </div>
       </div>
 
+      <AnalysisPanel :items="nodeA.breakdown" :thesis="nodeA.thesis" />
+
       <h3 class="sub">荷属东印度档案片段（OA）</h3>
       <div class="clip-row">
         <ScrollVideo :src="supportClips.aBatavia.src" kind="oa-archival" :credit="supportClips.aBatavia.credit" />
@@ -67,12 +74,10 @@ const hint = voById("a-slider-hint")
         <VoCaption v-if="ret" :text="ret.zh" vo-id="a-return" />
         <ScrollTimeline :items="timeline" :horizontal="true" />
       </div>
-      <PlaceholderStill
-        title="Revolusi! 展场静帧"
-        :description="revolusiNote"
-        href="https://www.rijksmuseum.nl/en/press/revolusi-indonesia-independent"
-        href-label="Rijksmuseum press（待核）"
-      />
+      <p class="note">{{ nodeA.revolusiNote }}</p>
+      <div class="embed-grid">
+        <EmbeddedStill v-for="e in nodeA.embeds" :key="e.title" v-bind="e" />
+      </div>
       <p class="elsewhere">{{ elsewhere }}</p>
     </div>
   </section>
@@ -80,15 +85,7 @@ const hint = voById("a-slider-hint")
 
 <style scoped lang="scss">
 h2 {
-  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
-}
-.thesis {
-  max-width: 42em;
-  margin: 0 0 1.75rem;
-  font-size: 0.95rem;
-  color: var(--ink-muted);
-  border-left: 2px solid var(--accent-dim);
-  padding-left: 0.9rem;
+  font-size: clamp(1.75rem, 4vw, 2.55rem);
 }
 .sub {
   margin: 2rem 0 0.85rem;
@@ -114,6 +111,17 @@ h2 {
   h3 {
     margin-bottom: 1rem;
   }
+}
+.note {
+  margin: 1rem 0;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  line-height: 1.65;
+}
+.embed-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
 }
 .elsewhere {
   margin-top: 1.75rem;

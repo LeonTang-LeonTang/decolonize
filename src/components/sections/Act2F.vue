@@ -3,8 +3,11 @@ import { nodeF } from "../../content/act2"
 import MapCrossfade from "../ui/MapCrossfade.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
+import EmbeddedStill from "../ui/EmbeddedStill.vue"
+import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
+import ChapterHold from "../ui/ChapterHold.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const clip = clipForSection("act2f")
@@ -28,8 +31,14 @@ const invisible = voById("f-invisible")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeF.lead }}</p>
-      <p class="thesis">{{ nodeF.thesis }}</p>
+    </div>
 
+    <ChapterHold label="Core F · 城市零点" :height-vh="135">
+      <img :src="nodeF.statue.src" :alt="nodeF.statue.alt" />
+      <template #caption>{{ nodeF.vo }}</template>
+    </ChapterHold>
+
+    <div class="section-inner">
       <figure id="f-statue" class="hero">
         <VoCaption v-if="pan" :text="pan.zh" vo-id="f-pan" />
         <img :src="nodeF.statue.src" :alt="nodeF.statue.alt" />
@@ -51,6 +60,8 @@ const invisible = voById("f-invisible")
         />
       </div>
 
+      <AnalysisPanel :items="nodeF.breakdown" :thesis="nodeF.thesis" />
+
       <div id="f-duel">
         <h3 class="sub">标题对决 · Tate vs NGS</h3>
         <VoCaption v-if="empire" :text="empire.zh" vo-id="f-empire" />
@@ -67,11 +78,12 @@ const invisible = voById("f-invisible")
       <aside id="f-invisible" class="invisible">
         <h3>{{ nodeF.invisible2019.title }}</h3>
         <VoCaption v-if="invisible" :text="invisible.zh" vo-id="f-invisible" />
-        <div class="invisible__row">
-          <img :src="nodeF.statue.front" alt="莱佛士像常态视觉（非 2019 涂装新闻照）" />
-          <p>{{ nodeF.invisible2019.body }}</p>
-        </div>
+        <p class="invisible__body">{{ nodeF.invisible2019.body }}</p>
       </aside>
+
+      <div class="embed-grid">
+        <EmbeddedStill v-for="e in nodeF.embeds" :key="e.title" v-bind="e" />
+      </div>
 
       <SupportTip :text="nodeF.supportTip.text" :href="nodeF.supportTip.href" label="Taring Padi 声明" />
 
@@ -85,15 +97,7 @@ const invisible = voById("f-invisible")
 
 <style scoped lang="scss">
 h2 {
-  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
-}
-.thesis {
-  max-width: 42em;
-  margin: 0 0 1.75rem;
-  font-size: 0.95rem;
-  color: var(--ink-muted);
-  border-left: 2px solid var(--accent-dim);
-  padding-left: 0.9rem;
+  font-size: clamp(1.75rem, 4vw, 2.55rem);
 }
 .hero {
   margin: 1.25rem 0 2rem;
@@ -161,23 +165,18 @@ h2 {
     margin-bottom: 0.85rem;
     font-size: 1.05rem;
   }
-  &__row {
-    display: grid;
-    gap: 1rem;
-    @media (min-width: 800px) {
-      grid-template-columns: 200px 1fr;
-      align-items: start;
-    }
-    img {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-    }
-    p {
-      color: var(--ink-muted);
-      font-size: 0.92rem;
-      line-height: 1.75;
-    }
+  &__body {
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+    line-height: 1.75;
+  }
+}
+.embed-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0 0;
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
   }
 }
 .block {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue"
+import { onMounted, onUnmounted, ref, watch } from "vue"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useReducedMotion } from "../../composables/useReducedMotion"
+import { useAudio } from "../../composables/useAudio"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,10 +21,22 @@ const props = withDefaults(
 )
 
 const { reduced } = useReducedMotion()
+const { muted, unlocked, activeVoId } = useAudio()
+const CLIP_VOL = 0.1
+const CLIP_DUCK = 0.025
+
 const root = ref<HTMLElement | null>(null)
 const video = ref<HTMLVideoElement | null>(null)
 const progress = ref(0)
 let st: ScrollTrigger | null = null
+
+const syncAudio = () => {
+  const el = video.value
+  if (!el) return
+  const want = unlocked.value && !muted.value
+  el.muted = !want
+  el.volume = activeVoId.value ? CLIP_DUCK : CLIP_VOL
+}
 
 const seekTo = (p: number) => {
   const el = video.value
@@ -37,7 +50,7 @@ onMounted(() => {
   const wrap = root.value
   if (!el || !wrap) return
   el.pause()
-  el.muted = true
+  syncAudio()
 
   const bind = () => {
     st?.kill()
@@ -63,6 +76,8 @@ onMounted(() => {
   else el.addEventListener("loadedmetadata", bind, { once: true })
 })
 
+watch([muted, unlocked, activeVoId], () => syncAudio())
+
 onUnmounted(() => {
   st?.kill()
 })
@@ -75,7 +90,6 @@ onUnmounted(() => {
         ref="video"
         :src="src"
         :poster="poster"
-        muted
         playsinline
         preload="auto"
         disablepictureinpicture

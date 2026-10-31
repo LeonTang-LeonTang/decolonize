@@ -4,8 +4,10 @@ import { nodeD } from "../../content/act2"
 import DigitDecode from "../ui/DigitDecode.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
-import PlaceholderStill from "../ui/PlaceholderStill.vue"
+import EmbeddedStill from "../ui/EmbeddedStill.vue"
+import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
+import ChapterHold from "../ui/ChapterHold.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const clip = clipForSection("act2d")
@@ -28,8 +30,14 @@ const showCorrection = ref(true)
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeD.lead }}</p>
-      <p class="thesis">{{ nodeD.thesis }}</p>
+    </div>
 
+    <ChapterHold label="Core D · 民主纪念碑" :height-vh="145">
+      <img :src="nodeD.hero.src" :alt="nodeD.hero.alt" />
+      <template #caption>{{ nodeD.vo }}</template>
+    </ChapterHold>
+
+    <div class="section-inner">
       <figure class="hero">
         <img :src="nodeD.hero.src" :alt="nodeD.hero.alt" />
         <figcaption>{{ nodeD.hero.credit }}</figcaption>
@@ -44,11 +52,11 @@ const showCorrection = ref(true)
         />
       </div>
 
-      <ul class="analysis">
-        <li v-for="(a, i) in nodeD.analysis" :key="i">{{ a }}</li>
-      </ul>
+      <AnalysisPanel :items="nodeD.breakdown" :thesis="nodeD.thesis" />
 
-      <PlaceholderStill v-for="p in nodeD.placeholders" :key="p.title" v-bind="p" />
+      <div class="embed-grid">
+        <EmbeddedStill v-for="e in nodeD.embeds" :key="e.title" v-bind="e" />
+      </div>
 
       <aside v-if="showCorrection" id="d-correction" class="correction" role="note">
         <header>
@@ -81,15 +89,7 @@ const showCorrection = ref(true)
 
 <style scoped lang="scss">
 h2 {
-  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
-}
-.thesis {
-  max-width: 42em;
-  margin: 0 0 1.75rem;
-  font-size: 0.95rem;
-  color: var(--ink-muted);
-  border-left: 2px solid var(--accent-dim);
-  padding-left: 0.9rem;
+  font-size: clamp(1.75rem, 4vw, 2.55rem);
 }
 .hero {
   margin: 1.25rem 0 2rem;
@@ -107,13 +107,12 @@ h2 {
     color: var(--ink-dim);
   }
 }
-.analysis {
-  margin: 1.75rem 0;
-  padding-left: 1.1rem;
-  color: var(--ink-muted);
-  li {
-    margin-bottom: 0.55rem;
-    line-height: 1.7;
+.embed-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+  @media (min-width: 900px) {
+    grid-template-columns: 1.2fr 0.8fr;
   }
 }
 .correction {

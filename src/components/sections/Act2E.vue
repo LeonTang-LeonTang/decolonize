@@ -4,9 +4,11 @@ import PanZoomImage from "../ui/PanZoomImage.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
-import PlaceholderStill from "../ui/PlaceholderStill.vue"
+import EmbeddedStill from "../ui/EmbeddedStill.vue"
+import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
+import ChapterHold from "../ui/ChapterHold.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const chart = nodeE.charts[0]
@@ -30,8 +32,14 @@ const seam = voById("e-seam")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeE.lead }}</p>
-      <p class="thesis">{{ nodeE.thesis }}</p>
+    </div>
 
+    <ChapterHold label="Core E · 帝国画海" :height-vh="140">
+      <img :src="chart.src" :alt="chart.label" />
+      <template #caption>{{ nodeE.vo }}</template>
+    </ChapterHold>
+
+    <div class="section-inner">
       <h3 class="sub">Dalrymple 海图 · 平移／缩放</h3>
       <PanZoomImage :src="chart.src" :alt="chart.label" :credit="chart.credit" />
 
@@ -41,14 +49,12 @@ const seam = voById("e-seam")
         <MapCrossfade :frames="borderMaps.map((m, i) => ({ ...m, id: String(i) }))" />
       </div>
 
-      <ul class="analysis">
-        <li v-for="(a, i) in nodeE.analysis" :key="i">{{ a }}</li>
-      </ul>
+      <AnalysisPanel :items="nodeE.breakdown" :thesis="nodeE.thesis" />
 
       <div id="e-artwork">
         <VoCaption v-if="seam" :text="seam.zh" vo-id="e-seam" />
-        <div class="ph-grid">
-          <PlaceholderStill v-for="p in nodeE.placeholders" :key="p.title" v-bind="p" />
+        <div class="embed-grid">
+          <EmbeddedStill v-for="e in nodeE.embeds" :key="e.title" v-bind="e" />
         </div>
       </div>
 
@@ -64,32 +70,15 @@ const seam = voById("e-seam")
 
 <style scoped lang="scss">
 h2 {
-  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
-}
-.thesis {
-  max-width: 42em;
-  margin: 0 0 1.75rem;
-  font-size: 0.95rem;
-  color: var(--ink-muted);
-  border-left: 2px solid var(--accent-dim);
-  padding-left: 0.9rem;
+  font-size: clamp(1.75rem, 4vw, 2.55rem);
 }
 .sub {
   margin: 2rem 0 0.85rem;
 }
-.analysis {
-  margin: 1.75rem 0;
-  padding-left: 1.1rem;
-  color: var(--ink-muted);
-  li {
-    margin-bottom: 0.55rem;
-    line-height: 1.7;
-  }
-}
-.ph-grid {
+.embed-grid {
   display: grid;
-  gap: 1rem;
-  @media (min-width: 800px) {
+  gap: 1.25rem;
+  @media (min-width: 900px) {
     grid-template-columns: 1fr 1fr;
   }
 }

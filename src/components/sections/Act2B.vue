@@ -4,10 +4,12 @@ import MapCrossfade from "../ui/MapCrossfade.vue"
 import WordChips from "../ui/WordChips.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
-import PlaceholderStill from "../ui/PlaceholderStill.vue"
+import EmbeddedStill from "../ui/EmbeddedStill.vue"
+import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
+import ChapterHold from "../ui/ChapterHold.vue"
 import { clipForSection, scrubClips, supportClips, voById } from "../../content/media"
 
 const clip = clipForSection("act2b")
@@ -30,8 +32,12 @@ const cdosea = voById("b-cdosea")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeB.lead }}</p>
-      <p class="thesis">{{ nodeB.thesis }}</p>
     </div>
+
+    <ChapterHold label="Core B · 命名装置" :height-vh="125">
+      <img :src="nodeB.maps[1].src" :alt="nodeB.maps[1].label" />
+      <template #caption>{{ nodeB.vo }}</template>
+    </ChapterHold>
 
     <StickyScrubVideo
       :src="scrub.src"
@@ -55,6 +61,8 @@ const cdosea = voById("b-cdosea")
       <h3 class="sub">命名／帝国图层</h3>
       <MapCrossfade :frames="nodeB.empireMaps.map((m, i) => ({ ...m, id: String(i) }))" />
 
+      <AnalysisPanel :items="nodeB.breakdown" :thesis="nodeB.thesis" />
+
       <div id="b-chips">
         <h3 class="sub">CDOSEA 词条芯片（自做 UI）</h3>
         <VoCaption v-if="cdosea" :text="cdosea.zh" vo-id="b-cdosea" />
@@ -62,8 +70,8 @@ const cdosea = voById("b-cdosea")
         <WordChips :cards="nodeB.wordChips" />
       </div>
 
-      <div class="ph-grid">
-        <PlaceholderStill v-for="p in nodeB.placeholders" :key="p.title" v-bind="p" />
+      <div class="embed-grid">
+        <EmbeddedStill v-for="e in nodeB.embeds" :key="e.title" v-bind="e" />
       </div>
 
       <SupportTip text="半句桥｜爱知 2019「表现的不自由」关展：解殖民展亦可成权力场（详交同学）。" />
@@ -78,15 +86,7 @@ const cdosea = voById("b-cdosea")
 
 <style scoped lang="scss">
 h2 {
-  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
-}
-.thesis {
-  max-width: 42em;
-  margin: 0 0 1.75rem;
-  font-size: 0.95rem;
-  color: var(--ink-muted);
-  border-left: 2px solid var(--accent-dim);
-  padding-left: 0.9rem;
+  font-size: clamp(1.75rem, 4vw, 2.55rem);
 }
 .sub {
   margin: 2rem 0 0.85rem;
@@ -98,11 +98,11 @@ h2 {
   font-size: 0.78rem;
   color: var(--ink-dim);
 }
-.ph-grid {
+.embed-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-top: 2rem;
-  @media (min-width: 800px) {
+  @media (min-width: 900px) {
     grid-template-columns: 1fr 1fr;
   }
 }
