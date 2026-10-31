@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nodeC } from "../../content/act2"
+import WorkCard from "../ui/WorkCard.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
@@ -28,10 +29,11 @@ const letters = voById("c-letters")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeC.lead }}</p>
+      <WorkCard :work="nodeC.work" :contrast="nodeC.workContrast" />
     </div>
 
-    <ChapterHold label="Core C · 潘朗被写掉" :height-vh="135">
-      <img :src="nodeC.maps[0].src" :alt="nodeC.maps[0].label" style="object-fit: contain; background: #0a0908" />
+    <ChapterHold label="Core C · Letters from Panduranga" :height-vh="135">
+      <img :src="nodeC.embeds[0].src" :alt="nodeC.embeds[0].title" />
       <template #caption>{{ nodeC.vo }}</template>
     </ChapterHold>
 
@@ -45,7 +47,7 @@ const letters = voById("c-letters")
       </div>
 
       <div id="c-territory">
-        <h3 class="sub">疆域对照</h3>
+        <h3 class="sub">辅线 · 地图脚手架（潘朗曾在图上）</h3>
         <VoCaption v-if="t1832" :text="t1832.zh" vo-id="c-1832" />
         <MapCrossfade :frames="nodeC.maps.slice(1).map((m, i) => ({ ...m, id: String(i) }))" />
       </div>

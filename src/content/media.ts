@@ -79,7 +79,7 @@ export const allVo: VoLine[] = [
   {
     id: "a-enter",
     core: "A",
-    zh: "同一天、同一人：一边叫投降，一边叫捕获。标题本身，就是权力。",
+    zh: "先看两幅画：同一场面，一边叫投降，一边叫捕获——标题本身就是观看装置。",
     src: "/media/vo/a-enter.mp3",
     section: "#act2a",
     start: "top 62%",
@@ -118,7 +118,7 @@ export const allVo: VoLine[] = [
   {
     id: "b-enter",
     core: "B",
-    zh: "先有作战区，才有「东南亚」这个名字。盟军与帝国，都在给这片海陆贴标签。",
+    zh: "先看何子彦的作品：词典在重排，旅馆里叠着幽灵——「东南亚」被做成可观看的知识装置。",
     src: "/media/vo/b-enter.mp3",
     section: "#act2b",
     start: "top 62%",
@@ -127,7 +127,7 @@ export const allVo: VoLine[] = [
   {
     id: "b-naming",
     core: "B",
-    zh: "盟军叫它东南亚，日帝叫它南方——两边都在命名，区域没有内生统一。",
+    zh: "作品旁的命名脚手架：盟军叫东南亚，帝国叫南方——用来听懂词典与旅馆里的幽灵。",
     src: "/media/vo/b-naming.mp3",
     section: "#b-maps",
     start: "top 68%",
@@ -143,7 +143,7 @@ export const allVo: VoLine[] = [
   {
     id: "c-enter",
     core: "C",
-    zh: "地图上有过潘朗；国史里被写掉。占婆末疆，在官方叙事里成了空白。",
+    zh: "先看阮静诗的影像：书信体双声，风景与日常——她不替占族发言，只让省略自己成为可见。",
     src: "/media/vo/c-enter.mp3",
     section: "#act2c",
     start: "top 62%",
@@ -152,7 +152,7 @@ export const allVo: VoLine[] = [
   {
     id: "c-1832",
     core: "C",
-    zh: "一八三二年，明命帝吞并潘朗。土地可被重新命名，核电计划也曾落笔于此。",
+    zh: "辅线一句：潘朗曾被写进吞并与核电计划——土地可被重新命名，作品让省略出声。",
     src: "/media/vo/c-1832.mp3",
     section: "#c-territory",
     start: "top 68%",
@@ -168,7 +168,7 @@ export const allVo: VoLine[] = [
   {
     id: "d-enter",
     core: "D",
-    zh: "先看见纪念碑的数字，再听见谁被删掉。日期做成高度，仪式时间被编码进尺度。",
+    zh: "先看文献展里的翼板与数字标题：纪念碑被做成可检验的物件，日期变成可读的形式。",
     src: "/media/vo/d-enter.mp3",
     section: "#act2d",
     start: "top 62%",
@@ -193,7 +193,7 @@ export const allVo: VoLine[] = [
   {
     id: "e-enter",
     core: "E",
-    zh: "先看见帝国怎么画这片海。测量与制图，先于国界，把群岛写成可治理对象。",
+    zh: "先看数码拼贴：海天与殖民档案并置——解殖民发生在接缝，不在复原一个更纯的过去。",
     src: "/media/vo/e-enter.mp3",
     section: "#act2e",
     start: "top 62%",
@@ -202,7 +202,7 @@ export const allVo: VoLine[] = [
   {
     id: "e-borders",
     core: "E",
-    zh: "国界的缝：英、西、美殖民继承与马菲国境，切开苏禄苏丹国式的跨海世界。",
+    zh: "辅线一句：国界切开跨海世界——为的是听懂群岛构图的政治，不是海事编年。",
     src: "/media/vo/e-borders.mp3",
     section: "#e-borders",
     start: "top 68%",
@@ -218,7 +218,7 @@ export const allVo: VoLine[] = [
   {
     id: "f-enter",
     core: "F",
-    zh: "城市的零点，站在河边。莱佛士像成为现代新加坡的起点叙事——也是可争议的纪念装置。",
+    zh: "先看展览标题与河边雕像：谁在「面对」帝国，谁把零点做成可争议的纪念装置。",
     src: "/media/vo/f-enter.mp3",
     section: "#act2f",
     start: "top 62%",

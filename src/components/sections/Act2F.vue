@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nodeF } from "../../content/act2"
+import WorkCard from "../ui/WorkCard.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
@@ -31,9 +32,10 @@ const invisible = voById("f-invisible")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeF.lead }}</p>
+      <WorkCard :work="nodeF.work" :contrast="nodeF.workContrast" />
     </div>
 
-    <ChapterHold label="Core F · 城市零点" :height-vh="135">
+    <ChapterHold label="Core F · 展览与纪念装置" :height-vh="135">
       <img :src="nodeF.statue.src" :alt="nodeF.statue.alt" />
       <template #caption>{{ nodeF.vo }}</template>
     </ChapterHold>

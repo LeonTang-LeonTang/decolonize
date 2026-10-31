@@ -16,9 +16,9 @@ const active = ref(0)
 </script>
 
 <template>
-  <aside class="ap" aria-label="深度分析">
+  <aside class="ap" aria-label="作品读解">
     <header class="ap__head">
-      <p class="eyebrow">深度拆解</p>
+      <p class="eyebrow">作品读解</p>
       <p v-if="thesis" class="ap__thesis">{{ thesis }}</p>
     </header>
     <div class="ap__tabs" role="tablist">

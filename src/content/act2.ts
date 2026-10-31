@@ -18,22 +18,55 @@ export type MediaEmbed = {
   fullBleed?: boolean
 }
 
+export type WorkSpine = {
+  title: string
+  artist?: string
+  medium: string
+  venue: string
+  year: string
+  see: string
+}
+
+/** 四轴：作品优先；历史仅作辅线 */
+export const ANALYSIS_AXES = [
+  "作品与展场",
+  "解殖民视觉机制",
+  "形式与装置读法",
+  "历史与地缘线索（辅）",
+] as const
+
 export const act2Intro = {
   eyebrow: "第二幕 · 现象",
   title: "展示与回收：东南亚六案",
   lead:
-    "六个锁定节点 A–F。每个案例从一个地方出发，答案却牵出另一个地方。媒体优先：公版图、博物馆／展览／新闻静帧内嵌；分析按解殖民机制、国家与地方、文化与展演、媒体装置四轴展开。",
+    "六个锁定节点 A–F，都以一件／一组作品或展览为脊柱：先看见画面与展场，再读它如何与解殖民纠缠；历史与地缘只作短脚手架，用来解锁读法，不作长史论文。",
 }
 
 export const nodeA = {
   id: "act2a",
   eyebrow: "Core A · 印尼 ↔ 荷兰",
-  title: "一场战争，两幅画，三次归还",
-  vo: "同一天、同一人：一边叫投降，一边叫捕获。标题本身，就是权力。",
+  title: "两幅画：投降与捕获的视觉对决",
+  vo: "先看两幅画：同一场面，一边叫投降，一边叫捕获——标题本身就是观看装置。",
   thesis:
-    "同一场爪哇战争被两幅画写成「投降」与「捕获」；三次归还与 bersiap 之争证明：馆藏与展墙用词仍是殖民权力的现役装置。",
+    "解殖民发生在画题与构图的对决里：Pieneman 把扣押仪式化为「投降」；Saleh 改写为「捕获」。归还与展墙用词，是这套视觉政权在馆藏时间里的延长。",
   lead:
-    "爪哇战争（1825—1830）以迪波内格罗亲王在谈判中被扣押告终。荷兰视角的皮内曼把事件画成「投降」；爪哇贵族画家萨勒赫（1857）改写成「捕获」。标题即权力。",
+    "先并置两幅油画：Nicolaas Pieneman《迪波内格罗亲王向德·科克将军投降》（约 1835，Rijksmuseum）与 Raden Saleh《捕获迪波内格罗亲王》（1857，现藏雅加达总统府）。看见什么：一边是将军接受「和平屈服」的仪式构图，一边是亲王被骗／被扣的身体距离与手势。历史（爪哇战争）只说明这是同一事件的两种画法。",
+  work: {
+    title: "捕获迪波内格罗亲王 / Penangkapan Diponegoro",
+    artist: "Raden Saleh（萨勒赫）",
+    medium: "布面油画",
+    venue: "现藏雅加达总统府（Istana Negara）；1978 自荷兰归还",
+    year: "1857",
+    see: "谈判现场被画成「被捕」：亲王与荷军官的距离、手势与围观者，拒绝「和平投降」的道德外观。",
+  } as WorkSpine,
+  workContrast: {
+    title: "迪波内格罗亲王向德·科克将军投降",
+    artist: "Nicolaas Pieneman（皮内曼）",
+    medium: "布面油画（德·科克委托）",
+    venue: "阿姆斯特丹国立博物馆（Rijksmuseum），1907 入藏",
+    year: "约 1835",
+    see: "将军一侧的仪式化「接受投降」：殖民秩序被画成可观看的正当性。",
+  } as WorkSpine,
   paintings: [
     {
       id: "saleh",
@@ -60,48 +93,46 @@ export const nodeA = {
   ],
   breakdown: [
     {
-      axis: "解殖民机制",
+      axis: "作品与展场",
+      title: "双画 compare：同一事件，两套观看合同",
+      body:
+        "本 Core 的脊柱是两幅可并置的油画。滑杆默认 50%：左 Saleh、右 Pieneman。展场语境跨雅加达总统府与 Rijksmuseum——同一视觉记忆被两套馆藏制度托管。2022《Revolusi!》把「谁来写标签」推回展墙，是画题政治的当代延长，而非另开史章。",
+    },
+    {
+      axis: "解殖民视觉机制",
       title: "标题即权力：投降 ↔ 捕获",
       body:
-        "同一谈判扣押被写成两种道德语法。Pieneman（约 1835，德·科克委托）把暴力仪式化为「和平屈服」；Saleh（1857）改写为「被捕」。解殖民首先发生在命名层——谁命名事件，谁分配观看者的道德位置。献画给威廉三世又说明：爪哇叙事进入帝国宫廷交换链，回收不等于脱离回路。",
+        "解殖民在此首先是视觉命名战：谁命名画面，谁分配道德位置。Saleh 用「捕获」拒绝殖民者的「投降」语法；却仍献给威廉三世——回收不等于脱离帝国交换链。三次归还与 bersiap 用词之争，证明画题政治会渗进标签、新闻稿与借展协议。",
     },
     {
-      axis: "国家与地方",
-      title: "雅加达总统府 ↔ 阿姆斯特丹／莱顿",
+      axis: "形式与装置读法",
+      title: "构图、身体距离、委托关系",
       body:
-        "1978 画归还、2020-03 kris（圣剑）自莱顿世界博物馆交还、2022 Rijksmuseum《Revolusi!》联合策展——三次「归还」都在荷兰决策场与印尼象征资本之间穿梭。收藏权移动，叙述权也在移动，但不自动等于解殖民完成。跨地方两端是 Istana Negara／国家博物馆 ↔ Rijksmuseum／Volkenkunde。",
+        "读法落在画面：Pieneman 的仪式接受姿势 vs Saleh 的扣押张力；detail crop 逼近手势与目光。委托—献画—入藏构成装置链：将军要一幅「秩序画」，贵族画家要一幅「被捕画」，博物馆要一幅「可叙述的国族物件」。本站用 compare slider＋OA 档案片段承载这套读法。",
     },
     {
-      axis: "文化与展演效应",
-      title: "bersiap 成为展墙战场",
+      axis: "历史与地缘线索（辅）",
+      title: "爪哇战争只说明「同一天」",
       body:
-        "2022-01-10 Bonnie Triyana 在《NRC》说明停用 bersiap 笼统指称；01-21 KUKB／Jeffry Pondaag 报案指控种族主义与集体诽谤。同年 Rutte 就殖民战争暴力道歉。解殖民展览自身成为记忆秩序战场：停用一个荷语创伤标签，被另一批记忆政治主体读成抹杀。",
-    },
-    {
-      axis: "媒体装置",
-      title: "委托—入藏—标签—新闻稿",
-      body:
-        "Pieneman 由将军委托 → 殖民自我正当性可视化；Saleh 长期留荷至 1978；展墙用词、总统府借展与新闻稿构成现役装置。本站以双画 compare slider＋OA 档案片段承载机制；Revolusi! 展场以馆方 press 链与时间线节点呈现，不伪造展场写真。",
+        "辅线极短：1825–1830 爪哇战争、谈判扣押；荷兰握馆藏决定权，雅加达接象征。不必展开战争全史——历史只用来证明两画画的是同一场面，从而凸显画法差异才是解殖民现场。",
     },
   ] as AnalysisAxis[],
   timeline: [
-    { year: "1825–1830", event: "爪哇战争；以亲王被扣押告终" },
-    { year: "1835", event: "Pieneman《投降》；德·科克委托" },
+    { year: "1835", event: "Pieneman《投降》完成（德·科克委托）" },
     { year: "1857", event: "Saleh《捕获》完成并献威廉三世" },
     { year: "1907", event: "Pieneman 画入藏 Rijksmuseum" },
-    { year: "1978", event: "第一次归还：Saleh 画回到雅加达总统府" },
-    { year: "2020-03", event: "第二次归还：亲王圣剑（kris）交还；国家博物馆遗物展" },
-    { year: "2022-01", event: "Triyana《NRC》停用 bersiap；KUKB 报案——用词成战场" },
-    { year: "2022-02–06", event: "第三次节点：Rijksmuseum《革命！独立的印度尼西亚》" },
+    { year: "1978", event: "Saleh 画归还雅加达总统府" },
+    { year: "2020-03", event: "kris 归还；遗物展（馆藏叙述延长）" },
+    { year: "2022", event: "Revolusi! 展墙用词／bersiap 争议" },
   ] as TimelineItem[],
-  elsewhere: "牵出的另一个地方：荷兰——收藏、归还决定与展墙用词的争吵都在那里。",
+  elsewhere: "展场另一端：阿姆斯特丹／莱顿的收藏与标签权。",
   revolusiNote:
-    "Revolusi!（2022-02-11—06-05）把独立战争叙述权部分交还给印尼联合策展人；展场商业摄影未全量镜像，节点以时间线＋馆方 press 链接呈现。",
+    "《Revolusi!》作为展览节点：联合策展把叙述权部分交还；此处读的是展墙装置，不是独立战争编年。",
   embeds: [
     {
       src: "/media/a/saleh.jpg",
       title: "Saleh《捕获》全幅（公版）",
-      caption: "1978 归还后藏雅加达总统府——回家亦进入国家象征资本。",
+      caption: "先看画面：被捕的构图，而非战争年表。",
       credit: "Raden Saleh, 1857. Wikimedia Commons (public domain).",
       href: "https://commons.wikimedia.org/wiki/File:Raden_Saleh_-_Diponegoro_arrest.jpg",
       hrefLabel: "Wikimedia",
@@ -113,79 +144,87 @@ export const nodeA = {
 export const nodeB = {
   id: "act2b",
   eyebrow: "Core B · 新加坡 ↔ 英国／日本",
-  title: "先有作战区，才有「东南亚」这个名字",
-  vo: "先有作战区，才有「东南亚」这个名字。盟军与帝国，都在给这片海陆贴标签。",
+  title: "何子彦：把「东南亚」拆成可观看的词典与旅馆",
+  vo: "先看何子彦的作品：词典在重排，旅馆里叠着幽灵——「东南亚」被做成可观看的知识装置。",
   thesis:
-    "「东南亚」不是地理自明，而是盟军 SEAC／冷战区域研究与日帝「南方」话语共同锻造的命名装置；何子彦把名称与帝国思想史拆成可观看的知识生产现场。",
+    "Utama／CDOSEA／Hotel Aporia 把区域命名与帝国思想史拆成影像、算法词典与场地装置；解殖民是观看知识如何被生产，而非背诵地名沿革。",
   lead:
-    "何子彦（Ho Tzu Nyen）以《东南亚批判词典》(CDOSEA)、《Utama》与《Hotel Aporia》追问：一个从未被单一语言、宗教或政治统一的地区，凭什么叫「东南亚」？",
+    "脊柱三件：①《Utama—Every Name in History Is I》（2003，The Substation）——同一演员换脸扮演「发现者」；②《东南亚批判词典》CDOSEA（2012—／2017—算法视频）——词条不断重排；③《Hotel Aporia》（2019，爱知三年展喜乐亭）——六频把京都学派与特攻空间叠进旅馆。战区图只作命名时代的视觉脚手架。",
+  work: {
+    title: "CDOSEA / Hotel Aporia / Utama（作品簇）",
+    artist: "Ho Tzu Nyen（何子彦）",
+    medium: "录像＋肖像装置；算法视频／词典平台；六频场地装置",
+    venue: "The Substation（2003）→ 爱知三年展喜乐亭（2019）→ SAM／MOT 等",
+    year: "2003–2019（主轴）",
+    see: "可替换的「发现者」脸、不断漂移的词条界面、旅馆里的多重投影与声响——名称与思想史变成可进入的展演。",
+  } as WorkSpine,
   maps: [
     {
       id: "1941",
       src: "/media/b/pacific-war-se-asia-1941.jpg",
-      label: "太平洋战争 · 东南亚 1941",
+      label: "太平洋战争 · 东南亚 1941（辅：命名时代视觉）",
       credit: "Pacific War — Southeast Asia, 1941. Wikimedia Commons (public domain).",
     },
     {
       id: "1942",
       src: "/media/b/pacific-war-southern-asia-1942.jpg",
-      label: "太平洋战争 · 南方亚洲 1942",
+      label: "太平洋战争 · 南方亚洲 1942（辅）",
       credit: "Pacific War — Southern Asia, 1942. Wikimedia Commons (public domain).",
     },
   ],
   empireMaps: [
     {
       src: "/media/b/japanese-empire-1942.svg",
-      label: "日帝疆域示意 1942",
+      label: "日帝疆域示意 1942（辅）",
       credit: "Japanese Empire, 1942. Wikimedia Commons (CC BY-SA 3.0).",
     },
     {
       src: "/media/b/greater-east-asia-co-prosperity.png",
-      label: "大东亚共荣圈示意",
+      label: "大东亚共荣圈示意（辅）",
       credit: "Greater East Asia Co-Prosperity Sphere. Wikimedia Commons (CC BY-SA 3.0).",
     },
   ],
   wordChips: [
-    { key: "SEAC", hint: "盟军司令部", reveal: "South East Asia Command（约 1943）把「解放」写成再进入的许可——命名的道德外观与旧宗主联盟同体。" },
-    { key: "Southern", hint: "日帝「南方」", reveal: "盟军叫它东南亚，帝国叫它南方——两边都在命名，区域没有内生统一。" },
-    { key: "Utama", hint: "创始神话", reveal: "同一演员扮演 Sang Nila Utama 与莱佛士等「发现者」：发现语法可换脸，权力结构不变。" },
-    { key: "tiger", hint: "CDOSEA 词条", reveal: "词典不断重排图像与声音——区域形状漂移，而非给出正确定义。" },
-    { key: "theodolite", hint: "测量器械", reveal: "测量与制图把热带写成可治理对象；词典把「工具」本身做成词条。" },
-    { key: "Hotel Aporia", hint: "爱知 2019", reveal: "京都学派、特攻旅馆与「南方」宣传班叠在同一喜乐亭——日帝话语的幽灵基础设施。" },
-    { key: "Voice of Void", hint: "YCAM 2021", reveal: "重演京都学派「世界史的立场与日本」座谈：思想史被做成可进入的空洞。" },
-    { key: "Aichi tip", hint: "半句旁注", reveal: "同届「表现的不自由」关展＝解殖民展亦可成权力场（详交同学；此处不占主轴）。" },
+    { key: "Utama", hint: "作品", reveal: "同一身体扮演 Sang Nila Utama 与莱佛士等：发现语法可换脸——解殖民发生在肖像装置里。" },
+    { key: "CDOSEA", hint: "作品", reveal: "词典重排图像与声音：区域形状漂移，是可观看的知识生产，不是正确定义。" },
+    { key: "tiger", hint: "词条形式", reveal: "字母词条把「工具／意象」做成可点读的展演单元。" },
+    { key: "theodolite", hint: "词条形式", reveal: "测量器械入词典：殖民视觉工具本身成为展项。" },
+    { key: "Hotel Aporia", hint: "装置", reveal: "喜乐亭六频：京都学派与特攻空间叠合——思想史被场地化。" },
+    { key: "SEAC", hint: "辅线", reveal: "盟军命名「东南亚」：解放外观与旧宗主联盟同体——只为解锁作品里的命名问题。" },
+    { key: "Southern", hint: "辅线", reveal: "日帝「南方」话语：Hotel Aporia 回收的幽灵来源之一。" },
+    { key: "Aichi tip", hint: "展场旁注", reveal: "同届「表现的不自由」关展：解殖民展亦可成权力场（半句）。" },
   ],
   breakdown: [
     {
-      axis: "解殖民机制",
-      title: "名称先于统一；发现者可换脸",
+      axis: "作品与展场",
+      title: "三件一组：肖像／词典／旅馆",
       body:
-        "「东南亚」流行与盟军 SEAC（约 1943-11）相关：解放外观与旧殖民宗主联盟同体。Utama（2003，The Substation）用同一身体扮演 Sang Nila Utama 与莱佛士等发现者——创始神话的可替换性被做成影像。CDOSEA（2012—；2017—算法视频）不以正确词条替换错误词条，而以无限重组暴露区域的形状漂移。",
+        "先认作品：Utama 的换脸肖像、CDOSEA 的算法词典界面、Hotel Aporia 的喜乐亭多频。展场从 Substation 白盒到大正旅馆遗址，再到 SAM／MOT——场地本身参与叙事。本站嵌入馆方／ART iT 静帧，词条芯片只模拟「重排」手感，不盗官方算法。",
     },
     {
-      axis: "国家与地方",
-      title: "盟军司令部／冷战区域学 ↔ 日帝「南方」",
+      axis: "解殖民视觉机制",
+      title: "拆掉「发现」与「定义」的自然外观",
       body:
-        "英国帝国命名与莱佛士神话、日本占领／京都学派／爱知—YCAM—MOT 展出场、美国冷战「东南亚研究」共同固化此名。跨地方结构：名称的两端在盟军司令部与日本帝国话语，不在「本地自然地理」。",
+        "Utama 让创始神话可替换，拒绝莱佛士／乌塔马二选一的本质主义。CDOSEA 拒绝给出正确东南亚定义，把百科权威交给漂移。Hotel Aporia 把「大东亚」解放修辞做成可进入的幽灵基础设施——解殖民是拆视觉与声响里的帝国语法。",
     },
     {
-      axis: "文化与展演效应",
-      title: "幽灵旅馆与算法词典",
+      axis: "形式与装置读法",
+      title: "换脸、词条抽卡、多频叠影",
       body:
-        "Hotel Aporia（2019，爱知三年展喜乐亭）：六频装置叠京都学派、小津、横山隆一「南方」宣传班与特攻队——思想史被做成可进入的旅馆。同届「表现的不自由」关展半句旁注：解殖民展亦可成权力场。算法词典看似去中心，仍由艺术家选材与展制托管。",
+        "形式手法：同一演员／肖像系列；字母词条作为交互单元；六频投影＋声响＋场地自动控制系统。读法问：谁在说话？哪一层影像盖住另一层？词典点开后是否仍在「定义」？装置让观众意识到自己也在生产区域知识。",
     },
     {
-      axis: "媒体装置",
-      title: "战区图、词条芯片、馆方静帧",
+      axis: "历史与地缘线索（辅）",
+      title: "SEAC／「南方」只开一把锁",
       body:
-        "本站以 1941↔1942 战区图 crossfade＋日帝疆域图层承担命名时代视觉（战区图≠SEAC 官方疆域）；CDOSEA 以自做词条芯片模拟重排；Utama／Hotel Aporia 嵌入 MOT／ART iT／爱知三年展公开静帧与 SAM 叙述图，标注教育引用。",
+        "辅线：盟军 SEAC 命名流行、日帝南方话语、京都学派——各一句，用来听懂 Hotel Aporia 与词典里的幽灵，不写作战史。",
     },
   ] as AnalysisAxis[],
   embeds: [
     {
       src: "/media/stills/b/utama-mot.jpg",
-      title: "Utama — Every Name in History Is I（展场／作品视觉）",
-      caption: "同一张脸：乌塔马，也是莱佛士。首展 2003 The Substation；后入新加坡国家美术馆等收藏叙述。",
+      title: "Utama — Every Name in History Is I",
+      caption: "先看换脸装置：发现者可以是任何人。",
       credit: "Installation/work view via ART iT photo report (MOT A for Agents context). Educational fair-use still.",
       href: "https://www.hotzunyen.com/",
       hrefLabel: "艺术家官网",
@@ -195,7 +234,7 @@ export const nodeB = {
     {
       src: "/media/stills/b/cdosea-sam.png",
       title: "CDOSEA／形状漂移的区域",
-      caption: "新加坡美术馆藏品叙述页配图：词典不断重排，区域没有固定形状。",
+      caption: "词典界面作为作品：重排即展演。",
       credit: "Singapore Art Museum story image (Ho Tzu Nyen / shapeshifting region). Educational citation.",
       href: "https://www.singaporeartmuseum.sg/about/our-collection/stories/a-shapeshifting-region",
       hrefLabel: "SAM 藏品叙述",
@@ -203,7 +242,7 @@ export const nodeB = {
     {
       src: "/media/stills/b/hotel-aporia-aichi.jpg",
       title: "Hotel Aporia（2019）· 爱知三年展喜乐亭",
-      caption: "京都学派、特攻旅馆与「南方」宣传班叠在同一空间——日帝话语的幽灵基础设施。",
+      caption: "场地装置：思想史被叠进旅馆空间。",
       credit: "Aichi Triennale 2019 artwork page still. Educational citation.",
       href: "https://aichitriennale2010-2019.jp/2019/en/artwork/T04.html",
       hrefLabel: "爱知三年展页",
@@ -213,76 +252,89 @@ export const nodeB = {
     },
   ] as MediaEmbed[],
   timeline: [
-    { year: "1299 / 1819", event: "Sang Nila Utama 传说登陆与莱佛士登陆：两个创始神话" },
-    { year: "1941–42", event: "太平洋战争东南亚／南方战区成形" },
-    { year: "1943-11", event: "盟军 SEAC 相关建制；「东南亚」命名流行节点【待核精确日】" },
     { year: "2003", event: "《Utama》首展 The Substation" },
     { year: "2012–", event: "《东南亚批判词典》统摄创作" },
     { year: "2017–", event: "CDOSEA 算法视频／在线平台" },
-    { year: "2019", event: "《Hotel Aporia》；同届「表现的不自由」关展＝半句旁注" },
+    { year: "2019", event: "《Hotel Aporia》爱知三年展" },
     { year: "2021", event: "YCAM《Voice of Void》" },
     { year: "2023–24", event: "MOT《A for Agents》；SAM《Time & the Tiger》" },
   ] as TimelineItem[],
-  mapNote: "战区图≠ SEAC 官方疆域图；VO／字幕口头区分。",
+  mapNote: "战区图仅为命名辅线视觉；≠ SEAC 官方疆域图。",
 }
 
 export const nodeC = {
   id: "act2c",
   eyebrow: "Core C · 越南 ↔ 法国",
-  title: "地图上有过潘朗；国史里被写掉",
-  vo: "地图上有过潘朗；国史里被写掉。占婆末疆，在官方叙事里成了空白。",
+  title: "《来自潘朗的信》：让省略在画面里出声",
+  vo: "先看阮静诗的影像：书信体双声，风景与日常——她不替占族发言，只让省略自己成为可见。",
   thesis:
-    "《来自潘朗的信》把官方史对占婆／潘朗的省略与宁顺核电计划叠在同一土地上；对照阮俊，解殖民必须同时对准宗主国档案与本国删除。",
+    "《来自潘朗的信》用书信体影像散文拒绝民族志代言；解殖民发生在「谁可以看见／谁被省略」的镜头伦理里。对照阮俊四联屏，帝国人口流动的幽灵成为另一件可并读的装置。",
   lead:
-    "阮静诗《来自潘朗的信》(2015)：书信体影像散文。宁顺旧称潘朗，为古占婆末疆；1832 年明命帝吞并一事被官方史叙省略。核电计划曾落笔于此（后搁置）。",
+    "主作品：阮静诗（Nguyễn Trinh Thi）《来自潘朗的信》(Letters from Panduranga, 2015)——约 35 分钟单频道影像，巴黎 Jeu de Paume Satellite 8（2015-10-20—2016-01-24），后至 CAPC；M+ 藏。看见什么：男女旁白交换的书信、风景／遗迹／日常，而非控诉清单。对照：阮俊《成为祖先的幽灵》(2019，沙迦双年展 14) 四联屏。占婆史与核电只作短脚手架。",
+  work: {
+    title: "Letters from Panduranga / 来自潘朗的信",
+    artist: "Nguyễn Trinh Thi（阮静诗）",
+    medium: "单频道影像散文（约 35′，越南语，书信体旁白）",
+    venue: "Jeu de Paume Satellite 8（巴黎，2015）→ CAPC；M+ 收藏",
+    year: "2015",
+    see: "双声书信叠在风景与日常上：省略被做成可听可见的间隙，而非替「他者」立传。",
+  } as WorkSpine,
+  workContrast: {
+    title: "The Specter of Ancestors Becoming / 成为祖先的幽灵",
+    artist: "Tuan Andrew Nguyen（阮俊）",
+    medium: "四联屏视频装置",
+    venue: "沙迦双年展 14（2019）；后于 RAW 等重演",
+    year: "2019",
+    see: "跨洋家庭肖像逐渐替换帝国档案：南—南幽灵在多屏空间里擦肩。",
+  } as WorkSpine,
   maps: [
     {
       src: "/media/c/champa-seasia-1000-1100.png",
-      label: "中南半岛约 1000–1100 CE（含占婆）",
+      label: "中南半岛约 1000–1100 CE（辅：潘朗曾在地图上）",
       credit: "Mainland SE Asia c.1000–1100 CE. Wikimedia Commons (CC0).",
     },
     {
       src: "/media/c/indianized-kingdoms-indochina.jpg",
-      label: "印度化王国历史图（含占婆）",
+      label: "印度化王国历史图（辅）",
       credit: "Indianized kingdoms in Indochina. Wikimedia Commons (public domain).",
     },
     {
       src: "/media/c/champa-locator.png",
-      label: "占婆定位图（角标尺度）",
+      label: "占婆定位图（辅·角标）",
       credit: "Champa locator. Wikimedia Commons (CC BY-SA 3.0).",
     },
   ],
   breakdown: [
     {
-      axis: "解殖民机制",
-      title: "官方史省略＝展示的负片",
+      axis: "作品与展场",
+      title: "先外展的影像散文",
       body:
-        "占婆／潘朗从国族时间线消失，土地便可被重新命名为「宁顺／核电基地」——省略是现役装置，不是过去的疏忽。阮静诗以书信体双声（男／女旁白交换）拒绝「替占族发言」的民族志权威；回收的是省略本身，而非发明完整替代国史。",
+        "脊柱是《来自潘朗的信》本身：书信体、双声、风景优先。展场先在巴黎 Jeu de Paume／CAPC——国际艺术场成为「可说」的出口。对照件阮俊四联屏在沙迦首展，方法并置而非题材等价。本站嵌入 Jeu de Paume 与 MoMA post／RAW 静帧。",
     },
     {
-      axis: "国家与地方",
-      title: "潘朗可见性往往先在巴黎被允许",
+      axis: "解殖民视觉机制",
+      title: "拒绝代言；回收省略",
       body:
-        "作品政治敏感，故先在巴黎 Jeu de Paume（2015-10-20—2016-01-24）与波尔多 CAPC 亮相——国际艺术场成为「可说」的出口，国内叙事场仍握删除权。对照阮俊《成为祖先的幽灵》（2019，沙迦双年展 14）：法军塞内加尔步枪兵与越南女性／混血后代的跨洋记忆——幽灵在达喀尔与潘朗两端共振。",
+        "解殖民在镜头伦理：不替占族发言，让官方史的空白与土地并置出声。后殖民国家叙事本身可接棒殖民删除——因此不能只瞄准旧宗主国档案。阮俊对照把法帝国征用的跨洋身体做成「幽灵」，补一条南—南视觉线索。",
     },
     {
-      axis: "文化与展演效应",
-      title: "发展话语下的再侵占；南—南幽灵",
+      axis: "形式与装置读法",
+      title: "书信双声、前景／背景滑动、多屏擦肩",
       body:
-        "核电＝发展外观承接殖民测量与冷战基础设施逻辑。反讽：后殖民国家官方史同样省略他者（占婆）——解殖民不能只瞄准旧宗主国。阮俊线索：被殖民者被征去镇压另一被殖民者，家庭肖像逐渐替换帝国档案。",
+        "形式：男／女旁白交换；亲密肖像与远景风景对切；拒绝清单式控诉。阮俊：四联屏迫使身体转向，唇形与声音错位，家庭相册替换档案。读法问：观众站在哪一层「可说」的许可里？",
     },
     {
-      axis: "媒体装置",
-      title: "地图 overlay × 影片静帧 × 四联屏对照",
+      axis: "历史与地缘线索（辅）",
+      title: "1832／核电／奠边府各一句",
       body:
-        "本站以占婆历史地图高亮潘朗／宁顺；嵌入 Jeu de Paume 公开静帧与 MoMA post／RAW 装置照作为教育引用；双屏方法对照（书信 VO 句 ↔ 幽灵一句），非等价作品。禁止 AI 伪造占族肖像或伪电影静帧。",
+        "辅线：1832 明命帝吞并潘朗（官方史多省略）；宁顺核电计划曾落笔（后搁置）；1954 法军撤离为阮俊背景。历史只解锁「土地为何可被重新命名」，不写国族长文。",
     },
   ] as AnalysisAxis[],
   embeds: [
     {
       src: "/media/stills/c/letters-panduranga.jpg",
-      title: "Letters from Panduranga (2015) · Jeu de Paume 公开静帧",
-      caption: "约 35 分钟越南语影像散文。Satellite 8；M+ 藏。她不替占族发言；她让省略自己出声。",
+      title: "Letters from Panduranga (2015)",
+      caption: "先看作品静帧：书信体影像的风景与间隙。",
       credit: "Still via Jeu de Paume exhibition materials / artist. Educational citation for class report.",
       href: "https://jeudepaume.org/en/evenement/nguyen-trinh-thi-2/",
       hrefLabel: "Jeu de Paume",
@@ -293,7 +345,7 @@ export const nodeC = {
     {
       src: "/media/stills/c/tuan-specter.png",
       title: "对照 · 阮俊《成为祖先的幽灵》(2019)",
-      caption: "四联屏；沙迦双年展 14。法军塞内加尔步枪兵与越南女性／混血后代的跨洋记忆。",
+      caption: "四联屏装置：幽灵在多通道里成为形式。",
       credit: "Installation view © Kerry Etola Viderot / RAW Material Company; via MoMA post. Educational citation.",
       href: "https://post.moma.org/slender-threads-tuan-andrew-nguyens-the-specter-of-ancestors-becoming/",
       hrefLabel: "MoMA post",
@@ -302,68 +354,74 @@ export const nodeC = {
     },
   ] as MediaEmbed[],
   timeline: [
-    { year: "c.1000–1100", event: "占婆等印度化王国并存（地图视觉节点）" },
-    { year: "1832", event: "明命帝吞并占婆末疆潘朗；官方史叙多省略" },
-    { year: "1954", event: "奠边府／日内瓦；法军撤离——阮俊对照背景" },
     { year: "2015", event: "《来自潘朗的信》；Jeu de Paume → CAPC" },
     { year: "2019", event: "阮俊《成为祖先的幽灵》沙迦双年展 14" },
-    { year: "2022", event: "阮静诗出现于文献展十五节点" },
+    { year: "2022", event: "阮静诗文献展十五节点" },
+    { year: "（辅）1832", event: "潘朗被吞并——解锁「省略」母题" },
   ] as TimelineItem[],
-  elsewhere: "牵出的另一个地方：法国（展出场与法殖人口流动）、美国（越战毒性遗产）、塞内加尔／沙迦（阮俊）。",
+  elsewhere: "展场链：巴黎／波尔多；对照链：沙迦／达喀尔。",
 }
 
 export const nodeD = {
   id: "act2d",
   eyebrow: "Core D · 泰国 ↔ 德国／日本",
-  title: "先看见纪念碑的数字，再听见谁被删掉",
-  vo: "先看见纪念碑的数字，再听见谁被删掉。日期做成高度，仪式时间被编码进尺度。",
+  title: "朗姜：把纪念碑复制进文献展",
+  vo: "先看文献展里的翼板与数字标题：纪念碑被做成可检验的物件，日期变成可读的形式。",
   thesis:
-    "朗姜把民主纪念碑的数字象征、泰—轴心删除史与父亲死于新纳粹的微观创伤编进文献展装置；研究型艺术回收的是被课本抹去的通道——而非（短名单误写的）死亡铁路。",
+    "「246247… 无人生还」以复制翼板、肖像、访客簿与视频，把国家纪念的神圣性抽空；解殖民读法落在装置如何改写纪念碑，而非泰缅铁路史（短名单误系已纠错）。",
   lead:
-    "阿林·朗姜「246247596248914102516 … 无人生还」(2017)，为 documenta 14 创作。母题是曼谷民主纪念碑、1932 立宪革命、泰—轴心／驻德大使朱辛与希特勒地堡访客簿，以及艺术家父亲在柏林被新纳粹殴打致死。",
+    "作品：阿林·朗姜「246247596248914102516 … 无人生还」(2017)，为 documenta 14 创作（卡塞尔 Neue Neue Galerie 等）。看见什么：等比民主纪念碑翼板复制、大使肖像油画、访客簿复制、约 46 分钟视频。曼谷民主纪念碑照片是母题现场，不是另一部战争史的入口。",
+  work: {
+    title: "246247596248914102516 … And then there were none",
+    artist: "Arin Rungjang（阿林·朗姜）",
+    medium: "雕塑复制＋油画＋档案复制＋单频道视频（约 46′）",
+    venue: "documenta 14，卡塞尔（2017）；Gallery VER 曼谷个展",
+    year: "2017",
+    see: "翼板离开广场、进入展厅：神圣尺度变成可绕行、可对照肖像与录像的物件。",
+  } as WorkSpine,
   hero: {
     src: "/media/d/democracy-monument-bangkok.jpg",
-    alt: "曼谷民主纪念碑",
+    alt: "曼谷民主纪念碑（作品母题现场）",
     credit:
       "Democracy Monument, Phra Nakhon, Bangkok (2016). Wikimedia Commons (CC BY-SA 4.0).",
   },
   digits: [
-    { digit: "24", note: "1932-06-24 立宪革命之日；翼高常被读作 24 米象征【待核馆方标牌原文】" },
-    { digit: "62", note: "佛历／泰历换算与纪念碑尺度叙事的交错节点（Ha Thuc 解码线索）" },
-    { digit: "47", note: "日期串的续位：革命被量成可朗读的权力公式" },
-    { digit: "59", note: "数字美学把国家仪式时间编码进尺度" },
-    { digit: "…", note: "标题长串继续延伸；点读不必穷尽每一位，关键是「日期做成高度」" },
-    { digit: "无人生还", note: "借克里斯蒂书名谱系——连通俗小说命名也是殖民种族主义残留" },
+    { digit: "24", note: "形式：1932-06-24 被编码进翼高象征——点读的是标题美学" },
+    { digit: "62", note: "形式：佛／泰历与尺度叙事交错（Ha Thuc 解码线索）" },
+    { digit: "47", note: "形式：日期串续位，革命被写成可读字符串" },
+    { digit: "59", note: "形式：数字把仪式时间变成展题" },
+    { digit: "…", note: "形式：长标题本身是装置的一部分" },
+    { digit: "无人生还", note: "借克里斯蒂书名谱系——命名暴力进入作品标题层" },
   ],
   breakdown: [
     {
-      axis: "解殖民机制",
-      title: "数字美学与删除史",
+      axis: "作品与展场",
+      title: "文献展里的纪念碑复制",
       body:
-        "民主纪念碑把 1932-06-24 革命日期编码进尺度——谁记住数字，谁拥有仪式时间。泰日结盟／轴心与驻德大使朱辛仰慕希特勒、地堡访客簿泰名等段落在泰国课本中鲜少出现。复制翼板进文献展，抽空户外纪念的神圣性，变成可检验的物件。",
+        "脊柱是 documenta 14 装置整体：翼板、肖像、玻璃柜档案、视频。卡塞尔白墙抽空户外纪念的崇拜感。本站以民主纪念碑 CC 照片作母题入口，嵌入 artpress／ShanghART 装置静帧。",
     },
     {
-      axis: "国家与地方",
-      title: "曼谷纪念碑的另一端在卡塞尔与柏林",
+      axis: "解殖民视觉机制",
+      title: "拆神圣性；暴露删除",
       body:
-        "documenta 14（卡塞尔／雅典）：翼板复制、大使肖像、访客簿复制、约 46 分钟视频。德国是源地（地堡、父亲遇害、新纳粹），日本是占领与泰日同盟的另一极。跨地方：泰国民主象征必须穿过卡塞尔白墙才被全球看见。",
+        "复制＝去光环：国家「民主」象征变成可检验的物件。视频把课本鲜少出现的泰—轴心通道与家族创伤叠进同一装置——解殖民是让被删的视觉通道重新可见，不是另写铁路苦役史。",
     },
     {
-      axis: "文化与展演效应",
-      title: "研究型≠学术论文；短名单也会误命名",
+      axis: "形式与装置读法",
+      title: "数字标题、等比复制、口述＋档案",
       body:
-        "Ha Thuc 强调诗学优先于举证：家族口述 × 访客簿 × 回忆录 × 纪念碑复制。短名单曾误系「死亡铁路」——提醒研究型艺术的传播本身也会被错误命名。标题借用克里斯蒂书名的殖民种族主义史，连通俗小说命名都是帝国残留。",
+        "读标题字符串如读纪念碑尺度；绕行翼板如绕行一座被搬进室内的「假神圣」。肖像与访客簿复制提供物证美学；视频开场口述把微观身体接上宏观象征。诗学优先于史家举证链（Ha Thuc）。",
     },
     {
-      axis: "媒体装置",
-      title: "纪念碑写真 × 装置静帧 × 纠错卡",
+      axis: "历史与地缘线索（辅）",
+      title: "1932／轴心／柏林各一句",
       body:
-        "主视觉锁定曼谷民主纪念碑 CC 照片；嵌入 artpress／ShanghART／YouTube 公开装置与视频静帧；死亡铁路图仅出现在红字纠错页，禁止作作品证据。",
+        "辅线：立宪革命日、泰日同盟与朱辛／地堡访客簿、父亲在柏林遇害。足够听懂装置，不写二战编年。死亡铁路＝误系，仅纠错卡。",
     },
   ] as AnalysisAxis[],
   correction: {
     title: "纠错｜短名单曾误系「死亡铁路」",
-    body: "三年展 Ha Thuc 专文与 documenta／ShanghART 叙述显示：本作品主题不是泰缅死亡铁路。死亡铁路是另一条二战苦役史，可作同区域基础设施暴力旁注，但禁止作本作品主视觉。",
+    body: "本作品主题是民主纪念碑装置与泰—轴心删除史，不是泰缅死亡铁路。铁路图仅纠错可视化。",
     mapSrc: "/media/d/death-railway-map.png",
     mapCredit:
       "Map of the Burma–Siam «Death Railway». Wikimedia Commons (CC BY-SA 3.0). 【仅纠错页】",
@@ -374,8 +432,8 @@ export const nodeD = {
   embeds: [
     {
       src: "/media/stills/d/arin-install-artpress.jpg",
-      title: "documenta 14 装置静帧 · 246247… And then there were none",
-      caption: "卡塞尔：纪念碑翼板复制、大使肖像、档案与视频。神圣性被抽走，变成可检验的物件。",
+      title: "documenta 14 装置静帧",
+      caption: "先看展场：翼板与物件，而非铁路地图。",
       credit: "Installation view, courtesy of the artist; via artpress (2018). Educational citation.",
       href: "https://www.documenta14.de/en/artists/13599/arin-rungjang",
       hrefLabel: "documenta 14",
@@ -386,81 +444,86 @@ export const nodeD = {
     {
       src: "/media/stills/d/arin-shanghart.jpg",
       title: "ShanghART／展览叙述配图",
-      caption: "画廊文本把卡塞尔装置读作国族象征与微观创伤的拼图。",
+      caption: "装置作为研究型拼图的视觉证据。",
       credit: "ShanghART gallery archive image. Educational citation.",
       href: "https://www.shanghartgallery.com/galleryarchive/texts/id/11438",
       hrefLabel: "ShanghART 文本",
     },
   ] as MediaEmbed[],
   timeline: [
-    { year: "1932-06-24", event: "暹罗立宪革命；民主纪念碑日后以数字尺度编码此日" },
-    { year: "1939–45", event: "朱辛任驻德大使；泰日同盟／轴心；地堡访客簿出现泰名" },
-    { year: "1945-04-30", event: "希特勒自杀；访客簿叙事终点锚" },
-    { year: "童年", event: "父亲在柏林被新纳粹殴打致死——视频开场口述" },
-    { year: "2013", event: "威尼斯双年展泰国馆《金色泪珠》" },
-    { year: "2017", event: "documenta 14 呈现本作品；Gallery VER 曼谷个展" },
+    { year: "2017", event: "documenta 14 呈现本作品；Gallery VER 个展" },
+    { year: "2013", event: "威尼斯双年展泰国馆《金色泪珠》（背景作品）" },
+    { year: "（辅）1932-06-24", event: "立宪日——标题数字源" },
   ] as TimelineItem[],
-  elsewhere: "牵出的另一个地方：德国（documenta、地堡、父亲遇害）、日本（占领与泰日同盟）。",
+  elsewhere: "展场：卡塞尔／雅典；母题现场：曼谷民主纪念碑。",
 }
 
 export const nodeE = {
   id: "act2e",
   eyebrow: "Core E · 马来西亚／苏禄海 ↔ 西／美／英",
-  title: "先看见帝国怎么画这片海",
-  vo: "先看见帝国怎么画这片海。测量与制图，先于国界，把群岛写成可治理对象。",
+  title: "Yee I-Lann《苏禄故事》：档案接缝留在画面上",
+  vo: "先看数码拼贴：海天与殖民档案并置——解殖民发生在接缝，不在复原一个更纯的过去。",
   thesis:
-    "《苏禄故事》用数码并置撕开殖民海图与民族志摄影对群岛的分类权——解殖民发生在档案接缝，而非另造一个纯洁起源。",
+    "《苏禄故事》用数码并置撕开殖民海图与民族志摄影的分类权；形式本身就是解殖民论证。海图只作帝国凝视的辅线入口。",
   lead:
-    "Yee I-Lann《苏禄故事》(2005)：数码拼贴／档案色素喷墨，把苏禄海风景与殖民档案图像并置。现代马—菲国界无法穷尽的跨海世界。",
+    "作品系列：Yee I-Lann《苏禄故事》(Sulu Stories, 2005)，数码拼贴／档案色素喷墨。森美术馆藏《群岛》(The Archipelago)、《Barangay》等。看见什么：群岛风景与殖民档案碎片的可见接缝。Dalrymple 海图是「帝国怎么画海」的辅线对照，不是正文。",
+  work: {
+    title: "Sulu Stories（《群岛》《Barangay》等）",
+    artist: "Yee I-Lann",
+    medium: "数码拼贴／档案色素喷墨",
+    venue: "森美术馆等收藏；SAM 等有系列叙述",
+    year: "2005",
+    see: "接缝外露的并置：档案相机的分类权被留在画面表面，供观看者拆解。",
+  } as WorkSpine,
   charts: [
     {
       src: "/media/e/dalrymple-borneo-sulu-1769.jpg",
-      label: "Dalrymple 1769 婆罗洲—苏禄海图",
+      label: "Dalrymple 1769 海图（辅：帝国凝视对照）",
       credit:
         "Alexander Dalrymple, map of part of Borneo and the Sooloo Archipelago, 1769. Wikimedia Commons (public domain).",
     },
     {
       src: "/media/e/sulu-1848-1899.jpg",
-      label: "苏禄相关历史图 1848–1899",
+      label: "苏禄相关历史图 1848–1899（辅）",
       credit: "Historical map related to Sulu, 1848–1899. Wikimedia Commons (public domain).",
     },
     {
       src: "/media/e/moro-sultanates.jpg",
-      label: "摩洛苏丹国示意",
+      label: "摩洛苏丹国示意（辅）",
       credit: "Moro sultanates schematic. Wikimedia Commons (CC BY-SA 4.0).",
     },
   ],
   breakdown: [
     {
-      axis: "解殖民机制",
-      title: "档案相机先于国界",
+      axis: "作品与展场",
+      title: "系列作品进白墙认证",
       body:
-        "民族志／殖民摄影凝视把群岛写成可治理对象；英／西／美殖民继承与马／菲国境把苏禄苏丹国式跨海社会切成边防问题。Yee 的数码并置把档案接缝留在画面上——改写凝视，不是装回一个更纯的过去。",
+        "脊柱是 2005 系列本身；森美／SAM 收藏把解殖民图像再次框进全球机构。本站嵌入 Universes 公开教育静帧，海图仅作对照层。",
     },
     {
-      axis: "国家与地方",
-      title: "苏禄海两端：殖民海图 ↔ 东京／新加坡白墙",
+      axis: "解殖民视觉机制",
+      title: "改写凝视，不装回纯洁起源",
       body:
-        "西班牙／美国（菲南）、英国（北婆罗洲／砂拉越档案）、日本（森美收藏）、新加坡（SAM）共同构成视觉记忆回路。群岛抵抗国界，但作品流通仍依赖民族国家护照与双年展签证制度。",
+        "用殖民档案「原料」做解殖民图像：风险是再美学化，策略是把接缝留白——真实性被做成可见问题。群岛／barangay 语法对抗国境中心叙事。",
     },
     {
-      axis: "文化与展演效应",
-      title: "群岛语法 vs 大陆—国境中心",
+      axis: "形式与装置读法",
+      title: "数码并置、长条构图、档案碎片",
       body:
-        "以群岛／barangay 等单位思考，对抗大陆中心叙事。用殖民档案「原料」做解殖民图像——回收可能被读成再美学化暴力。当代政治（沙巴主权声索、海盗叙事）使「故事」无法停留在怀旧。",
+        "横向长幅迫使扫视如读海图；拼贴边缘不修干净。读法：哪一块是「风景」，哪一块是「档案」？观众的分类动作本身被作品预演。",
     },
     {
-      axis: "媒体装置",
-      title: "海图缓推 → 数码作品静帧",
+      axis: "历史与地缘线索（辅）",
+      title: "国界切割海洋——一句够用",
       body:
-        "进入用 Dalrymple 1769 海图；分界用 1848–1899 图 ↔ 摩洛苏丹国示意；作品嵌入 Universes／森美公开教育静帧（《群岛》《Barangay》），标注来源，不 AI 仿作拼贴。",
+        "辅线：西／美／英殖民层与马—菲国境切开苏禄跨海世界。只为听懂为何「群岛」是形式政治，不写海事编年。",
     },
   ] as AnalysisAxis[],
   embeds: [
     {
       src: "/media/stills/e/archipelago.jpg",
       title: "《群岛》The Archipelago (2005)",
-      caption: "森美术馆藏。她把档案的接缝留在画面上。",
+      caption: "先看作品：接缝在画面上。",
       credit: "Yee I-Lann, The Archipelago, 2005. Photo: Yee I-Lann / via Universes in Universe. Educational citation.",
       href: "https://www.mori.art.museum/en/collection/2380/index.html",
       hrefLabel: "森美藏品",
@@ -469,32 +532,45 @@ export const nodeE = {
     {
       src: "/media/stills/e/barangay.jpg",
       title: "《Barangay》(2005)",
-      caption: "森美术馆藏。群岛／社区单位对抗国境中心叙事。",
+      caption: "群岛／社区单位作为形式选择。",
       credit: "Yee I-Lann, Barangay, 2005. Photo: Yee I-Lann / via Universes in Universe. Educational citation.",
       href: "https://www.mori.art.museum/en/collection/2379/index.html",
       hrefLabel: "森美藏品",
     },
   ] as MediaEmbed[],
   supportTip: {
-    text: "Support 脚注｜Khvay Samnang「通往神灵之路」：土地／仪式／开发线另案，不占本 Core 主轴。",
+    text: "Support 脚注｜Khvay Samnang「通往神灵之路」：土地／仪式线另案，不占本 Core 作品脊柱。",
   },
   timeline: [
-    { year: "1769", event: "Dalrymple 婆罗洲—苏禄海图：帝国测量目光" },
-    { year: "1848–1899", event: "苏禄相关历史地图时段：殖民切割与苏丹国并存" },
-    { year: "19–20 c.", event: "西／美／英殖民层与马—菲国境覆盖苏禄海世界" },
-    { year: "2005", event: "《苏禄故事》系列（含《群岛》《Barangay》）" },
+    { year: "2005", event: "《苏禄故事》系列（《群岛》《Barangay》）" },
+    { year: "（辅）1769", event: "Dalrymple 海图——帝国凝视对照" },
   ] as TimelineItem[],
 }
 
 export const nodeF = {
   id: "act2f",
   eyebrow: "Core F · 新加坡 ↔ 英国",
-  title: "城市的零点，站在河边",
-  vo: "城市的零点，站在河边。莱佛士像成为现代新加坡的起点叙事——也是可争议的纪念装置。",
+  title: "《艺术家与帝国》与莱佛士像：展览与纪念碑装置",
+  vo: "先看展览标题与河边雕像：谁在「面对」帝国，谁把零点做成可争议的纪念装置。",
   thesis:
-    "《艺术家与帝国》从伦敦「面对」到新加坡「（En）counter」仍争议谁拥有帝国叙事；2019 官方把莱佛士涂到隐形，证明后殖民国家能把解殖民外观收编进建国仪式。",
+    "展览副标题从伦敦「Facing」到新加坡「(En)countering」是策展语法战；2019 官方「隐形」莱佛士是国家收编解殖民外观的视觉工程。雕像与展墙才是脊柱。",
   lead:
-    "新加坡国家美术馆承接泰特《艺术家与帝国》并改写为 *(En)countering Colonial Legacies*。2019 建国二百周年：官方委托把莱佛士河畔像「隐形」，旁置其他先驱——反思，也是管理。",
+    "脊柱两端：① 泰特《Artist and Empire: Facing Britain’s Imperial Past》（2015–16）与新加坡国家美术馆版 *(En)countering Colonial Legacies*（2016–17）；② 河畔莱佛士像（常见为 1972 复制品）及 2019 二百周年「隐形」＋《Arrival》先驱并置。读的是展览与纪念装置，不是建国编年。",
+  work: {
+    title: "Artist and Empire（Tate → NGS）",
+    artist: "策展：Alison Smith 等／Low Sze Wee、Melinda Susanto 等",
+    medium: "大型主题展（馆藏＋当代回应）",
+    venue: "Tate Britain（2015–16）→ 新加坡国家美术馆（2016–17）",
+    year: "2015–2017",
+    see: "同一展览品牌，两种副标题语法：面对 vs（En）counter——谁的藏品、谁的当代补丁。",
+  } as WorkSpine,
+  workContrast: {
+    title: "莱佛士河畔像与 2019「隐形」／Arrival",
+    medium: "公共纪念雕塑＋官方委托视觉工程",
+    venue: "新加坡河 Raffles Landing Site",
+    year: "1887／1972 复制；2019 二百周年干预",
+    see: "复制品比「真身」更常被看见；涂装隐形与旁置先驱把反思做成可管理的景观。",
+  } as WorkSpine,
   statue: {
     src: "/media/f/raffles-statue-singapore-river.jpg",
     front: "/media/f/raffles-statue-front.jpg",
@@ -508,12 +584,12 @@ export const nodeF = {
   portraits: [
     {
       src: "/media/f/raffles-portrait-stamford.jpeg",
-      label: "莱佛士历史肖像",
+      label: "莱佛士历史肖像（辅：绅士形象）",
       credit: "Portrait of Stamford Raffles. Wikimedia Commons (public domain).",
     },
     {
       src: "/media/f/raffles-portrait-joseph.jpg",
-      label: "George Francis Joseph 肖像",
+      label: "George Francis Joseph 肖像（辅）",
       credit:
         "George Francis Joseph, portrait of Sir Thomas Stamford Bingley Raffles. Wikimedia Commons (public domain).",
     },
@@ -523,50 +599,50 @@ export const nodeF = {
       side: "泰特不列颠 2015–16",
       title: "Artist and Empire",
       subtitle: "Facing Britain’s Imperial Past",
-      critique: "被批主要用英国馆藏，缺少殖民地一方（尤其东南亚）当代观点。",
+      critique: "策展语法：「面对」若只动员宗主国馆藏，易成自我独白。",
     },
     {
       side: "新加坡国家美术馆 2016–17",
       title: "Artist and Empire",
       subtitle: "(En)countering Colonial Legacies",
-      critique: "增补东南亚与当代回应；又有评论指宣传／女王形象再现有「再殖民」意味。",
+      critique: "增补东南亚与当代回应；亦被批宣传／再现有「再殖民」意味——展览本身成争议场。",
     },
   ],
   invisible2019: {
-    title: "2019｜官方「隐形」与 Arrival",
-    body: "政府办公室委托 Teng Kai Wei 将莱佛士像涂成与背景融合；Hong Hai Arts《Arrival》旁立 Sang Nila Utama 等另四位「先驱」。下方嵌入二百周年现场先驱雕像公版照片——见证「并置」工程；不 AI 伪造涂装隐形效果图。",
+    title: "2019｜官方「隐形」与 Arrival（纪念装置）",
+    body: "委托涂装使莱佛士融入背景，旁置 Sang Nila Utama 等先驱雕像——解殖民外观被收编进建国仪式。下方静帧见证并置工程；不 AI 伪造涂装效果。",
   },
   breakdown: [
     {
-      axis: "解殖民机制",
-      title: "面对＝自我独白？消失也是展示",
+      axis: "作品与展场",
+      title: "双城展览＋公共雕像",
       body:
-        "若「面对帝国」只动员宗主国馆藏，则面对＝自我独白。雕像把 1819 写成绝对零点；1972 复制品证明纪念可工业再生。2019 官方让莱佛士隐形＝最精致的可见性管理：消失也是展示，国家吸纳批判外观。",
+        "脊柱是展览双城版本与河畔纪念装置。馆舍占据前殖民司法／市政建筑——展场建筑即遗产。本站嵌泰特展览图像与 Wikimedia 二百周年先驱雕像。",
     },
     {
-      axis: "国家与地方",
-      title: "谁在伦敦面对，谁在新加坡（En）counter",
+      axis: "解殖民视觉机制",
+      title: "副标题战争；消失也是展示",
       body:
-        "泰特不列颠（2015-11-25—2016-04-10）↔ 新加坡国家美术馆（2016-10-06—2017-03-26）。馆舍占据前殖民司法／市政建筑——展示解殖民的场所本身是帝国遗留空间。Support：documenta15／Taring Padi 撤展＝另一场记忆秩序翻车。",
+        "Facing vs (En)countering＝谁拥有帝国叙事的视觉权。官方「隐形」是可见性管理：反思被景观化。与 Core B Utama 互文：同一莱佛士神话，一边被拆成可替换脸，一边被做成周年视觉工程。",
     },
     {
-      axis: "文化与展演效应",
-      title: "资产负债表式的先驱并置",
+      axis: "形式与装置读法",
+      title: "标题对位、肖像 dissolve、并置先驱",
       body:
-        "四个「先驱」并置可能稀释、而非拆除莱佛士神话。与 Core B Utama 互文：同一莱佛士神话，一边被何子彦拆成可替换脸，一边被国家做成周年视觉工程。评论链（Riello、ArtAsiaPacific、Faris Joraimi）把展览写成持续争议。",
+        "UI 对位两城副标题；肖像与河畔复制像 dissolve 追问「真身」；Arrival 群像构图稀释／重组零点。读法：消失、并置、复制——三种纪念形式策略。",
     },
     {
-      axis: "媒体装置",
-      title: "河畔像 × 泰特展图 × 二百周年先驱雕像",
+      axis: "历史与地缘线索（辅）",
+      title: "1819 零点叙事一句",
       body:
-        "嵌入泰特《Artist and Empire》公开展览图像与 Wikimedia 二百周年 Arrival／Sang Nila Utama 雕像；标题对决 UI 对位伦敦／新加坡副标题。禁止 AI 合成「涂白隐形」伪新闻图。",
+        "辅线：1819 登陆／条约被写成现代零点。足够理解雕像政治；建国全史不下沉。Support：documenta15／Taring Padi 撤展＝另一场展览记忆秩序翻车。",
     },
   ] as AnalysisAxis[],
   embeds: [
     {
       src: "/media/stills/f/artist-empire-tate-1.jpg",
-      title: "Artist and Empire · Tate Britain 展览视觉",
-      caption: "「面对英国的帝国过去」——若只动员宗主国馆藏，面对可能变成自我独白。",
+      title: "Artist and Empire · Tate 展览视觉",
+      caption: "先看展览如何「面对」——藏品与语法。",
       credit: "Tate Britain exhibition imagery. Educational citation.",
       href: "https://www.tate.org.uk/whats-on/tate-britain/artist-and-empire",
       hrefLabel: "Tate 展览页",
@@ -574,8 +650,8 @@ export const nodeF = {
     },
     {
       src: "/media/stills/f/pioneers-arrival-2019.jpg",
-      title: "2019 二百周年 · Raffles Landing Site 先驱雕像群",
-      caption: "官方《Arrival》旁置 Sang Nila Utama 等先驱——反思外观与建国仪式同体。",
+      title: "2019 · Arrival 先驱雕像群",
+      caption: "纪念装置：并置作为策展／国家视觉。",
       credit:
         "Statues of Singaporean pioneers at Raffles' Landing Site. Wikimedia Commons (CC). Educational citation.",
       href: "https://commons.wikimedia.org/wiki/File:Statues_of_Singaporean_Pioneers_at_the_Raffles%27_Landing_Site_-_three-quarter_front_view.jpg",
@@ -584,7 +660,7 @@ export const nodeF = {
     {
       src: "/media/stills/f/sang-nila-utama-2019.jpg",
       title: "Sang Nila Utama 像（二百周年现场）",
-      caption: "与 Core B Utama 互文：同一创始神话，一边被拆成可替换脸，一边被做成周年装置。",
+      caption: "与 Utama 作品互文：神话进入公共雕塑。",
       credit:
         "Statue of Sang Nila Utama at Raffles Landing Site. Wikimedia Commons (CC). Educational citation.",
       href: "https://commons.wikimedia.org/wiki/File:Statue_of_Sang_Nila_Utama_at_the_Raffles_Landing_Site_(front_view).jpg",
@@ -592,17 +668,14 @@ export const nodeF = {
     },
   ] as MediaEmbed[],
   supportTip: {
-    text: "Support｜documenta fifteen／Taring Padi《人民的正义》：解殖民大展亦可因跨文化伤害与德国记忆秩序撤展——展览自身成现场。",
+    text: "Support｜documenta fifteen／Taring Padi：解殖民大展亦可在记忆秩序里翻车——展览装置本身成现场。",
     href: "https://documenta-fifteen.de/en/press-releases/statement-by-taring-padi-on-dismantling-peoples-justice/",
   },
   timeline: [
-    { year: "1819", event: "莱佛士登陆／条约叙事成为「现代零点」" },
-    { year: "1887", event: "Woolner 莱佛士铜像" },
-    { year: "1972", event: "聚合大理石复制像——今日河畔常见视觉" },
-    { year: "2015", event: "新加坡国家美术馆开馆（前最高法院与市政厅）" },
-    { year: "2015–16", event: "泰特《艺术家与帝国》：面对英国的帝国过去" },
+    { year: "2015–16", event: "泰特《艺术家与帝国》" },
     { year: "2016–17", event: "新加坡版 (En)countering Colonial Legacies" },
-    { year: "2019-01", event: "二百周年：雕像「隐形」＋ Arrival 四先驱" },
+    { year: "2019-01", event: "二百周年：隐形＋ Arrival" },
+    { year: "1972", event: "河畔复制像——今日常见视觉" },
   ] as TimelineItem[],
 }
 
@@ -610,23 +683,23 @@ export const supportStrip = {
   id: "act2support",
   eyebrow: "Support · 非 Core 短笺",
   title: "下放与旁注",
-  lead: "东亚／东北亚深挖交同学；下列仅保留与东南亚主轴相关的极短 Support，不进主滚动深挖。",
+  lead: "不进主滚动作品脊柱；仅保留与东南亚艺术场相关的极短 Support。",
   items: [
     {
       title: "documenta fifteen／Taring Padi",
-      body: "《人民的正义》撤展：解殖民展与德国记忆秩序对撞——已在 Core F 角标一句。",
+      body: "《人民的正义》撤展：展览记忆秩序——已在 Core F 角标。",
     },
     {
       title: "Khvay Samnang",
-      body: "「通往神灵之路」：土地／仪式／开发线——已在 Core E 脚注。",
+      body: "「通往神灵之路」——已在 Core E 脚注。",
     },
     {
       title: "爱知「表现的不自由」",
-      body: "下放同学；仅在 Core B Hotel Aporia 旁半句桥。",
+      body: "仅在 Core B Hotel Aporia 旁半句桥。",
     },
     {
       title: "台展／陈界仁／兽首／曾灶财",
-      body: "已从主滚动切除；如需课堂对照可另开附录页，不在本站主轴展开。",
+      body: "已从主滚动切除。",
     },
   ],
 }

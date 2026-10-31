@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nodeE } from "../../content/act2"
+import WorkCard from "../ui/WorkCard.vue"
 import PanZoomImage from "../ui/PanZoomImage.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
@@ -32,10 +33,11 @@ const seam = voById("e-seam")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeE.lead }}</p>
+      <WorkCard :work="nodeE.work" />
     </div>
 
-    <ChapterHold label="Core E · 帝国画海" :height-vh="140">
-      <img :src="chart.src" :alt="chart.label" />
+    <ChapterHold label="Core E · Sulu Stories" :height-vh="140">
+      <img :src="nodeE.embeds[0].src" :alt="nodeE.embeds[0].title" />
       <template #caption>{{ nodeE.vo }}</template>
     </ChapterHold>
 

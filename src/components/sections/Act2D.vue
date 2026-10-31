@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { nodeD } from "../../content/act2"
+import WorkCard from "../ui/WorkCard.vue"
 import DigitDecode from "../ui/DigitDecode.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
 import VoCaption from "../ui/VoCaption.vue"
@@ -30,9 +31,10 @@ const showCorrection = ref(true)
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeD.lead }}</p>
+      <WorkCard :work="nodeD.work" />
     </div>
 
-    <ChapterHold label="Core D · 民主纪念碑" :height-vh="145">
+    <ChapterHold label="Core D · 246247… 装置母题" :height-vh="145">
       <img :src="nodeD.hero.src" :alt="nodeD.hero.alt" />
       <template #caption>{{ nodeD.vo }}</template>
     </ChapterHold>

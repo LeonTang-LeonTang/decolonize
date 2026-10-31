@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nodeA } from "../../content/act2"
+import WorkCard from "../ui/WorkCard.vue"
 import { clipForSection, scrubClips, supportClips, voById } from "../../content/media"
 import CompareSlider from "../ui/CompareSlider.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
@@ -36,9 +37,10 @@ const hint = voById("a-slider-hint")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeA.lead }}</p>
+      <WorkCard :work="nodeA.work" :contrast="nodeA.workContrast" />
     </div>
 
-    <ChapterHold label="Core A · 捕获 ↔ 投降" :height-vh="130">
+    <ChapterHold label="Core A · 两幅画对决" :height-vh="130">
       <img :src="left.src" :alt="left.title" />
       <template #caption>{{ nodeA.vo }}</template>
     </ChapterHold>

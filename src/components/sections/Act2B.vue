@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nodeB } from "../../content/act2"
+import WorkCard from "../ui/WorkCard.vue"
 import MapCrossfade from "../ui/MapCrossfade.vue"
 import WordChips from "../ui/WordChips.vue"
 import ScrollTimeline from "../ui/ScrollTimeline.vue"
@@ -32,9 +33,10 @@ const cdosea = voById("b-cdosea")
         :credit="clip.credit"
       />
       <p class="lead" style="margin: 0 0 1.25rem; max-width: 42em">{{ nodeB.lead }}</p>
+      <WorkCard :work="nodeB.work" />
     </div>
 
-    <ChapterHold label="Core B · 命名装置" :height-vh="125">
+    <ChapterHold label="Core B · 何子彦作品簇" :height-vh="125">
       <img :src="nodeB.maps[1].src" :alt="nodeB.maps[1].label" />
       <template #caption>{{ nodeB.vo }}</template>
     </ChapterHold>
