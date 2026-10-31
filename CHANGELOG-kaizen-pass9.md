@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass9 (do not overwrite): `recover/pre-pass9-demo-polish-20261031` @ `fd63b56`
-- Post-pass9: `recover/pass9-demo-polish-20261031` @ _(filled after feature commit)_
+- Post-pass9: `recover/pass9-demo-polish-20261031` @ `f64bdee`
 
 ## Version
 
