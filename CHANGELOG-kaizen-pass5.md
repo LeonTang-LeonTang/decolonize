@@ -7,7 +7,7 @@ Leon: Pass 5 features (rooms B–F, GLSL, GLTF, Theatre cams, XR) were **not vis
 ### Recover
 
 - Pre-fix (do not overwrite): `recover/pre-pass5-visibility-fix-20261031` @ `fb6fd6a`
-- Post-fix: `recover/pass5b-visibility-20261031` (this tip)
+- Post-fix: `recover/pass5b-visibility-20261031` @ `70fda84`
 
 ### What changed
 
