@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass8 (do not overwrite): `recover/pre-pass8-immersion-20261031` @ `fbd54f6`
-- Post-pass8: `recover/pass8-immersion-20261031` @ *(feature tip; filled after push)*
+- Post-pass8: `recover/pass8-immersion-20261031` @ 
 
 ## What shipped
 
