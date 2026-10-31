@@ -8,6 +8,7 @@ import BridgeCaption from "./components/ui/BridgeCaption.vue"
 import LoadingScreen from "./components/ui/LoadingScreen.vue"
 import MuteToggle from "./components/ui/MuteToggle.vue"
 import ProgressBar from "./components/ui/ProgressBar.vue"
+import WebGLMuseumLayer from "./components/webgl/WebGLMuseumLayer.vue"
 import Act1Section from "./components/sections/Act1Section.vue"
 import Act2A from "./components/sections/Act2A.vue"
 import Act2B from "./components/sections/Act2B.vue"
@@ -119,8 +120,10 @@ const b = bridgeByTo
   <ChapterNav :active-id="activeId">
     <MuteToggle :muted="muted" @toggle="onToggleMute" />
   </ChapterNav>
+  <!-- WebGL scroll museum — behind article; portals raise immersion -->
+  <WebGLMuseumLayer />
   <div class="grain" aria-hidden="true" />
-  <main>
+  <main class="article-rail">
     <HeroSection />
 
     <div class="rail-bridge">
@@ -219,7 +222,9 @@ const b = bridgeByTo
 </template>
 
 <style scoped>
-main {
+.article-rail {
+  position: relative;
+  z-index: 1;
   padding-top: 0;
 }
 .rail-bridge {

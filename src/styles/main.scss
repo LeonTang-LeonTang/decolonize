@@ -177,3 +177,21 @@ h3 {
 .section.chapter .lead {
   color: var(--ink-muted);
 }
+
+/* —— Pass4 WebGL museum: keep article readable over canvas —— */
+.prose-card {
+  position: relative;
+  padding: 1.1rem 1.15rem 1.25rem;
+  border-radius: 6px;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 11, 9, 0.82) 0%,
+    rgba(12, 11, 9, 0.72) 100%
+  );
+  border: 1px solid rgba(196, 165, 116, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.article-rail .section-inner {
+  position: relative;
+}

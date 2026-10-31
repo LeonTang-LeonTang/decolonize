@@ -2,6 +2,7 @@
 import { act2Intro } from "../../content/act2"
 import { evidenceChain, bridgeByTo } from "../../content/rail"
 import BridgeCaption from "../ui/BridgeCaption.vue"
+import ChapterPortal from "../webgl/ChapterPortal.vue"
 
 const steps = evidenceChain
 const intoA = bridgeByTo["act2a"]
@@ -9,7 +10,7 @@ const intoA = bridgeByTo["act2a"]
 
 <template>
   <section id="act2intro" data-chapter="act2intro" class="section">
-    <div class="section-inner narrow">
+    <div class="section-inner narrow prose-card">
       <p class="eyebrow">{{ act2Intro.eyebrow }}</p>
       <h2>{{ act2Intro.title }}</h2>
       <p class="lead" style="margin-top: 1rem">{{ act2Intro.lead }}</p>
@@ -32,6 +33,18 @@ const intoA = bridgeByTo["act2a"]
         :why="intoA.why"
       />
     </div>
+
+    <ChapterPortal
+      portal="intro-museum"
+      label="论证展厅 · 六案走廊"
+      hint="滚动进入三维展廊：墙上挂着 A–F 证据静帧。正文论点不变——这里是沉浸辅证。"
+      :height-vh="180"
+    >
+      <p>
+        走廊两侧依次是六案的真实静帧（非 AI 伪作）。走完走廊，再进入例证 A
+        的双画对峙室。
+      </p>
+    </ChapterPortal>
   </section>
 </template>
 

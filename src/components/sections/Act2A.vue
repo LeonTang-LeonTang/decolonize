@@ -10,6 +10,7 @@ import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import ChapterPortal from "../webgl/ChapterPortal.vue"
 
 const left = nodeA.paintings[0]
 const right = nodeA.paintings[1]
@@ -25,7 +26,7 @@ const hint = voById("a-slider-hint")
 
 <template>
   <section :id="nodeA.id" :data-chapter="nodeA.id" class="section chapter">
-    <div class="section-inner">
+    <div class="section-inner prose-card">
       <p class="eyebrow">{{ nodeA.eyebrow }}</p>
       <h2>{{ nodeA.title }}</h2>
       <p v-if="nodeA.railCallback" class="rail-callback">{{ nodeA.railCallback }}</p>
@@ -47,7 +48,16 @@ const hint = voById("a-slider-hint")
 
     </div>
 
-    <ChapterHold label="Core A · 两幅画对决" :height-vh="100">
+    <ChapterPortal
+      portal="coreA-gallery"
+      label="Core A · 双画对峙室"
+      hint="滚动进入展室：萨勒赫与皮内曼对墙而立。标题本身就是观看装置。"
+      :height-vh="170"
+    >
+      <p>{{ nodeA.vo }}</p>
+    </ChapterPortal>
+
+    <ChapterHold label="Core A · 两幅画对决（静帧）" :height-vh="95">
       <img :src="left.src" :alt="left.title" />
       <template #caption>{{ nodeA.vo }}</template>
     </ChapterHold>
