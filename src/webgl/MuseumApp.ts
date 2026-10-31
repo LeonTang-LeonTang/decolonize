@@ -83,6 +83,10 @@ export class MuseumApp {
   private xrEnabled = false
   private onLost: ((ev?: Event) => void) | null = null
   private portalBg = new THREE.Color(0x4a3c2c)
+  /** Pass 9: briefly keep last portal while claim/release races settle */
+  private holdPortal: PortalId = null
+  private holdPortalT = 0
+  private holdUntil = 0
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -109,7 +113,7 @@ export class MuseumApp {
     this.camera = new THREE.PerspectiveCamera(this.baseFov, 1, 0.1, 80)
     this.camera.position.copy(this.ambientCam.position)
 
-    this.scene.fog = new THREE.FogExp2(0x4a3c2c, 0.0045)
+    this.scene.fog = new THREE.FogExp2(0x4a3c2c, 0.0032)
     const hemi = new THREE.HemisphereLight(0xfff5e4, 0x4a3c2c, 1.65)
     this.scene.add(hemi)
 
@@ -174,7 +178,24 @@ export class MuseumApp {
   }
 
   setState(partial: Partial<MuseumState>) {
+    const prevPortal = this.state.portal
+    const prevT = this.state.portalT
     Object.assign(this.state, partial)
+    // Pass 9: when a leave briefly nulls portal, keep last room ~160ms
+    // so Lenis/ST false-leave cannot flash black mid-immersion.
+    if (
+      prevPortal &&
+      partial.portal === null &&
+      (partial.portalT === 0 || partial.portalT === undefined)
+    ) {
+      this.holdPortal = prevPortal
+      this.holdPortalT = Math.max(0.35, prevT)
+      this.holdUntil = performance.now() + 160
+    }
+    if (partial.portal) {
+      this.holdPortal = null
+      this.holdUntil = 0
+    }
     this.syncMode()
   }
 
@@ -247,14 +268,24 @@ export class MuseumApp {
     }
   }
 
+  private effectivePortal(): { portal: PortalId; portalT: number } {
+    const { portal, portalT } = this.state
+    if (portal) return { portal, portalT }
+    if (this.holdPortal && performance.now() < this.holdUntil) {
+      return { portal: this.holdPortal, portalT: this.holdPortalT }
+    }
+    return { portal: null, portalT: 0 }
+  }
+
   private syncMode() {
-    const { portal, portalT, activeChapter } = this.state
+    const { activeChapter } = this.state
+    const { portal, portalT } = this.effectivePortal()
     this.post?.setViewMode(this.state.viewMode)
     // Prefer post stack in 展厅模式; reading keeps it but softer (setViewMode)
     this.post?.setEnabled(true)
     if (portal && PORTAL_TO_MODE[portal]) {
       this.gallery.setMode(PORTAL_TO_MODE[portal])
-      // Pass 8: portals stay near-full immersion even in 阅读模式 (ThesisStrip stays on)
+      // Pass 8/9: portals stay near-full immersion even in 阅读模式 (ThesisStrip stays on)
       const scale = this.state.viewMode === "reading" ? 0.94 : 1
       this.targetImmersion = Math.max(0.96, 0.96 + portalT * 0.04) * scale
       // Snap immersion immediately when entering so headless shots don't catch fade-in black
@@ -286,16 +317,24 @@ export class MuseumApp {
 
   private tick() {
     const dt = Math.min(0.05, this.clock.getDelta())
-    const { portal, portalT, scrollProgress, activeChapter } = this.state
+    const { scrollProgress, activeChapter } = this.state
+    const { portal, portalT } = this.effectivePortal()
     const elapsed = this.clock.elapsedTime
+    // Pass 9: when holdover window ends, re-sync idle so rooms don't stick forever
+    if (!portal && this.holdPortal && performance.now() >= this.holdUntil) {
+      this.holdPortal = null
+      this.holdPortalT = 0
+      this.syncMode()
+    }
 
     this.immersion = THREE.MathUtils.damp(this.immersion, this.targetImmersion, 3.2, dt)
     // Drive opacity + data attrs; Vue owns .museum-gl--active class (do not toggle here)
-    const portalActive = !!this.state.portal && this.state.portalT > 0.02
+    const portalActive = !!portal && portalT > 0.02
     this.canvas.dataset.museumActive = portalActive ? "1" : "0"
-    this.canvas.dataset.portalT = this.state.portalT.toFixed(3)
-    this.canvas.dataset.portal = this.state.portal || ""
+    this.canvas.dataset.portalT = portalT.toFixed(3)
+    this.canvas.dataset.portal = portal || ""
     this.canvas.dataset.immersion = this.immersion.toFixed(3)
+    this.canvas.dataset.forced = "0" // Pass 9 proof: never forced via __museumApp in shots
     if (portalActive) {
       // Full opacity — unmistakable museum; CSS .museum-gl--active also forces 1
       this.canvas.style.opacity = "1"

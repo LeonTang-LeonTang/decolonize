@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * Pass 8 — Boat-like parallax depth layers behind EvidenceStrip / chapter media.
+ * Pass 8/9 — Boat-like parallax depth layers behind EvidenceStrip / chapter media.
  * Uses REAL pack map/paper stills only (no AI fakes). Subtle; never covers thesis.
+ * Pass 9: up to 3 layers, stronger scroll drift + micro rotate.
  */
 import { onMounted, onUnmounted, ref } from "vue"
 import { gsap } from "gsap"
@@ -27,7 +28,7 @@ onMounted(() => {
     trigger: root.value,
     start: "top bottom",
     end: "bottom top",
-    scrub: 0.4,
+    scrub: 0.55,
     onUpdate: (self) => {
       progress.value = self.progress
     },
@@ -38,14 +39,16 @@ onUnmounted(() => {
   st?.kill()
 })
 
-function layerStyle(layer: ParallaxLayerDef) {
-  const y = (progress.value - 0.5) * 100 * layer.depth
-  const x = (progress.value - 0.5) * 40 * layer.depth
-  const scale = layer.scale ?? 1.2
+function layerStyle(layer: ParallaxLayerDef, i: number) {
+  const p = progress.value - 0.5
+  const y = p * 140 * layer.depth
+  const x = p * 56 * layer.depth * (i % 2 === 0 ? 1 : -1)
+  const rot = p * 2.4 * layer.depth * (i % 2 === 0 ? 1 : -0.7)
+  const scale = layer.scale ?? 1.22
   return {
     backgroundImage: `url(${layer.src})`,
     opacity: layer.opacity,
-    transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`,
+    transform: `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg) scale(${scale})`,
   }
 }
 </script>
@@ -57,12 +60,14 @@ function layerStyle(layer: ParallaxLayerDef) {
     class="parallax"
     aria-hidden="true"
     :data-label="label || 'parallax'"
+    :data-layers="layers.length"
   >
     <div
       v-for="(layer, i) in layers"
       :key="i"
       class="parallax__layer"
-      :style="layerStyle(layer)"
+      :data-depth="layer.depth"
+      :style="layerStyle(layer, i)"
     />
     <div class="parallax__wash" />
   </div>
@@ -78,18 +83,18 @@ function layerStyle(layer: ParallaxLayerDef) {
 }
 .parallax__layer {
   position: absolute;
-  inset: -12%;
+  inset: -16%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: saturate(0.55) contrast(0.92) brightness(0.55);
+  filter: saturate(0.58) contrast(0.94) brightness(0.52);
   will-change: transform;
 }
 .parallax__wash {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 40%, transparent 20%, rgba(8, 7, 5, 0.55) 70%, rgba(8, 7, 5, 0.88) 100%),
-    linear-gradient(180deg, rgba(8, 7, 5, 0.35), rgba(8, 7, 5, 0.72));
+    radial-gradient(ellipse at 50% 40%, transparent 18%, rgba(8, 7, 5, 0.5) 68%, rgba(8, 7, 5, 0.9) 100%),
+    linear-gradient(180deg, rgba(8, 7, 5, 0.32), rgba(8, 7, 5, 0.74));
 }
 </style>

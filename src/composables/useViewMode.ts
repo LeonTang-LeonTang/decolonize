@@ -1,5 +1,6 @@
 import { computed, ref, watch } from "vue"
 import { getMuseumApp } from "./useMuseumWebGL"
+import { getPortalOwner } from "./portalClaim"
 
 export type ViewMode = "reading" | "museum"
 
@@ -16,9 +17,13 @@ function applyDom(m: ViewMode) {
 }
 
 function pushMuseum(m: ViewMode) {
-  getMuseumApp()?.setState({
+  const app = getMuseumApp()
+  if (!app) return
+  // Pass 9: mid-portal keep high immersionScale (portalClaim owns it)
+  const inPortal = !!getPortalOwner() || !!app.getState().portal
+  app.setState({
     viewMode: m,
-    immersionScale: m === "reading" ? 0.42 : 1,
+    immersionScale: inPortal ? (m === "reading" ? 0.94 : 1) : m === "reading" ? 0.42 : 1,
   })
 }
 

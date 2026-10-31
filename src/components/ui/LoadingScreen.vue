@@ -51,7 +51,7 @@ const enter = () => {
   place-content: center;
   justify-items: center;
   gap: 0.75rem;
-  background: radial-gradient(ellipse at 50% 30%, #1a1712 0%, #0c0b09 70%);
+  /* Pass 9 loader */ background: radial-gradient(ellipse at 50% 30%, #1a1712 0%, #0c0b09 70%);
   padding: 2rem;
   text-align: center;
 }
@@ -125,7 +125,8 @@ const enter = () => {
   color: var(--ink-dim);
 }
 .fade-leave-active {
-  transition: opacity 0.7s var(--ease);
+  /* Pass 9: longer crossfade so WebGL/article underpaint is visible before cover lifts */
+  transition: opacity 1.05s var(--ease);
 }
 .fade-leave-to {
   opacity: 0;

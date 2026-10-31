@@ -28,7 +28,7 @@ export class PostFX {
     const size = new THREE.Vector2()
     renderer.getSize(size)
     // Keep bloom tiny — heavy bloom crushed museum midtones to a black void
-    this.bloom = new UnrealBloomPass(size.clone(), 0.048, 0.42, 0.9)
+    this.bloom = new UnrealBloomPass(size.clone(), 0.062, 0.48, 0.88)
     this.composer.addPass(this.bloom)
 
     this.grain = new ShaderPass(vignetteGrainShader)
@@ -53,16 +53,19 @@ export class PostFX {
   /** Soften bloom/vignette while portals are fully lit — keep GLSL visible, not crushing */
   setPortalMode(on: boolean) {
     if (on) {
-      // Pass 8: keep grain visible but never crush midtones in portals
-      this.bloom.strength = this.museumMode ? 0.055 : 0.03
+      // Pass 9: deeper grain/warm in portals; never crush midtones
+      this.bloom.strength = this.museumMode ? 0.07 : 0.035
       if (this.grain.uniforms.uVignette) {
-        this.grain.uniforms.uVignette.value = this.museumMode ? 0.16 : 0.12
+        this.grain.uniforms.uVignette.value = this.museumMode ? 0.14 : 0.1
       }
       if (this.grain.uniforms.uGrain) {
-        this.grain.uniforms.uGrain.value = this.museumMode ? 0.055 : 0.028
+        this.grain.uniforms.uGrain.value = this.museumMode ? 0.07 : 0.032
       }
       if (this.grain.uniforms.uWarm) {
-        this.grain.uniforms.uWarm.value = this.museumMode ? 0.055 : 0.035
+        this.grain.uniforms.uWarm.value = this.museumMode ? 0.07 : 0.04
+      }
+      if (this.grain.uniforms.uFogLift) {
+        this.grain.uniforms.uFogLift.value = this.museumMode ? 0.04 : 0.02
       }
     } else {
       this.applyLook()
@@ -70,15 +73,18 @@ export class PostFX {
   }
 
   private applyLook() {
-    this.bloom.strength = this.museumMode ? 0.06 : 0.03
+    this.bloom.strength = this.museumMode ? 0.075 : 0.035
     if (this.grain.uniforms.uVignette) {
-      this.grain.uniforms.uVignette.value = this.museumMode ? 0.36 : 0.24
+      this.grain.uniforms.uVignette.value = this.museumMode ? 0.32 : 0.22
     }
     if (this.grain.uniforms.uGrain) {
-      this.grain.uniforms.uGrain.value = this.museumMode ? 0.07 : 0.03
+      this.grain.uniforms.uGrain.value = this.museumMode ? 0.085 : 0.035
     }
     if (this.grain.uniforms.uWarm) {
-      this.grain.uniforms.uWarm.value = this.museumMode ? 0.05 : 0.03
+      this.grain.uniforms.uWarm.value = this.museumMode ? 0.06 : 0.035
+    }
+    if (this.grain.uniforms.uFogLift) {
+      this.grain.uniforms.uFogLift.value = this.museumMode ? 0.03 : 0.015
     }
   }
 

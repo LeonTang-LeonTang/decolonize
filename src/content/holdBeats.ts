@@ -203,27 +203,34 @@ export type ParallaxLayerDef = {
 
 export const parallaxBySection: Record<string, ParallaxLayerDef[]> = {
   act2a: [
-    { src: "/media/a/pieneman.jpg", depth: 0.12, opacity: 0.1, scale: 1.18 },
-    { src: "/media/a/saleh.jpg", depth: 0.28, opacity: 0.07, scale: 1.28 },
+    { src: "/media/a/pieneman.jpg", depth: 0.1, opacity: 0.11, scale: 1.16 },
+    { src: "/media/a/saleh.jpg", depth: 0.24, opacity: 0.085, scale: 1.26 },
+    { src: "/media/a/saleh-detail.jpg", depth: 0.4, opacity: 0.055, scale: 1.4 },
   ],
   act2b: [
-    { src: "/media/b/pacific-war-se-asia-1941.jpg", depth: 0.14, opacity: 0.12, scale: 1.2 },
-    { src: "/media/b/pacific-war-southern-asia-1942.jpg", depth: 0.3, opacity: 0.08, scale: 1.32 },
+    { src: "/media/b/pacific-war-se-asia-1941.jpg", depth: 0.1, opacity: 0.12, scale: 1.18 },
+    { src: "/media/b/pacific-war-southern-asia-1942.jpg", depth: 0.24, opacity: 0.09, scale: 1.28 },
+    { src: "/media/b/greater-east-asia-co-prosperity.jpg", depth: 0.4, opacity: 0.055, scale: 1.38 },
   ],
   act2c: [
-    { src: "/media/c/champa-seasia-1000-1100.jpg", depth: 0.14, opacity: 0.11, scale: 1.22 },
-    { src: "/media/c/indianized-kingdoms-indochina.jpg", depth: 0.28, opacity: 0.07, scale: 1.3 },
+    { src: "/media/c/champa-seasia-1000-1100.jpg", depth: 0.1, opacity: 0.11, scale: 1.18 },
+    { src: "/media/c/indianized-kingdoms-indochina.jpg", depth: 0.24, opacity: 0.08, scale: 1.28 },
+    { src: "/media/c/champa-locator.jpg", depth: 0.4, opacity: 0.05, scale: 1.4 },
   ],
   act2d: [
-    { src: "/media/d/democracy-monument-bangkok.jpg", depth: 0.12, opacity: 0.1, scale: 1.18 },
-    { src: "/media/d/death-railway-map.png", depth: 0.32, opacity: 0.05, scale: 1.35 },
+    // Democracy Monument primary; Death Railway only as faint deep layer
+    { src: "/media/d/democracy-monument-bangkok.jpg", depth: 0.1, opacity: 0.12, scale: 1.16 },
+    { src: "/media/stills/d/arin-install-artpress.jpg", depth: 0.24, opacity: 0.08, scale: 1.26 },
+    { src: "/media/d/death-railway-map.png", depth: 0.42, opacity: 0.04, scale: 1.42 },
   ],
   act2e: [
-    { src: "/media/e/dalrymple-borneo-sulu-1769.jpg", depth: 0.14, opacity: 0.11, scale: 1.22 },
-    { src: "/media/e/moro-sultanates.jpg", depth: 0.28, opacity: 0.07, scale: 1.3 },
+    { src: "/media/e/dalrymple-borneo-sulu-1769.jpg", depth: 0.1, opacity: 0.11, scale: 1.18 },
+    { src: "/media/e/moro-sultanates.jpg", depth: 0.24, opacity: 0.08, scale: 1.28 },
+    { src: "/media/e/sulu-1848-1899.jpg", depth: 0.4, opacity: 0.05, scale: 1.4 },
   ],
   act2f: [
-    { src: "/media/f/raffles-statue-singapore-river.jpg", depth: 0.12, opacity: 0.09, scale: 1.2 },
-    { src: "/media/stills/f/artist-empire-tate-2.jpg", depth: 0.28, opacity: 0.06, scale: 1.28 },
+    { src: "/media/f/raffles-statue-singapore-river.jpg", depth: 0.1, opacity: 0.1, scale: 1.18 },
+    { src: "/media/stills/f/artist-empire-tate-2.jpg", depth: 0.24, opacity: 0.07, scale: 1.28 },
+    { src: "/media/f/raffles-statue-front.jpg", depth: 0.4, opacity: 0.05, scale: 1.4 },
   ],
 }

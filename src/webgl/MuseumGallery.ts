@@ -38,8 +38,8 @@ export class MuseumGallery {
     this.scene = scene
     this.root.name = "MuseumGallery"
     // Pass5b: MeshBasic shell — unmistakable walls/floors even if lights/bloom crush PBR
-    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x8a7054 })
-    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x5e5040 })
+    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x9a8060 })
+    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x6a5a48 })
     this.buildShell(this.corridor, 28, "corridor")
     this.corridor.visible = false
     this.root.add(this.corridor)
@@ -141,7 +141,7 @@ export class MuseumGallery {
 
     const ceil = new THREE.Mesh(
       new THREE.PlaneGeometry(8, length),
-      new THREE.MeshBasicMaterial({ color: 0x4a4034 }),
+      new THREE.MeshBasicMaterial({ color: 0x564838 }),
     )
     ceil.rotation.x = Math.PI / 2
     ceil.position.set(0, 3.4, floor.position.z)
@@ -156,7 +156,7 @@ export class MuseumGallery {
 
     const back = new THREE.Mesh(
       new THREE.PlaneGeometry(8, 3.4),
-      new THREE.MeshBasicMaterial({ color: 0x6e5a44 }),
+      new THREE.MeshBasicMaterial({ color: 0x7a664e }),
     )
     back.position.set(0, 1.7, floor.position.z - half)
 
@@ -170,7 +170,7 @@ export class MuseumGallery {
     key.target.position.set(0, 1.4, kind === "corridor" ? -4 : -1)
     parent.add(key, key.target)
 
-    const fill = new THREE.PointLight(0xffe8c0, 26, 32, 1.3)
+    const fill = new THREE.PointLight(0xffe8c0, kind === "corridor" ? 34 : 28, 32, 1.25)
     fill.position.set(0, 2.4, kind === "corridor" ? 0 : 1)
 
     const fill2 = new THREE.PointLight(0xffe6c8, 20, 26, 1.35)
@@ -179,7 +179,7 @@ export class MuseumGallery {
     const rim = new THREE.DirectionalLight(0xe8d5a3, 1.45)
     rim.position.set(-2, 4, 6)
 
-    const amb = new THREE.AmbientLight(0xe8dcc0, 0.85)
+    const amb = new THREE.AmbientLight(0xe8dcc0, kind === "corridor" ? 1.15 : 0.95)
 
     parent.add(floor, ceil, left, right, back, fill, fill2, rim, amb)
   }
@@ -196,13 +196,13 @@ export class MuseumGallery {
     ctx.strokeStyle = "#e8d5a3"
     ctx.lineWidth = 5
     ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16)
-    ctx.fillStyle = "#f0e2c0"
+    ctx.fillStyle = "#fff3d4"
     ctx.font = "bold 46px Georgia, serif"
     ctx.textAlign = "center"
     ctx.textBaseline = "middle"
     const title =
       kind === "corridor"
-        ? "CORRIDOR · 展廊总览 · WEBGL"
+        ? "CORRIDOR · 六案走廊 · 展厅可读"
         : `ROOM ${kind.replace("core", "").toUpperCase()} · 三维展厅 · ON`
     ctx.fillText(title, canvas.width / 2, canvas.height / 2)
     const tex = new THREE.CanvasTexture(canvas)
@@ -226,7 +226,7 @@ export class MuseumGallery {
         (tex.image && tex.image.width && tex.image.height
           ? tex.image.width / tex.image.height
           : 1.4)
-      const h = layout === "corridor" ? 1.65 : layout === "coreA" ? 2.2 : 1.9
+      const h = layout === "corridor" ? 1.9 : layout === "coreA" ? 2.2 : 1.9
       const w = h * aspect
 
       const geo = new THREE.PlaneGeometry(w, h)

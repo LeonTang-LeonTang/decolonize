@@ -7,6 +7,7 @@ export const vignetteGrainShader = {
     uVignette: { value: 0.55 },
     uGrain: { value: 0.045 },
     uWarm: { value: 0.04 },
+    uFogLift: { value: 0.02 },
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
@@ -21,6 +22,7 @@ export const vignetteGrainShader = {
     uniform float uVignette;
     uniform float uGrain;
     uniform float uWarm;
+    uniform float uFogLift;
     varying vec2 vUv;
 
     float hash(vec2 p) {
@@ -29,8 +31,9 @@ export const vignetteGrainShader = {
 
     void main() {
       vec4 color = texture2D(tDiffuse, vUv);
-      // Subtle warm lift (museum tungsten)
+      // Subtle warm lift (museum tungsten) + soft fog lift so midtones stay readable
       color.rgb += vec3(uWarm, uWarm * 0.7, uWarm * 0.25) * 0.85;
+      color.rgb = mix(color.rgb, vec3(0.35, 0.30, 0.22), uFogLift);
 
       // Vignette
       vec2 uv = vUv - 0.5;

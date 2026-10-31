@@ -27,9 +27,12 @@ watch(
 watch(ready, () => {
   xrOk.value = !!getMuseumApp()?.xrAvailable
   const m = mode.value
-  getMuseumApp()?.setState({
+  const app = getMuseumApp()
+  if (!app) return
+  const inPortal = !!app.getState().portal
+  app.setState({
     viewMode: m,
-    immersionScale: m === "reading" ? 0.42 : 1,
+    immersionScale: inPortal ? (m === "reading" ? 0.94 : 1) : m === "reading" ? 0.42 : 1,
   })
 })
 
@@ -120,6 +123,8 @@ async function onEnterXR() {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
+  /* Pass 9: warm underpaint so cold-start never flashes pure black */
+  background: radial-gradient(ellipse at 50% 40%, #2a2218 0%, #1a1610 55%, #0c0b09 100%);
   transition: opacity 0.35s ease;
 }
 /* Pass5b: full opacity when portal is active — not tiny immersion floats */

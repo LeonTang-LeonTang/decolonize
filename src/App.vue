@@ -98,12 +98,17 @@ onUnmounted(() => {
 })
 
 watch(mode, () => {
-  // Re-push scale when museum app becomes ready later
+  // Re-push scale when museum app becomes ready later (portal-aware)
   const m = mode.value
-  getMuseumApp()?.setState({
+  const app = getMuseumApp()
+  if (!app) return
+  const inPortal = !!app.getState().portal
+  app.setState({
     viewMode: m,
-    immersionScale: m === "reading" ? 0.42 : 1,
+    immersionScale: inPortal ? (m === "reading" ? 0.94 : 1) : m === "reading" ? 0.42 : 1,
   })
+  // Pass 9: portal height changes with mode — refresh ST so Core D etc. stay claimable
+  requestAnimationFrame(() => ScrollTrigger.refresh())
 })
 
 const onEnter = async () => {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue"
+import { onMounted, onUnmounted, ref, watch } from "vue"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { getMuseumApp } from "../../composables/useMuseumWebGL"
+import { claimPortal, releasePortal, releasePortalNow } from "../../composables/portalClaim"
 import { useReducedMotion } from "../../composables/useReducedMotion"
 import { useViewMode } from "../../composables/useViewMode"
 import type { PortalId } from "../../webgl/MuseumApp"
@@ -29,53 +29,112 @@ const t = ref(0)
 const { reduced } = useReducedMotion()
 const { isReading } = useViewMode()
 let st: ScrollTrigger | null = null
+let io: IntersectionObserver | null = null
+let ioVisible = false
+
+const scale = () => (isReading.value ? 0.94 : 1)
+
+const push = (progress: number) => {
+  t.value = progress
+  // Floor progress so mid-portal never reports 0 and drops immersion
+  const pt = Math.max(0.02, Math.min(1, progress))
+  claimPortal(props.portal, pt, scale())
+}
+
+/** Progress from element geometry — survives stale ScrollTrigger start/end after mode toggle */
+const progressFromGeometry = () => {
+  const el = root.value
+  if (!el) return 0
+  const rect = el.getBoundingClientRect()
+  const vh = window.innerHeight || 1
+  // 0 when top hits viewport top; 1 when bottom hits viewport bottom
+  const travel = Math.max(1, el.offsetHeight - vh)
+  const scrolled = -rect.top
+  return Math.min(1, Math.max(0, scrolled / travel))
+}
+
+const syncFromView = () => {
+  if (!root.value || reduced.value) return
+  const rect = root.value.getBoundingClientRect()
+  const vh = window.innerHeight || 1
+  // Active while any meaningful slice of the portal runway is on screen
+  const overlapping = rect.bottom > vh * 0.12 && rect.top < vh * 0.88
+  if (overlapping) {
+    ioVisible = true
+    push(progressFromGeometry())
+  } else if (ioVisible) {
+    ioVisible = false
+    releasePortal(props.portal, 160)
+  }
+}
 
 onMounted(() => {
   if (reduced.value || !root.value) return
+
   st = ScrollTrigger.create({
     trigger: root.value,
+    // Sticky portal runway: classic pin window (refresh after mode toggles)
     start: "top top",
     end: "bottom bottom",
-    scrub: 0.45,
+    scrub: 0.35,
+    invalidateOnRefresh: true,
     onUpdate: (self) => {
-      t.value = self.progress
-      getMuseumApp()?.setState({
-        portal: props.portal,
-        portalT: self.progress,
-        // Pass 8: keep immersionScale high inside portals (reading still softens prose chrome)
-        immersionScale: isReading.value ? 0.94 : 1,
-      })
+      if (self.isActive) push(self.progress)
     },
-    onEnter: () => {
-      getMuseumApp()?.setState({
-        portal: props.portal,
-        portalT: 0.01,
-        immersionScale: isReading.value ? 0.94 : 1,
-      })
-    },
+    onEnter: (self) => push(Math.max(0.02, self.progress)),
+    onEnterBack: (self) => push(Math.max(0.02, self.progress)),
     onLeave: () => {
-      // Keep last frame briefly — hard-clear only after leave completes
-      getMuseumApp()?.setState({ portal: props.portal, portalT: 1 })
-      requestAnimationFrame(() => {
-        getMuseumApp()?.setState({ portal: null, portalT: 0 })
-      })
-    },
-    onEnterBack: () => {
-      getMuseumApp()?.setState({
-        portal: props.portal,
-        portalT: 1,
-        immersionScale: isReading.value ? 0.94 : 1,
-      })
+      // Debounced — sibling portal may claim; IO may still see us
+      releasePortal(props.portal, 180)
     },
     onLeaveBack: () => {
-      getMuseumApp()?.setState({ portal: null, portalT: 0 })
+      releasePortal(props.portal, 180)
     },
+  })
+
+  // Pass 9 backup: IntersectionObserver + geometry progress.
+  // Survives Lenis/ST leave races and stale ST after 阅读↔展厅 height change.
+  io = new IntersectionObserver(
+    () => {
+      syncFromView()
+    },
+    { root: null, threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1], rootMargin: "0px" },
+  )
+  io.observe(root.value)
+
+  const onScroll = () => {
+    if (ioVisible || st?.isActive) syncFromView()
+  }
+  window.addEventListener("scroll", onScroll, { passive: true })
+  ;(root.value as HTMLElement & { __portalOnScroll?: () => void }).__portalOnScroll = onScroll
+
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh()
+    syncFromView()
+    if (st?.isActive) push(st.progress)
+  })
+})
+
+// Mode toggle changes heightVh → must refresh ST or start/end go stale (Core D bug)
+watch(isReading, () => {
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh()
+    syncFromView()
+    if (st?.isActive) push(st.progress)
   })
 })
 
 onUnmounted(() => {
+  const el = root.value as (HTMLElement & { __portalOnScroll?: () => void }) | null
+  if (el?.__portalOnScroll) {
+    window.removeEventListener("scroll", el.__portalOnScroll)
+    delete el.__portalOnScroll
+  }
+  io?.disconnect()
+  io = null
   st?.kill()
-  getMuseumApp()?.setState({ portal: null, portalT: 0 })
+  st = null
+  releasePortalNow(props.portal)
 })
 </script>
 
@@ -97,7 +156,7 @@ onUnmounted(() => {
     :style="{ height: (isReading ? Math.max(120, heightVh * 0.85) : heightVh) + 'vh' }"
     :data-portal="portal"
   >
-    <div ref="stage" class="portal__stage">
+    <div class="portal__stage">
       <div class="portal__hud">
         <span class="portal__role">{{ isReading ? "展开证据 · 三维展厅（辅）" : "章节传送门 · 展厅模式" }}</span>
         <span class="portal__label">{{ label }}</span>
@@ -138,7 +197,6 @@ onUnmounted(() => {
   flex-direction: column;
   justify-content: flex-end;
   pointer-events: none;
-  /* Pass5b: keep top ~55%+ clear as a WebGL window; darken HUD/caption only */
   background: linear-gradient(
     180deg,
     transparent 0%,

@@ -54,6 +54,18 @@ const cdosea = voById("b-cdosea")
 
     </div>
 
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="130"
+    />
+
+    <p class="immersion-handoff" aria-hidden="true">定格导演 → 三维展厅</p>
+
+
     <ChapterPortal
       portal="coreB-gallery"
       label="Core B · 命名与幽灵室"
@@ -62,15 +74,6 @@ const cdosea = voById("b-cdosea")
     >
       <p>{{ nodeB.vo }}</p>
     </ChapterPortal>
-
-    <ChapterHold
-      v-if="holdDirector"
-      :beats="holdDirector.beats"
-      :label="holdDirector.label"
-      :exit-vo-id="holdDirector.exitVoId"
-      :exit-stinger="holdDirector.exitStinger"
-      :height-vh="120"
-    />
 
     <StickyScrubVideo
       :src="scrub.src"
@@ -118,6 +121,17 @@ const cdosea = voById("b-cdosea")
 </template>
 
 <style scoped lang="scss">
+.immersion-handoff {
+  max-width: 920px;
+  margin: 0.25rem auto 0.15rem;
+  padding: 0 1.25rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  opacity: 0.75;
+}
+
 h2 {
   font-size: clamp(1.75rem, 4vw, 2.55rem);
 }
