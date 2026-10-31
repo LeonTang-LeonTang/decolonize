@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass6 (do not overwrite): `recover/pre-pass6-article-hybrid-20261031` @ `0e02403`
-- Post-pass6: `recover/pass6-article-hybrid-20261031` @ `fd3ae8a`
+- Post-pass6: `recover/pass6-article-hybrid-20261031` @ `abb5d34`
 
 ## What shipped
 
