@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass10 (do not overwrite): `recover/pre-pass10-media-density-20261031` @ `20eea4b`
-- Post-pass10: `recover/pass10-media-density-20261031` @ *(fill after push)*
+- Post-pass10: `recover/pass10-media-density-20261031` @ `4bfa988df32330bcc56fa263d29de2a67f70da0a`
 
 ## Version
 
