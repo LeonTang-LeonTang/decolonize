@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass7 (do not overwrite): `recover/pre-pass7-kaizen-depth-20261031` @ `f42fe5a`
-- Post-pass7: `recover/pass7-kaizen-depth-20261031` @ *(this tip)*
+- Post-pass7: `recover/pass7-kaizen-depth-20261031` @ `b3c408e`*
 
 ## What shipped
 
