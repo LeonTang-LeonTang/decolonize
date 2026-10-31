@@ -20,13 +20,57 @@ export class GalleryProps {
   }
 
   async load(): Promise<void> {
-    const [ped, frame] = await Promise.all([
-      this.loadGltf("/models/museum-pedestal.gltf"),
-      this.loadGltf("/models/picture-frame.gltf"),
-    ])
-    this.pedestalProto = ped
-    this.frameProto = frame
+    try {
+      const [ped, frame] = await Promise.all([
+        this.loadGltf("/models/museum-pedestal.gltf"),
+        this.loadGltf("/models/picture-frame.gltf"),
+      ])
+      this.pedestalProto = ped
+      this.frameProto = frame
+    } catch (err) {
+      console.warn("[museum] GLTF props failed — procedural pedestals/frames", err)
+      this.pedestalProto = this.makeProceduralPedestal()
+      this.frameProto = this.makeProceduralFrame()
+    }
     this.ready = true
+  }
+
+  private makeProceduralPedestal(): THREE.Object3D {
+    const g = new THREE.Group()
+    const oak = new THREE.MeshStandardMaterial({
+      color: 0x6b4f32,
+      roughness: 0.7,
+      metalness: 0.08,
+      emissive: new THREE.Color(0x2a1c10),
+      emissiveIntensity: 0.2,
+    })
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.9), oak)
+    base.position.y = 0.06
+    const shaft = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.7, 0.55), oak.clone())
+    shaft.position.y = 0.47
+    const top = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.1, 0.75), oak.clone())
+    top.position.y = 0.87
+    g.add(base, shaft, top)
+    return g
+  }
+
+  private makeProceduralFrame(): THREE.Object3D {
+    const g = new THREE.Group()
+    const gilt = new THREE.MeshStandardMaterial({
+      color: 0xc4a574,
+      roughness: 0.45,
+      metalness: 0.35,
+      emissive: new THREE.Color(0x5a4020),
+      emissiveIntensity: 0.25,
+    })
+    const outer = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.08), gilt)
+    const matte = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.95, 1.2),
+      new THREE.MeshStandardMaterial({ color: 0x1c1814, roughness: 1 }),
+    )
+    matte.position.z = 0.045
+    g.add(outer, matte)
+    return g
   }
 
   isReady() {

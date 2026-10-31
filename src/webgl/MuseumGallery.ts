@@ -28,8 +28,8 @@ export class MuseumGallery {
   private loader = new THREE.TextureLoader()
   private mode: GalleryMode = "idle"
   private ready = false
-  private floorMat: THREE.MeshStandardMaterial
-  private wallMat: THREE.MeshStandardMaterial
+  private floorMat: THREE.MeshBasicMaterial
+  private wallMat: THREE.MeshBasicMaterial
   private props: GalleryProps
 
   private scene: THREE.Scene
@@ -37,16 +37,9 @@ export class MuseumGallery {
   constructor(scene: THREE.Scene) {
     this.scene = scene
     this.root.name = "MuseumGallery"
-    this.floorMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1612,
-      roughness: 0.92,
-      metalness: 0.05,
-    })
-    this.wallMat = new THREE.MeshStandardMaterial({
-      color: 0x12100e,
-      roughness: 0.95,
-      metalness: 0.02,
-    })
+    // Pass5b: MeshBasic shell — unmistakable walls/floors even if lights/bloom crush PBR
+    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x5a4a38 })
+    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x3e3428 })
     this.buildShell(this.corridor, 28, "corridor")
     this.corridor.visible = false
     this.root.add(this.corridor)
@@ -117,7 +110,7 @@ export class MuseumGallery {
       if (!h.group.parent?.visible) continue
       const dist = h.group.position.distanceTo(pose.position)
       const near = THREE.MathUtils.clamp(1 - dist / 8, 0, 1)
-      h.targetEmissive = 0.08 + near * 0.35
+      h.targetEmissive = 0.18 + near * 0.55
       const mat = h.mesh.material as THREE.MeshStandardMaterial
       mat.emissiveIntensity = THREE.MathUtils.damp(
         mat.emissiveIntensity,
@@ -149,7 +142,7 @@ export class MuseumGallery {
 
     const ceil = new THREE.Mesh(
       new THREE.PlaneGeometry(8, length),
-      new THREE.MeshStandardMaterial({ color: 0x0a0908, roughness: 0.98 }),
+      new THREE.MeshBasicMaterial({ color: 0x2a241c }),
     )
     ceil.rotation.x = Math.PI / 2
     ceil.position.set(0, 3.4, floor.position.z)
@@ -164,22 +157,60 @@ export class MuseumGallery {
 
     const back = new THREE.Mesh(
       new THREE.PlaneGeometry(8, 3.4),
-      new THREE.MeshStandardMaterial({ color: 0x0e0c0a, roughness: 0.9 }),
+      new THREE.MeshBasicMaterial({ color: 0x4a3c2c }),
     )
     back.position.set(0, 1.7, floor.position.z - half)
 
-    const key = new THREE.SpotLight(0xffe6c8, 18, 40, Math.PI / 5, 0.45, 1.4)
+    // Room label strip on back wall — visible even if textures fail
+    const label = this.makeRoomLabel(kind)
+    label.position.set(0, 2.85, floor.position.z - half + 0.02)
+    parent.add(label)
+
+    const key = new THREE.SpotLight(0xfff0d8, 42, 48, Math.PI / 4.2, 0.4, 1.1)
     key.position.set(0, 3.1, kind === "corridor" ? 8 : 5)
     key.target.position.set(0, 1.4, kind === "corridor" ? -4 : -1)
     parent.add(key, key.target)
 
-    const fill = new THREE.PointLight(0xc4a574, 4, 24, 2)
+    const fill = new THREE.PointLight(0xe8d5a3, 12, 28, 1.6)
     fill.position.set(0, 2.4, kind === "corridor" ? 0 : 1)
 
-    const rim = new THREE.DirectionalLight(0x6a5a40, 0.35)
+    const fill2 = new THREE.PointLight(0xffe6c8, 8, 22, 1.8)
+    fill2.position.set(2.2, 2.2, kind === "corridor" ? -2 : -1.2)
+
+    const rim = new THREE.DirectionalLight(0xc4a574, 0.85)
     rim.position.set(-2, 4, 6)
 
-    parent.add(floor, ceil, left, right, back, fill, rim)
+    const amb = new THREE.AmbientLight(0xd4c4a0, 0.45)
+
+    parent.add(floor, ceil, left, right, back, fill, fill2, rim, amb)
+  }
+
+  private makeRoomLabel(kind: string): THREE.Mesh {
+    const canvas = document.createElement("canvas")
+    canvas.width = 1024
+    canvas.height = 128
+    const ctx = canvas.getContext("2d")!
+    ctx.fillStyle = "#2a2218"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.strokeStyle = "#c4a574"
+    ctx.lineWidth = 4
+    ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16)
+    ctx.fillStyle = "#e8d5a3"
+    ctx.font = "bold 48px Georgia, serif"
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
+    const title =
+      kind === "corridor"
+        ? "CORRIDOR · 展廊总览"
+        : `ROOM ${kind.replace("core", "").toUpperCase()} · 三维展厅`
+    ctx.fillText(title, canvas.width / 2, canvas.height / 2)
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.colorSpace = THREE.SRGBColorSpace
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(4.6, 0.55),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true }),
+    )
+    return mesh
   }
 
   private async hangFrames(
@@ -188,26 +219,30 @@ export class MuseumGallery {
     layout: "corridor" | CoreMode,
   ) {
     const tasks = frames.map(async (frame, i) => {
-      const tex = await this.loadTexture(frame.src)
-      const aspect = frame.aspect || tex.image.width / tex.image.height || 1.4
+      const { tex, fallback } = await this.loadTextureSafe(frame)
+      const aspect =
+        frame.aspect ||
+        (tex.image && tex.image.width && tex.image.height
+          ? tex.image.width / tex.image.height
+          : 1.4)
       const h = layout === "corridor" ? 1.65 : layout === "coreA" ? 2.2 : 1.9
       const w = h * aspect
 
       const geo = new THREE.PlaneGeometry(w, h)
       const mat = new THREE.MeshStandardMaterial({
         map: tex,
-        roughness: 0.75,
+        roughness: fallback ? 0.55 : 0.65,
         metalness: 0.05,
-        emissive: new THREE.Color(0xc4a574),
-        emissiveIntensity: 0.1,
-        emissiveMap: tex,
+        emissive: new THREE.Color(fallback ? 0xb08a4a : 0xffffff),
+        emissiveIntensity: fallback ? 0.85 : 0.55,
+        emissiveMap: fallback ? null : tex,
       })
       const mesh = new THREE.Mesh(geo, mat)
 
       const frameGroup = new THREE.Group()
       const moulding = new THREE.Mesh(
         new THREE.BoxGeometry(w + 0.12, h + 0.12, 0.06),
-        new THREE.MeshStandardMaterial({ color: 0x3a2e1f, roughness: 0.7, metalness: 0.15 }),
+        new THREE.MeshBasicMaterial({ color: 0xc4a574 }),
       )
       moulding.position.z = -0.04
       const matte = new THREE.Mesh(
@@ -257,6 +292,49 @@ export class MuseumGallery {
       frameGroup.scale.setScalar(0.7)
     }
     void n
+  }
+
+  private async loadTextureSafe(
+    frame: GalleryFrame,
+  ): Promise<{ tex: THREE.Texture; fallback: boolean }> {
+    try {
+      const tex = await this.loadTexture(frame.src)
+      return { tex, fallback: false }
+    } catch (err) {
+      console.warn("[museum] texture failed — solid label plane", frame.src, err)
+      return { tex: this.makeFallbackTexture(frame), fallback: true }
+    }
+  }
+
+  private makeFallbackTexture(frame: GalleryFrame): THREE.Texture {
+    const canvas = document.createElement("canvas")
+    canvas.width = 768
+    canvas.height = 512
+    const ctx = canvas.getContext("2d")!
+    const hues: Record<string, string> = {
+      A: "#5c3d2e",
+      B: "#3d4a5c",
+      C: "#3d5c45",
+      D: "#5c3d4a",
+      E: "#4a3d5c",
+      F: "#5c523d",
+      intro: "#3a3428",
+    }
+    ctx.fillStyle = hues[frame.core] || "#3a3428"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.strokeStyle = "#c4a574"
+    ctx.lineWidth = 10
+    ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48)
+    ctx.fillStyle = "#e8d5a3"
+    ctx.font = "bold 36px Georgia, serif"
+    ctx.textAlign = "center"
+    ctx.fillText(frame.title.slice(0, 28), canvas.width / 2, canvas.height / 2 - 12)
+    ctx.font = "22px sans-serif"
+    ctx.fillStyle = "#c4a574"
+    ctx.fillText("展品纹理加载失败 · 占位可见", canvas.width / 2, canvas.height / 2 + 36)
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.colorSpace = THREE.SRGBColorSpace
+    return tex
   }
 
   private loadTexture(url: string): Promise<THREE.Texture> {

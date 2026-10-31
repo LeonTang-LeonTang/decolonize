@@ -26,7 +26,8 @@ export class PostFX {
 
     const size = new THREE.Vector2()
     renderer.getSize(size)
-    this.bloom = new UnrealBloomPass(size.clone(), 0.16, 0.5, 0.88)
+    // Pass5b: bloom tiny — heavy bloom crushed museum midtones to a black void
+    this.bloom = new UnrealBloomPass(size.clone(), 0.04, 0.4, 0.92)
     this.composer.addPass(this.bloom)
 
     this.grain = new ShaderPass(vignetteGrainShader)
@@ -40,6 +41,14 @@ export class PostFX {
 
   setEnabled(on: boolean) {
     this.enabled = on
+  }
+
+  /** Soften bloom/vignette while portals are fully lit — keep GLSL visible, not crushing */
+  setPortalMode(on: boolean) {
+    this.bloom.strength = on ? 0.025 : 0.05
+    if (this.grain.uniforms.uVignette) {
+      this.grain.uniforms.uVignette.value = on ? 0.28 : 0.55
+    }
   }
 
   render(timeSec: number) {

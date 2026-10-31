@@ -1,5 +1,32 @@
 # CHANGELOG — Pass 5 (Kaizen depth: rooms B–F · GLSL/post · GLTF · Theatre-like · XR)
 
+## Pass 5b — visibility fix (2026-10-31)
+
+Leon: Pass 5 features (rooms B–F, GLSL, GLTF, Theatre cams, XR) were **not visible at all**. Root cause: canvas CSS `opacity: 0` only raised via `immersion` floats (~0.05–0.93), so the museum read as “no change.”
+
+### Recover
+
+- Pre-fix (do not overwrite): `recover/pre-pass5-visibility-fix-20261031` @ `fb6fd6a`
+- Post-fix: `recover/pass5b-visibility-20261031` (this tip)
+
+### What changed
+
+| Fix | Detail |
+|---|---|
+| Portal immersion ~1.0 | `targetImmersion = 0.94 + portalT * 0.06`; Act2 ambient 0.36–0.48 (was 0.05–0.22) |
+| `.museum-gl--active` | Full `opacity: 1 !important` when `portalT > 0.05`; no longer rely on tiny immersion alone |
+| Brighter gallery | Lighter walls/floors, stronger lights, room label strip on back wall |
+| Texture / GLTF fallbacks | Solid labeled planes if stills 404; procedural pedestal/frame if GLTF fails |
+| Portal window | Top ~55%+ clear gradient; HUD/caption cards darkened only |
+| XR hint | Always show control when ready; disabled **本设备无 VR** without headset |
+| Badge | **三维展厅已开启** when museum portal is active |
+
+### Honest note
+
+WebXR enter still needs a headset / browser `immersive-vr` support. On Mac Desktop without VR the button correctly shows **本设备无 VR** — that is expected, not a missing feature. Rebuild box preview (`npm run build` + `:4175`); Mac Desktop app must also rebuild if viewing a local Electron/Desktop build.
+
+---
+
 **2026-10-31** — Leon: Pass 4 still short of full Kaizen (GLSL/post, GLTF, Theatre, XR, rooms B–F). Close those gaps as far as one box pass can. Capabilities, not excuses. Article remains primary.
 
 ## Recover

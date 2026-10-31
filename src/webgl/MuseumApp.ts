@@ -77,6 +77,7 @@ export class MuseumApp {
   private baseFov = 42
   private xrEnabled = false
   private onLost: (() => void) | null = null
+  private portalBg = new THREE.Color(0x2a2218)
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -87,10 +88,11 @@ export class MuseumApp {
       powerPreference: "high-performance",
       stencil: false,
     })
-    this.renderer.setClearColor(0x000000, 0)
+    // Slight warm clear so failed/empty frames still read as a museum void, not pure black
+    this.renderer.setClearColor(0x1a1610, 0)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 1.05
+    this.renderer.toneMappingExposure = 1.55
     this.renderer.shadowMap.enabled = false
     // WebXR — enabled only after a successful isSessionSupported probe
     this.renderer.xr.enabled = false
@@ -98,8 +100,8 @@ export class MuseumApp {
     this.camera = new THREE.PerspectiveCamera(this.baseFov, 1, 0.1, 80)
     this.camera.position.copy(this.ambientCam.position)
 
-    this.scene.fog = new THREE.FogExp2(0x0c0b09, 0.045)
-    const hemi = new THREE.HemisphereLight(0xe8d5a3, 0x1a1612, 0.55)
+    this.scene.fog = new THREE.FogExp2(0x2a2218, 0.012)
+    const hemi = new THREE.HemisphereLight(0xffe8c8, 0x2a2218, 1.15)
     this.scene.add(hemi)
 
     this.gallery = new MuseumGallery(this.scene)
@@ -170,6 +172,10 @@ export class MuseumApp {
     return this.immersion
   }
 
+  getState(): Readonly<MuseumState & { immersionLive: number }> {
+    return { ...this.state, immersionLive: this.immersion }
+  }
+
   resize() {
     const w = this.canvas.clientWidth || window.innerWidth
     const h = this.canvas.clientHeight || window.innerHeight
@@ -207,28 +213,29 @@ export class MuseumApp {
     const { portal, portalT, activeChapter } = this.state
     if (portal && PORTAL_TO_MODE[portal]) {
       this.gallery.setMode(PORTAL_TO_MODE[portal])
-      this.targetImmersion = 0.38 + portalT * 0.55
+      // Pass5b: portal immersion ~1.0 so walls/frames/pedestals are unmistakable
+      this.targetImmersion = 0.94 + portalT * 0.06
       const coreId = PORTAL_TO_CORE[portal]
       if (coreId) {
         void this.layers.setCore(coreId)
-        this.layers.setTargetOpacity(0.18 * (1 - portalT * 0.7))
+        this.layers.setTargetOpacity(0.28 * (1 - portalT * 0.55))
       } else {
         // intro corridor
-        this.layers.setTargetOpacity(0.12 * (1 - portalT))
+        this.layers.setTargetOpacity(0.2 * (1 - portalT * 0.6))
       }
     } else {
       this.gallery.setMode("idle")
       const coreMatch = /^(act2[a-f])$/.exec(activeChapter)
       if (coreMatch) {
         void this.layers.setCore(coreMatch[1])
-        this.layers.setTargetOpacity(0.28)
-        this.targetImmersion = 0.22
+        this.layers.setTargetOpacity(0.42)
+        this.targetImmersion = 0.48
       } else if (activeChapter === "act2intro") {
-        this.layers.setTargetOpacity(0.12)
-        this.targetImmersion = 0.14
+        this.layers.setTargetOpacity(0.28)
+        this.targetImmersion = 0.36
       } else {
-        this.layers.setTargetOpacity(0)
-        this.targetImmersion = activeChapter === "hero" ? 0.08 : 0.05
+        this.layers.setTargetOpacity(0.08)
+        this.targetImmersion = activeChapter === "hero" ? 0.22 : 0.16
       }
     }
   }
@@ -239,7 +246,27 @@ export class MuseumApp {
     const elapsed = this.clock.elapsedTime
 
     this.immersion = THREE.MathUtils.damp(this.immersion, this.targetImmersion, 3.2, dt)
-    this.canvas.style.opacity = String(this.immersion)
+    // Drive opacity + data attrs; Vue owns .museum-gl--active class (do not toggle here)
+    const portalActive = !!this.state.portal && this.state.portalT > 0.05
+    this.canvas.dataset.museumActive = portalActive ? "1" : "0"
+    this.canvas.dataset.portalT = this.state.portalT.toFixed(3)
+    this.canvas.dataset.portal = this.state.portal || ""
+    this.canvas.dataset.immersion = this.immersion.toFixed(3)
+    if (portalActive) {
+      // Full opacity — unmistakable museum; CSS .museum-gl--active also forces 1
+      this.canvas.style.opacity = "1"
+      this.renderer.setClearColor(0x2a2218, 1)
+      this.scene.background = this.portalBg
+      this.post?.setPortalMode(true)
+      this.post?.setEnabled(true)
+    } else {
+      // Floor ambient so layered planes / corridor peek stay readable (was ~0.05 = invisible)
+      this.canvas.style.opacity = String(THREE.MathUtils.clamp(this.immersion, 0.18, 0.85))
+      this.renderer.setClearColor(0x1a1610, 0)
+      this.scene.background = null
+      this.post?.setPortalMode(false)
+      this.post?.setEnabled(true)
+    }
 
     let targetPos: THREE.Vector3
     let targetLook: THREE.Vector3

@@ -122,22 +122,30 @@ onUnmounted(() => {
   flex-direction: column;
   justify-content: flex-end;
   pointer-events: none;
-  /* Let WebGL canvas show through; HUD sits on top */
+  /* Pass5b: keep top ~55%+ clear as a WebGL window; darken HUD/caption only */
   background: linear-gradient(
     180deg,
     transparent 0%,
-    transparent 42%,
-    rgba(12, 11, 9, 0.55) 70%,
-    rgba(12, 11, 9, 0.88) 100%
+    transparent 55%,
+    rgba(12, 11, 9, 0.25) 68%,
+    rgba(12, 11, 9, 0.72) 82%,
+    rgba(12, 11, 9, 0.92) 100%
   );
 }
 .portal__hud {
-  padding: 1.5rem 1.25rem 0.75rem;
+  padding: 0.85rem 1.25rem 0.5rem;
   max-width: 920px;
   margin: 0 auto;
   width: 100%;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.25rem;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(12, 11, 9, 0.4) 35%,
+    rgba(12, 11, 9, 0.78) 100%
+  );
+  border-radius: 4px 4px 0 0;
 }
 .portal__role {
   font-size: 0.6rem;
@@ -174,14 +182,18 @@ onUnmounted(() => {
   color: var(--ink-dim);
 }
 .portal__caption {
-  padding: 0 1.25rem 1.75rem;
+  padding: 0.55rem 1.25rem 1.1rem;
   max-width: 920px;
   margin: 0 auto;
   width: 100%;
   font-family: var(--serif);
-  font-size: clamp(1rem, 2.1vw, 1.2rem);
-  line-height: 1.55;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  line-height: 1.5;
   color: var(--ink);
+  background: rgba(12, 11, 9, 0.86);
+  border-radius: 0 0 4px 4px;
+  border: 1px solid rgba(196, 165, 116, 0.14);
+  border-top: none;
 }
 .portal__slot {
   margin-top: 0.75rem;
