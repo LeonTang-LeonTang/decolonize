@@ -10,6 +10,7 @@ import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const chart = nodeE.charts[0]
@@ -42,6 +43,15 @@ const seam = voById("e-seam")
       </div>
 
     </div>
+
+    <ChapterPortal
+      portal="coreE-gallery"
+      label="Core E · 群岛与苏禄室"
+      hint="滚动进入展室：群岛／barangay 与历史地图帧。"
+      :height-vh="150"
+    >
+      <p>{{ nodeE.vo }}</p>
+    </ChapterPortal>
 
     <ChapterHold label="Core E · Sulu Stories" :height-vh="100">
       <img :src="nodeE.embeds[0].src" :alt="nodeE.embeds[0].title" />

@@ -1,29 +1,36 @@
 import * as THREE from "three"
-import { coreARoom, museumCorridor, type GalleryFrame } from "./frames"
+import { coreRooms, museumCorridor, type GalleryFrame } from "./frames"
+import { GalleryProps } from "./GalleryProps"
+import { cameraTake } from "./cameraTakes"
 
-export type GalleryMode = "corridor" | "coreA" | "idle"
+export type CoreMode = "coreA" | "coreB" | "coreC" | "coreD" | "coreE" | "coreF"
+export type GalleryMode = "corridor" | CoreMode | "idle"
+
+const CORE_LIST: CoreMode[] = ["coreA", "coreB", "coreC", "coreD", "coreE", "coreF"]
 
 type HungFrame = {
   group: THREE.Group
   mesh: THREE.Mesh
   frame: GalleryFrame
   targetEmissive: number
+  room: string
 }
 
 /**
- * Museum-like gallery: dark corridor with framed stills + a Core A dual-painting room.
- * Scroll progress drives camera path through the active mode.
+ * Museum gallery: overview corridor + dedicated Core A–F rooms with framed stills.
+ * Camera poses come from cameraTakes (Theatre-like keyframes).
  */
 export class MuseumGallery {
   readonly root = new THREE.Group()
   private corridor = new THREE.Group()
-  private coreA = new THREE.Group()
+  private rooms = new Map<CoreMode, THREE.Group>()
   private hung: HungFrame[] = []
   private loader = new THREE.TextureLoader()
   private mode: GalleryMode = "idle"
   private ready = false
   private floorMat: THREE.MeshStandardMaterial
   private wallMat: THREE.MeshStandardMaterial
+  private props: GalleryProps
 
   private scene: THREE.Scene
 
@@ -41,25 +48,45 @@ export class MuseumGallery {
       metalness: 0.02,
     })
     this.buildShell(this.corridor, 28, "corridor")
-    this.buildShell(this.coreA, 14, "coreA")
     this.corridor.visible = false
-    this.coreA.visible = false
-    this.root.add(this.corridor, this.coreA)
+    this.root.add(this.corridor)
+
+    for (const id of CORE_LIST) {
+      const g = new THREE.Group()
+      g.name = id
+      this.buildShell(g, 14, id)
+      g.visible = false
+      this.rooms.set(id, g)
+      this.root.add(g)
+    }
+
+    this.props = new GalleryProps(this.root)
     this.scene.add(this.root)
   }
 
   async load(): Promise<void> {
-    await Promise.all([
+    await this.props.load()
+    const tasks: Promise<void>[] = [
       this.hangFrames(this.corridor, museumCorridor, "corridor"),
-      this.hangFrames(this.coreA, coreARoom, "coreA"),
-    ])
+    ]
+    for (const id of CORE_LIST) {
+      const room = this.rooms.get(id)!
+      tasks.push(this.hangFrames(room, coreRooms[id], id))
+    }
+    await Promise.all(tasks)
+    this.props.populateCorridor(this.corridor)
+    for (const id of CORE_LIST) {
+      this.props.populateRoom(this.rooms.get(id)!, id === "coreA" ? 2 : 2)
+    }
     this.ready = true
   }
 
   setMode(mode: GalleryMode) {
     this.mode = mode
     this.corridor.visible = mode === "corridor"
-    this.coreA.visible = mode === "coreA"
+    for (const id of CORE_LIST) {
+      this.rooms.get(id)!.visible = mode === id
+    }
   }
 
   getMode() {
@@ -72,30 +99,17 @@ export class MuseumGallery {
 
   /**
    * @param t 0–1 progress inside the active portal hold
-   * @returns camera world position + lookAt for the scroll camera
    */
-  cameraPose(t: number): { position: THREE.Vector3; lookAt: THREE.Vector3 } {
-    const p = THREE.MathUtils.clamp(t, 0, 1)
-    if (this.mode === "coreA") {
-      // Enter room from doorway, settle between two facing paintings
-      const z = THREE.MathUtils.lerp(6.5, 0.2, easeInOut(p))
-      const x = Math.sin(p * Math.PI) * 0.35
-      const y = 1.55 + Math.sin(p * Math.PI) * 0.08
-      return {
-        position: new THREE.Vector3(x, y, z),
-        lookAt: new THREE.Vector3(0, 1.45, -2.2),
-      }
-    }
-    // Corridor walk past A–F frames
-    const z = THREE.MathUtils.lerp(10, -14, easeInOut(p))
-    const sway = Math.sin(p * Math.PI * 2) * 0.25
+  cameraPose(t: number): { position: THREE.Vector3; lookAt: THREE.Vector3; fov?: number } {
+    const take = cameraTake(this.mode, t)
+    if (take) return take
+    // Idle fallback
     return {
-      position: new THREE.Vector3(sway, 1.6, z),
-      lookAt: new THREE.Vector3(sway * 0.2, 1.45, z - 4),
+      position: new THREE.Vector3(0, 1.6, 8),
+      lookAt: new THREE.Vector3(0, 1.2, 0),
     }
   }
 
-  /** Soft spotlight bias toward nearest frame */
   update(t: number, dt: number) {
     if (!this.ready || this.mode === "idle") return
     const pose = this.cameraPose(t)
@@ -115,6 +129,7 @@ export class MuseumGallery {
   }
 
   dispose() {
+    this.props.dispose()
     this.root.traverse((obj) => {
       const mesh = obj as THREE.Mesh
       if (mesh.geometry) mesh.geometry.dispose()
@@ -127,7 +142,7 @@ export class MuseumGallery {
 
   private buildShell(parent: THREE.Group, length: number, kind: string) {
     const half = length / 2
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, length), this.floorMat)
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, length), this.floorMat.clone())
     floor.rotation.x = -Math.PI / 2
     floor.position.set(0, 0, kind === "corridor" ? -half + 4 : 0)
     floor.receiveShadow = true
@@ -139,11 +154,11 @@ export class MuseumGallery {
     ceil.rotation.x = Math.PI / 2
     ceil.position.set(0, 3.4, floor.position.z)
 
-    const left = new THREE.Mesh(new THREE.PlaneGeometry(length, 3.4), this.wallMat)
+    const left = new THREE.Mesh(new THREE.PlaneGeometry(length, 3.4), this.wallMat.clone())
     left.rotation.y = Math.PI / 2
     left.position.set(-4, 1.7, floor.position.z)
 
-    const right = new THREE.Mesh(new THREE.PlaneGeometry(length, 3.4), this.wallMat)
+    const right = new THREE.Mesh(new THREE.PlaneGeometry(length, 3.4), this.wallMat.clone())
     right.rotation.y = -Math.PI / 2
     right.position.set(4, 1.7, floor.position.z)
 
@@ -153,7 +168,6 @@ export class MuseumGallery {
     )
     back.position.set(0, 1.7, floor.position.z - half)
 
-    // Warm museum key + fill
     const key = new THREE.SpotLight(0xffe6c8, 18, 40, Math.PI / 5, 0.45, 1.4)
     key.position.set(0, 3.1, kind === "corridor" ? 8 : 5)
     key.target.position.set(0, 1.4, kind === "corridor" ? -4 : -1)
@@ -171,12 +185,12 @@ export class MuseumGallery {
   private async hangFrames(
     parent: THREE.Group,
     frames: GalleryFrame[],
-    layout: "corridor" | "coreA",
+    layout: "corridor" | CoreMode,
   ) {
     const tasks = frames.map(async (frame, i) => {
       const tex = await this.loadTexture(frame.src)
       const aspect = frame.aspect || tex.image.width / tex.image.height || 1.4
-      const h = layout === "coreA" ? 2.2 : 1.65
+      const h = layout === "corridor" ? 1.65 : layout === "coreA" ? 2.2 : 1.9
       const w = h * aspect
 
       const geo = new THREE.PlaneGeometry(w, h)
@@ -190,7 +204,6 @@ export class MuseumGallery {
       })
       const mesh = new THREE.Mesh(geo, mat)
 
-      // Simple oak-ish frame (box edges)
       const frameGroup = new THREE.Group()
       const moulding = new THREE.Mesh(
         new THREE.BoxGeometry(w + 0.12, h + 0.12, 0.06),
@@ -211,28 +224,39 @@ export class MuseumGallery {
         frameGroup.position.set(side * 3.55, 1.55, z)
         frameGroup.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2
       } else {
-        // Facing pair + two side details
-        if (i === 0) {
-          frameGroup.position.set(-1.55, 1.55, -2.4)
-          frameGroup.rotation.y = 0.15
-        } else if (i === 1) {
-          frameGroup.position.set(1.55, 1.55, -2.4)
-          frameGroup.rotation.y = -0.15
-        } else if (i === 2) {
-          frameGroup.position.set(-3.55, 1.45, 0.5)
-          frameGroup.rotation.y = Math.PI / 2
-          frameGroup.scale.setScalar(0.75)
-        } else {
-          frameGroup.position.set(3.55, 1.45, 0.5)
-          frameGroup.rotation.y = -Math.PI / 2
-          frameGroup.scale.setScalar(0.75)
-        }
+        this.layoutCoreRoom(frameGroup, i, frames.length)
       }
 
       parent.add(frameGroup)
-      this.hung.push({ group: frameGroup, mesh, frame, targetEmissive: 0.1 })
+      this.hung.push({ group: frameGroup, mesh, frame, targetEmissive: 0.1, room: layout })
     })
     await Promise.all(tasks)
+  }
+
+  private layoutCoreRoom(frameGroup: THREE.Group, i: number, n: number) {
+    // Facing pair on back wall + side walls for extras
+    if (i === 0) {
+      frameGroup.position.set(-1.55, 1.55, -2.4)
+      frameGroup.rotation.y = 0.15
+    } else if (i === 1) {
+      frameGroup.position.set(1.55, 1.55, -2.4)
+      frameGroup.rotation.y = -0.15
+    } else if (i === 2) {
+      frameGroup.position.set(-3.55, 1.45, 0.5)
+      frameGroup.rotation.y = Math.PI / 2
+      frameGroup.scale.setScalar(0.78)
+    } else if (i === 3) {
+      frameGroup.position.set(3.55, 1.45, 0.5)
+      frameGroup.rotation.y = -Math.PI / 2
+      frameGroup.scale.setScalar(0.78)
+    } else {
+      // Overflow: further along side walls
+      const side = i % 2 === 0 ? -1 : 1
+      frameGroup.position.set(side * 3.55, 1.4, 2.2 + (i - 4) * 1.2)
+      frameGroup.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2
+      frameGroup.scale.setScalar(0.7)
+    }
+    void n
   }
 
   private loadTexture(url: string): Promise<THREE.Texture> {
@@ -251,8 +275,4 @@ export class MuseumGallery {
       )
     })
   }
-}
-
-function easeInOut(t: number) {
-  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
 }

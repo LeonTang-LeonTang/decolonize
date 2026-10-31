@@ -9,6 +9,7 @@ import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const clip = clipForSection("act2f")
@@ -41,6 +42,15 @@ const invisible = voById("f-invisible")
       </div>
 
     </div>
+
+    <ChapterPortal
+      portal="coreF-gallery"
+      label="Core F · 帝国展览室"
+      hint="滚动进入展室：Tate／纪念装置静帧。收束论证，不替代正文。"
+      :height-vh="150"
+    >
+      <p>{{ nodeF.vo }}</p>
+    </ChapterPortal>
 
     <ChapterHold label="Core F · 展览与纪念装置" :height-vh="100">
       <img :src="nodeF.statue.src" :alt="nodeF.statue.alt" />

@@ -1,27 +1,49 @@
 import * as THREE from "three"
 import { LayeredPlanes } from "./LayeredPlanes"
-import { MuseumGallery, type GalleryMode } from "./MuseumGallery"
+import { MuseumGallery, type CoreMode, type GalleryMode } from "./MuseumGallery"
+import { PostFX } from "./PostFX"
 
-export type PortalId = "intro-museum" | "coreA-gallery" | null
+export type PortalId =
+  | "intro-museum"
+  | "coreA-gallery"
+  | "coreB-gallery"
+  | "coreC-gallery"
+  | "coreD-gallery"
+  | "coreE-gallery"
+  | "coreF-gallery"
+  | null
+
+const PORTAL_TO_MODE: Record<Exclude<PortalId, null>, GalleryMode> = {
+  "intro-museum": "corridor",
+  "coreA-gallery": "coreA",
+  "coreB-gallery": "coreB",
+  "coreC-gallery": "coreC",
+  "coreD-gallery": "coreD",
+  "coreE-gallery": "coreE",
+  "coreF-gallery": "coreF",
+}
+
+const PORTAL_TO_CORE: Partial<Record<Exclude<PortalId, null>, string>> = {
+  "coreA-gallery": "act2a",
+  "coreB-gallery": "act2b",
+  "coreC-gallery": "act2c",
+  "coreD-gallery": "act2d",
+  "coreE-gallery": "act2e",
+  "coreF-gallery": "act2f",
+}
 
 export type MuseumState = {
-  /** Overall page scroll 0–1 */
   scrollProgress: number
-  /** Active chapter id from data-chapter */
   activeChapter: string
-  /** Which portal is driving the camera (null = ambient only) */
   portal: PortalId
-  /** 0–1 progress inside the active portal sticky hold */
   portalT: number
-  /** How strongly the canvas should show (0–1) */
   immersion: number
 }
 
 /**
- * Senior WebGL scroll museum — three.js r170 + custom scroll camera.
- * Chosen over nanogl: Kaizen's nanogl stack (gltf/pbr/theatre/activity graph)
- * does not wire cleanly into Vite without porting their entire engine.
- * UX target matches Kaizen hold/portal + Boat layered planes.
+ * Senior WebGL scroll museum — three.js r170.
+ * Pass 5: rooms B–F, EffectComposer GLSL post, GLTF props, Theatre-like keyframes,
+ * optional WebXR VR enter when the browser reports an immersive-vr session.
  */
 export class MuseumApp {
   readonly renderer: THREE.WebGLRenderer
@@ -29,6 +51,7 @@ export class MuseumApp {
   readonly camera: THREE.PerspectiveCamera
   readonly gallery: MuseumGallery
   readonly layers: LayeredPlanes
+  private post: PostFX | null = null
 
   private canvas: HTMLCanvasElement
   private clock = new THREE.Clock()
@@ -51,6 +74,8 @@ export class MuseumApp {
   private targetImmersion = 0
   private immersion = 0
   private dprCap = 1.75
+  private baseFov = 42
+  private xrEnabled = false
   private onLost: (() => void) | null = null
 
   constructor(canvas: HTMLCanvasElement) {
@@ -67,8 +92,10 @@ export class MuseumApp {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     this.renderer.toneMappingExposure = 1.05
     this.renderer.shadowMap.enabled = false
+    // WebXR — enabled only after a successful isSessionSupported probe
+    this.renderer.xr.enabled = false
 
-    this.camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80)
+    this.camera = new THREE.PerspectiveCamera(this.baseFov, 1, 0.1, 80)
     this.camera.position.copy(this.ambientCam.position)
 
     this.scene.fog = new THREE.FogExp2(0x0c0b09, 0.045)
@@ -78,30 +105,59 @@ export class MuseumApp {
     this.gallery = new MuseumGallery(this.scene)
     this.layers = new LayeredPlanes(this.scene)
 
+    try {
+      this.post = new PostFX(this.renderer, this.scene, this.camera)
+    } catch (err) {
+      console.warn("[museum] PostFX init failed — raw render fallback", err)
+      this.post = null
+    }
+
     this.resize()
   }
 
   async init(): Promise<void> {
     await this.gallery.load()
-    // Prefetch Core A evidence wall so first portal is warm
     await this.layers.setCore("act2a")
     this.layers.setTargetOpacity(0)
+    await this.probeXR()
+  }
+
+  /** True when immersive-vr is available (headset / browser VR). */
+  get xrAvailable() {
+    return this.xrEnabled
+  }
+
+  async enterXR(): Promise<boolean> {
+    if (!this.xrEnabled || !navigator.xr) return false
+    try {
+      const session = await navigator.xr.requestSession("immersive-vr", {
+        optionalFeatures: ["local-floor", "bounded-floor"],
+      })
+      await this.renderer.xr.setSession(session)
+      this.renderer.xr.enabled = true
+      // Post stack + XR don't mix cleanly — drop to raw while in VR
+      this.post?.setEnabled(false)
+      return true
+    } catch (err) {
+      console.warn("[museum] XR session failed", err)
+      return false
+    }
   }
 
   start() {
     if (this.running || this.disposed) return
     this.running = true
     this.clock.start()
-    const loop = () => {
+    // Prefer XR animation loop when a session is active; else rAF
+    this.renderer.setAnimationLoop(() => {
       if (!this.running) return
-      this.raf = requestAnimationFrame(loop)
       this.tick()
-    }
-    this.raf = requestAnimationFrame(loop)
+    })
   }
 
   stop() {
     this.running = false
+    this.renderer.setAnimationLoop(null)
     cancelAnimationFrame(this.raf)
   }
 
@@ -122,11 +178,13 @@ export class MuseumApp {
     this.renderer.setSize(w, h, false)
     this.camera.aspect = w / Math.max(1, h)
     this.camera.updateProjectionMatrix()
+    this.post?.setSize(w * dpr, h * dpr)
   }
 
   dispose() {
     this.disposed = true
     this.stop()
+    this.post?.dispose()
     this.gallery.dispose()
     this.layers.dispose()
     this.renderer.dispose()
@@ -135,20 +193,31 @@ export class MuseumApp {
     }
   }
 
+  private async probeXR() {
+    try {
+      if (!("xr" in navigator) || !navigator.xr) return
+      const ok = await navigator.xr.isSessionSupported("immersive-vr")
+      this.xrEnabled = !!ok
+    } catch {
+      this.xrEnabled = false
+    }
+  }
+
   private syncMode() {
     const { portal, portalT, activeChapter } = this.state
-    if (portal === "intro-museum") {
-      this.gallery.setMode("corridor")
-      this.targetImmersion = 0.35 + portalT * 0.55
-      this.layers.setTargetOpacity(0.15 * (1 - portalT))
-    } else if (portal === "coreA-gallery") {
-      this.gallery.setMode("coreA")
-      this.targetImmersion = 0.4 + portalT * 0.55
-      void this.layers.setCore("act2a")
-      this.layers.setTargetOpacity(0.2 * (1 - portalT * 0.7))
+    if (portal && PORTAL_TO_MODE[portal]) {
+      this.gallery.setMode(PORTAL_TO_MODE[portal])
+      this.targetImmersion = 0.38 + portalT * 0.55
+      const coreId = PORTAL_TO_CORE[portal]
+      if (coreId) {
+        void this.layers.setCore(coreId)
+        this.layers.setTargetOpacity(0.18 * (1 - portalT * 0.7))
+      } else {
+        // intro corridor
+        this.layers.setTargetOpacity(0.12 * (1 - portalT))
+      }
     } else {
       this.gallery.setMode("idle")
-      // Ambient Boat layers while reading Core sections
       const coreMatch = /^(act2[a-f])$/.exec(activeChapter)
       if (coreMatch) {
         void this.layers.setCore(coreMatch[1])
@@ -167,20 +236,22 @@ export class MuseumApp {
   private tick() {
     const dt = Math.min(0.05, this.clock.getDelta())
     const { portal, portalT, scrollProgress, activeChapter } = this.state
+    const elapsed = this.clock.elapsedTime
 
     this.immersion = THREE.MathUtils.damp(this.immersion, this.targetImmersion, 3.2, dt)
     this.canvas.style.opacity = String(this.immersion)
 
     let targetPos: THREE.Vector3
     let targetLook: THREE.Vector3
+    let targetFov = this.baseFov
 
     if (portal && this.gallery.getMode() !== "idle") {
       const pose = this.gallery.cameraPose(portalT)
       targetPos = pose.position
       targetLook = pose.lookAt
+      if (pose.fov != null) targetFov = pose.fov
       this.gallery.update(portalT, dt)
     } else {
-      // Ambient drift tied to scroll (Boat-like gentle camera)
       const drift = scrollProgress * Math.PI * 2
       targetPos = new THREE.Vector3(
         Math.sin(drift) * 1.2,
@@ -190,18 +261,29 @@ export class MuseumApp {
       targetLook = new THREE.Vector3(0, 1.2, -1)
     }
 
-    this.curPos.lerp(targetPos, 1 - Math.exp(-3.5 * dt))
-    this.curLook.lerp(targetLook, 1 - Math.exp(-3.2 * dt))
-    this.camera.position.copy(this.curPos)
-    this.camera.lookAt(this.curLook)
+    // Skip camera lerp while presenting XR (headset owns the view)
+    if (!this.renderer.xr.isPresenting) {
+      this.curPos.lerp(targetPos, 1 - Math.exp(-3.5 * dt))
+      this.curLook.lerp(targetLook, 1 - Math.exp(-3.2 * dt))
+      this.camera.position.copy(this.curPos)
+      this.camera.lookAt(this.curLook)
+      if (Math.abs(this.camera.fov - targetFov) > 0.05) {
+        this.camera.fov = THREE.MathUtils.damp(this.camera.fov, targetFov, 3, dt)
+        this.camera.updateProjectionMatrix()
+      }
+    }
 
-    // Local t for parallax: portal t or chapter-ish from scroll
     const localT = portal ? portalT : (scrollProgress * 6) % 1
     void activeChapter
     this.layers.update(localT, scrollProgress, dt)
 
-    this.renderer.render(this.scene, this.camera)
+    if (this.renderer.xr.isPresenting || !this.post) {
+      this.renderer.render(this.scene, this.camera)
+    } else {
+      const drew = this.post.render(elapsed)
+      if (!drew) this.renderer.render(this.scene, this.camera)
+    }
   }
 }
 
-export type { GalleryMode }
+export type { GalleryMode, CoreMode }

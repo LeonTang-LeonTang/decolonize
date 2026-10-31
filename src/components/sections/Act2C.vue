@@ -8,6 +8,7 @@ import EmbeddedStill from "../ui/EmbeddedStill.vue"
 import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const clip = clipForSection("act2c")
@@ -38,6 +39,15 @@ const letters = voById("c-letters")
       </div>
 
     </div>
+
+    <ChapterPortal
+      portal="coreC-gallery"
+      label="Core C · 潘杜兰加书信室"
+      hint="滚动进入展室：书信与幽灵帧对墙。正文优先。"
+      :height-vh="150"
+    >
+      <p>{{ nodeC.vo }}</p>
+    </ChapterPortal>
 
     <ChapterHold label="Core C · Letters from Panduranga" :height-vh="100">
       <img :src="nodeC.embeds[0].src" :alt="nodeC.embeds[0].title" />

@@ -78,3 +78,12 @@ No AI-generated “invisible Raffles” composites.
 
 Vite + Vue 3 + TypeScript + GSAP ScrollTrigger + Lenis + Howler + Sass.  
 UI grammar references: Make Me Pulse Kaizen public (`/workspace/refs/kaizen-gh`), The Boat clone (`/workspace/refs/theboat`) — scroll holds, chapter density, audio layering. **No NanoGL / GLTF museum port this pass.**
+
+## Pass 5 — GLTF gallery architecture (2026-10-31)
+
+| Asset | Path | Note |
+|---|---|---|
+| Museum pedestal | `/public/models/museum-pedestal.gltf` | Purpose-built CC0-style glTF (oak plinth stack). Architecture only — no artwork textures. |
+| Picture frame moulding | `/public/models/picture-frame.gltf` | Purpose-built CC0-style gilt frame sticks. Empty decorative frames; hung stills remain separate planes from `frames.ts`. |
+
+Artwork / educational stills hanging in rooms B–F reuse Pass 3 media already credited above. No AI-fake artworks.

@@ -11,6 +11,7 @@ import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, scrubClips, supportClips, voById } from "../../content/media"
 
 const clip = clipForSection("act2b")
@@ -42,6 +43,15 @@ const cdosea = voById("b-cdosea")
       </div>
 
     </div>
+
+    <ChapterPortal
+      portal="coreB-gallery"
+      label="Core B · 命名与幽灵室"
+      hint="滚动进入展室：何子彦作品静帧挂于两侧。文章论点仍是主轴——这里是沉浸辅证。"
+      :height-vh="150"
+    >
+      <p>{{ nodeB.vo }}</p>
+    </ChapterPortal>
 
     <ChapterHold label="Core B · 何子彦作品簇" :height-vh="100">
       <img :src="nodeB.maps[1].src" :alt="nodeB.maps[1].label" />
