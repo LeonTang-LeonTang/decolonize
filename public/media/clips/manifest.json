@@ -1,0 +1,141 @@
+{
+  "clips": [
+    {
+      "id": "hero-enter",
+      "src": "/media/clips/hero-raffles-river-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "hero",
+      "source": "Ken Burns from raffles-statue-singapore-river.jpg (CC BY-SA 3.0 still)"
+    },
+    {
+      "id": "a-enter",
+      "src": "/media/clips/a-saleh-pieneman-dissolve-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "A",
+      "source": "Ken Burns dissolve from PD Saleh + Pieneman stills"
+    },
+    {
+      "id": "a-archival-priok",
+      "src": "/media/clips/a-tanjung-priok-departure.mp4",
+      "kind": "oa-archival",
+      "core": "A",
+      "source": "Vertrek dok Tandjong Priok — Wikimedia Commons / Open Beelden lineage"
+    },
+    {
+      "id": "a-archival-batavia",
+      "src": "/media/clips/a-batavia-market-1946.mp4",
+      "kind": "oa-archival",
+      "core": "A",
+      "source": "Nieuws uit Indonesië, markt in Batavia Weeknummer 46-30 — Open Beelden / Wikimedia (PD)"
+    },
+    {
+      "id": "a-archival-java",
+      "src": "/media/clips/a-japan-java-landing-1942.mp4",
+      "kind": "oa-archival",
+      "core": "A",
+      "source": "Trim from Japan verovert Zuidoost-Azië.webm — Beeld en Geluid / Wikimedia (PD)"
+    },
+    {
+      "id": "a-archival-fock",
+      "src": "/media/clips/a-fock-governor-departure.mp4",
+      "kind": "oa-archival",
+      "core": "A",
+      "source": "Vertrek mr. B. Fock als gouverneur Nederlands-Indië — Wikimedia Commons"
+    },
+    {
+      "id": "b-enter",
+      "src": "/media/clips/b-japan-seasia-singapore-1942.mp4",
+      "kind": "oa-archival",
+      "core": "B",
+      "source": "Japan verovert Zuidoost-Azië (Singapore surrender segment) — Beeld en Geluid / Wikimedia (PD). Japanese propaganda; biased historical source."
+    },
+    {
+      "id": "b-maps",
+      "src": "/media/clips/b-pacific-maps-crossfade-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "B",
+      "source": "Ken Burns crossfade from PD Pacific War 1941/1942 map stills"
+    },
+    {
+      "id": "b-philippines",
+      "src": "/media/clips/b-mag24-philippines-1945.mp4",
+      "kind": "oa-archival",
+      "core": "B",
+      "source": "Today in History - MAG-24 Lands in Philippines January 11, 1945 — Wikimedia Commons (US military)"
+    },
+    {
+      "id": "c-enter",
+      "src": "/media/clips/c-champa-map-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "C",
+      "source": "Ken Burns from CC0 Champa SE Asia 1000–1100 map still"
+    },
+    {
+      "id": "d-enter",
+      "src": "/media/clips/d-democracy-monument-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "D",
+      "source": "Ken Burns from CC BY-SA Democracy Monument Bangkok still"
+    },
+    {
+      "id": "e-enter",
+      "src": "/media/clips/e-dalrymple-sulu-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "E",
+      "source": "Ken Burns from PD Dalrymple 1769 Borneo–Sulu chart"
+    },
+    {
+      "id": "f-enter",
+      "src": "/media/clips/f-raffles-statue-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "F",
+      "source": "Ken Burns from CC BY-SA Raffles statue front still"
+    },
+    {
+      "id": "act1-primer",
+      "src": "/media/clips/act1-primer-maps-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "act1",
+      "source": "Ken Burns crossfade Pacific/Champa/Dalrymple stills"
+    },
+    {
+      "id": "act3-empire",
+      "src": "/media/clips/act3-empire-portrait-kb.mp4",
+      "kind": "generated-atmosphere",
+      "core": "act3",
+      "source": "Portrait→statue dissolve from OA stills"
+    },
+    {
+      "id": "hero-scrub",
+      "src": "/media/clips/hero-scrub-raffles.mp4",
+      "kind": "generated-atmosphere",
+      "core": "hero",
+      "source": "Sticky scrub Ken Burns Raffles river"
+    },
+    {
+      "id": "a-scrub",
+      "src": "/media/clips/a-scrub-saleh-pieneman.mp4",
+      "kind": "generated-atmosphere",
+      "core": "A",
+      "source": "Sticky scrub Saleh↔Pieneman"
+    },
+    {
+      "id": "b-scrub",
+      "src": "/media/clips/b-scrub-seasia-1942.mp4",
+      "kind": "oa-archival",
+      "core": "B",
+      "source": "Sticky scrub trim Japan SE Asia 1942 OA"
+    },
+    {
+      "id": "wipe-map",
+      "src": "/media/clips/wipe-map-flash.mp4",
+      "kind": "generated-atmosphere",
+      "core": "transition",
+      "source": "Chapter wipe flash from 1942 map"
+    }
+  ],
+  "counts": {
+    "oa-archival": 6,
+    "generated-atmosphere": 7
+  }
+}

@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "lang": "zh-CN",
+    "voice": "zh-CN-YunyangNeural",
+    "note": "Chinese VO for scroll enters + key beats + Act1/Act3. TTS edge-tts zh-CN-YunyangNeural. Pass 2 expanded."
+  },
+  "lines": [
+    {
+      "id": "hero-enter",
+      "core": "hero",
+      "moment": "enter",
+      "zh": "这不是展览导览。六个东南亚案例，从一张图、一幅画、一座碑开始，追问谁在命名、谁被写掉。",
+      "en_gloss": "Not a gallery tour. Six SE Asia cases — from a map, a painting, a monument — ask who names and who is erased.",
+      "file": "hero-enter.mp3"
+    },
+    {
+      "id": "a-enter",
+      "core": "A",
+      "moment": "enter",
+      "zh": "同一天、同一人：一边叫投降，一边叫捕获。标题本身，就是权力。",
+      "en_gloss": "Same day, same person: one side says surrender, the other capture. The title is power.",
+      "file": "a-enter.mp3"
+    },
+    {
+      "id": "a-saleh",
+      "core": "A",
+      "moment": "slider-saleh",
+      "zh": "萨勒赫写的是被捕：谈判桌上的扣押，被画成爪哇视角的捕获。",
+      "en_gloss": "Saleh paints capture: detention at the table, rewritten from a Javanese view.",
+      "file": "a-saleh.mp3"
+    },
+    {
+      "id": "a-pieneman",
+      "core": "A",
+      "moment": "slider-pieneman",
+      "zh": "皮内曼为将军画画：和平屈服的构图，把殖民者写成秩序的使者。",
+      "en_gloss": "Pieneman paints for the general: peaceful submission casting the colonizer as order.",
+      "file": "a-pieneman.mp3"
+    },
+    {
+      "id": "a-return",
+      "core": "A",
+      "moment": "timeline-return",
+      "zh": "三次归还与 bersiap 之争：收藏权与展墙用词，仍是殖民权力的现役装置。",
+      "en_gloss": "Three returns and the bersiap fight: collecting rights and wall wording remain active colonial devices.",
+      "file": "a-return.mp3"
+    },
+    {
+      "id": "b-enter",
+      "core": "B",
+      "moment": "enter",
+      "zh": "先有作战区，才有「东南亚」这个名字。盟军与帝国，都在给这片海陆贴标签。",
+      "en_gloss": "Theater of war came first; then the name Southeast Asia. Allies and empire both labeled the region.",
+      "file": "b-enter.mp3"
+    },
+    {
+      "id": "b-naming",
+      "core": "B",
+      "moment": "naming",
+      "zh": "盟军叫它东南亚，日帝叫它南方——两边都在命名，区域没有内生统一。",
+      "en_gloss": "Allies say Southeast Asia; the Japanese empire says the South — both name; the region has no internal unity.",
+      "file": "b-naming.mp3"
+    },
+    {
+      "id": "b-cdosea",
+      "core": "B",
+      "moment": "cdosea",
+      "zh": "词典在重排：图像与声音不断漂移，区域的形状不是给出正确定义，而是可观看的知识生产。",
+      "en_gloss": "The dictionary reshuffles: images and sound drift; the region's shape is knowledge production, not a correct definition.",
+      "file": "b-cdosea.mp3"
+    },
+    {
+      "id": "c-enter",
+      "core": "C",
+      "moment": "enter",
+      "zh": "地图上有过潘朗；国史里被写掉。占婆末疆，在官方叙事里成了空白。",
+      "en_gloss": "Panduranga was on the map; national history wrote it out. The last Cham lands became a blank.",
+      "file": "c-enter.mp3"
+    },
+    {
+      "id": "c-1832",
+      "core": "C",
+      "moment": "territory",
+      "zh": "一八三二年，明命帝吞并潘朗。土地可被重新命名，核电计划也曾落笔于此。",
+      "en_gloss": "In 1832 Minh Mạng annexed Panduranga. Land can be renamed; a nuclear plan was once drawn here too.",
+      "file": "c-1832.mp3"
+    },
+    {
+      "id": "c-letters",
+      "core": "C",
+      "moment": "film",
+      "zh": "书信体双声：不替占族发言，只把省略与土地叠在同一帧。",
+      "en_gloss": "Epistolary double voice: not speaking for the Cham — stacking omission and land in one frame.",
+      "file": "c-letters.mp3"
+    },
+    {
+      "id": "d-enter",
+      "core": "D",
+      "moment": "enter",
+      "zh": "先看见纪念碑的数字，再听见谁被删掉。日期做成高度，仪式时间被编码进尺度。",
+      "en_gloss": "See the monument's numbers first, then hear who was deleted. Dates made into height; ritual time coded as scale.",
+      "file": "d-enter.mp3"
+    },
+    {
+      "id": "d-digits",
+      "core": "D",
+      "moment": "digits",
+      "zh": "二四、六二、四七……立宪之日被量成可朗读的权力公式。",
+      "en_gloss": "24, 62, 47… the constitutional day measured into a readable formula of power.",
+      "file": "d-digits.mp3"
+    },
+    {
+      "id": "d-correction",
+      "core": "D",
+      "moment": "correction",
+      "zh": "纠错：本作品不是死亡铁路。那是另一条苦役史——可作旁注，不可当主视觉。",
+      "en_gloss": "Correction: this work is not the Death Railway. That is another forced-labor history — footnote, not main visual.",
+      "file": "d-correction.mp3"
+    },
+    {
+      "id": "e-enter",
+      "core": "E",
+      "moment": "enter",
+      "zh": "先看见帝国怎么画这片海。测量与制图，先于国界，把群岛写成可治理对象。",
+      "en_gloss": "See first how empire drew this sea. Survey and chart, before borders, wrote the archipelago as governable.",
+      "file": "e-enter.mp3"
+    },
+    {
+      "id": "e-borders",
+      "core": "E",
+      "moment": "borders",
+      "zh": "国界的缝：英、西、美殖民继承与马菲国境，切开苏禄苏丹国式的跨海世界。",
+      "en_gloss": "Seams of borders: British, Spanish, American colonial inheritances and Malaysia–Philippines frontiers cut the Sulu maritime world.",
+      "file": "e-borders.mp3"
+    },
+    {
+      "id": "e-seam",
+      "core": "E",
+      "moment": "artwork",
+      "zh": "档案接缝留在画面上：解殖民发生在改写凝视，而非另造纯洁起源。",
+      "en_gloss": "Archival seams stay on the surface: decolonization rewrites the gaze, it does not invent a pure origin.",
+      "file": "e-seam.mp3"
+    },
+    {
+      "id": "f-enter",
+      "core": "F",
+      "moment": "enter",
+      "zh": "城市的零点，站在河边。莱佛士像成为现代新加坡的起点叙事——也是可争议的纪念装置。",
+      "en_gloss": "The city's zero point stands by the river. Raffles' statue is the modern origin story — and a contested memorial device.",
+      "file": "f-enter.mp3"
+    },
+    {
+      "id": "f-portrait",
+      "core": "F",
+      "moment": "portrait",
+      "zh": "绅士与复制品：河畔常见的是一九七二年复制像，原作铜像另有其身。",
+      "en_gloss": "Gentleman and replica: the river statue most seen is a 1972 copy; the Woolner bronze is elsewhere.",
+      "file": "f-portrait.mp3"
+    },
+    {
+      "id": "f-empire",
+      "core": "F",
+      "moment": "title-duel",
+      "zh": "谁在面对帝国：伦敦「面对」与新加坡「遭遇」——同一展览标题，两种权力语法。",
+      "en_gloss": "Who faces empire: London's Facing versus Singapore's (En)countering — one title, two grammars of power.",
+      "file": "f-empire.mp3"
+    },
+    {
+      "id": "f-invisible",
+      "core": "F",
+      "moment": "2019",
+      "zh": "涂进背景：二零一九，官方把莱佛士「隐形」，旁置其他先驱——反思，也是管理。",
+      "en_gloss": "Painted into the background: in 2019 the state made Raffles 'invisible' beside other pioneers — reflection, and management.",
+      "file": "f-invisible.mp3"
+    },
+    {
+      "id": "act1-enter",
+      "core": "act1",
+      "moment": "enter",
+      "zh": "五个容易混用的词：殖民主义、殖民性、反殖民、解殖民、后殖民。先摊开，再进东南亚现场。",
+      "en_gloss": "Five easy-to-confuse terms — lay them out before entering SE Asia cases.",
+      "file": "act1-enter.mp3"
+    },
+    {
+      "id": "act1-colonialism",
+      "core": "act1",
+      "moment": "flip-colonialism",
+      "zh": "殖民主义：以军事、行政与经济手段，对他者领土实施直接统治与掠夺。",
+      "en_gloss": "Colonialism: direct rule and plunder by military, admin, and economy.",
+      "file": "act1-colonialism.mp3"
+    },
+    {
+      "id": "act1-coloniality",
+      "core": "act1",
+      "moment": "flip-coloniality",
+      "zh": "殖民性：统治结束后仍延续的知识等级、审美标准、分类与所有权。",
+      "en_gloss": "Coloniality: knowledge hierarchies and ownership that outlast formal rule.",
+      "file": "act1-coloniality.mp3"
+    },
+    {
+      "id": "act1-decolonial",
+      "core": "act1",
+      "moment": "flip-decolonial",
+      "zh": "解殖民：不仅反对统治，还追问展览与审美权力是否继续存在。",
+      "en_gloss": "Decolonial: not only opposing rule — asking if exhibition power continues.",
+      "file": "act1-decolonial.mp3"
+    },
+    {
+      "id": "act1-devices",
+      "core": "act1",
+      "moment": "devices",
+      "zh": "命名、收藏、展示、纪念——权力的柔性装置，贯穿六个案例。",
+      "en_gloss": "Naming, collecting, display, memorial — soft apparatuses across six cases.",
+      "file": "act1-devices.mp3"
+    },
+    {
+      "id": "act3-enter",
+      "core": "act3",
+      "moment": "enter",
+      "zh": "现象之后是框架：谁在定义殖民现代性与解殖民？陈光兴、Clark、Flores，以及帝国展览的批评链。",
+      "en_gloss": "After phenomena, frameworks: who defines colonial modernity and the decolonial?",
+      "file": "act3-enter.mp3"
+    },
+    {
+      "id": "act3-scholars",
+      "core": "act3",
+      "moment": "scholars",
+      "zh": "去帝国、亚洲现代、东南亚策展史——三条学术路径，都落在展示装置上。",
+      "en_gloss": "Deimperialization, Asian modern, SE Asia curation — three paths on display apparatuses.",
+      "file": "act3-scholars.mp3"
+    },
+    {
+      "id": "act3-empire",
+      "core": "act3",
+      "moment": "empire-criticism",
+      "zh": "谁在面对帝国？馆藏中心主义与当代回应，并不自动等于解殖民完成。",
+      "en_gloss": "Who faces empire? Collection-centrism and contemporary reply are not automatic decolonization.",
+      "file": "act3-empire.mp3"
+    },
+    {
+      "id": "a-slider-hint",
+      "core": "A",
+      "moment": "slider-hint",
+      "zh": "拖动滑杆：左边是萨勒赫的捕获，右边是皮内曼的投降——标题本身就是权力。",
+      "en_gloss": "Drag the slider: Saleh's capture vs Pieneman's surrender — the title is power.",
+      "file": "a-slider-hint.mp3"
+    },
+    {
+      "id": "f-pan",
+      "core": "F",
+      "moment": "statue-pan",
+      "zh": "靠近河畔像：复制品比原作更常被看见——零点叙事，也是可争议的纪念装置。",
+      "en_gloss": "Closer to the river statue: the replica is seen more than the original.",
+      "file": "f-pan.mp3"
+    }
+  ]
+}
