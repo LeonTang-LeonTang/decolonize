@@ -15,10 +15,12 @@ import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import { directorForSection } from "../../content/holdBeats"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, scrubClips, supportClips, voById } from "../../content/media"
 
 const evidenceStrip = stripForSection("act2b")
+const holdDirector = directorForSection("act2b")
 const clip = clipForSection("act2b")
 const scrub = scrubClips.b
 const naming = voById("b-naming")
@@ -61,10 +63,14 @@ const cdosea = voById("b-cdosea")
       <p>{{ nodeB.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold :exit-stinger="3" exit-vo-id="b-enter" label="Core B · 何子彦作品簇" :height-vh="100">
-      <img :src="nodeB.maps[1].src" :alt="nodeB.maps[1].label" />
-      <template #caption>{{ nodeB.vo }}</template>
-    </ChapterHold>
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="120"
+    />
 
     <StickyScrubVideo
       :src="scrub.src"

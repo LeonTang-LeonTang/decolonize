@@ -8,6 +8,8 @@ import { computed, onMounted, onUnmounted, ref } from "vue"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import type { EvidenceStripDef } from "../../content/evidencePanels"
+import { parallaxBySection } from "../../content/holdBeats"
+import ParallaxBackdrop from "./ParallaxBackdrop.vue"
 import { useReducedMotion } from "../../composables/useReducedMotion"
 import { useViewMode } from "../../composables/useViewMode"
 
@@ -21,6 +23,8 @@ const progress = ref(0)
 const activeIdx = ref(0)
 const { reduced } = useReducedMotion()
 const { isReading } = useViewMode()
+
+const parallaxLayers = computed(() => parallaxBySection[props.strip.sectionId] || [])
 
 const n = computed(() => props.strip.panels.length)
 const activePanel = computed(() => props.strip.panels[activeIdx.value])
@@ -84,6 +88,11 @@ onUnmounted(() => {
     :aria-label="strip.label"
   >
     <div class="estrip__stage">
+      <ParallaxBackdrop
+        v-if="parallaxLayers.length"
+        :layers="parallaxLayers"
+        :label="'parallax-' + strip.core"
+      />
       <header class="estrip__head">
         <span class="estrip__role">Boat 式证据长卷 · 真实包媒体</span>
         <h3 class="estrip__label">{{ strip.label }}</h3>
@@ -144,6 +153,16 @@ onUnmounted(() => {
   border-top: 1px solid rgba(196, 165, 116, 0.22);
   border-bottom: 1px solid rgba(196, 165, 116, 0.18);
   overflow: hidden;
+  isolation: isolate;
+}
+.estrip__stage > .parallax {
+  z-index: 0;
+}
+.estrip__head,
+.estrip__viewport,
+.estrip__live {
+  position: relative;
+  z-index: 1;
 }
 .estrip[data-mode="reading"] .estrip__stage {
   background: linear-gradient(180deg, #0c0b09 0%, #080705 100%);

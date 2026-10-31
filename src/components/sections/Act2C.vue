@@ -12,10 +12,12 @@ import EmbeddedStill from "../ui/EmbeddedStill.vue"
 import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import { directorForSection } from "../../content/holdBeats"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const evidenceStrip = stripForSection("act2c")
+const holdDirector = directorForSection("act2c")
 const clip = clipForSection("act2c")
 const t1832 = voById("c-1832")
 const letters = voById("c-letters")
@@ -57,10 +59,14 @@ const letters = voById("c-letters")
       <p>{{ nodeC.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold :exit-stinger="4" exit-vo-id="c-enter" label="Core C · Letters from Panduranga" :height-vh="100">
-      <img :src="nodeC.embeds[0].src" :alt="nodeC.embeds[0].title" />
-      <template #caption>{{ nodeC.vo }}</template>
-    </ChapterHold>
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="120"
+    />
 
     <div class="section-inner">
       <div class="hero-map">

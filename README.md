@@ -18,7 +18,7 @@ npm run preview -- --host 127.0.0.1 --port 4175
 - Vite + Vue 3 + TypeScript
 - GSAP ScrollTrigger · Lenis · Howler · Sass
 - Chinese UI · desktop ~1280 first
-- Pass 7: Boat evidence strips + Kristallnacht holds + WebGL polish (v0.8.0); Pass 6 slide grammar retained
+- Pass 8: portal harden + Boat parallax + multi-beat holds (v0.9.0); Pass 6–7 article×PPT spine retained
 
 ## Locked Core (Act 2)
 

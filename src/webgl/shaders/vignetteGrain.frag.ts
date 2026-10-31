@@ -35,11 +35,12 @@ export const vignetteGrainShader = {
       // Vignette
       vec2 uv = vUv - 0.5;
       float vig = 1.0 - dot(uv, uv) * (uVignette * 1.85);
-      color.rgb *= clamp(vig, 0.48, 1.0);
+      color.rgb *= clamp(vig, 0.62, 1.0);
 
-      // Film grain (animated)
-      float g = hash(vUv * vec2(1920.0, 1080.0) + uTime * 60.0) - 0.5;
-      color.rgb += g * uGrain;
+      // Film grain (animated, dual-frequency for Kaizen-ish texture)
+      float g1 = hash(vUv * vec2(1920.0, 1080.0) + uTime * 60.0) - 0.5;
+      float g2 = hash(vUv * vec2(960.0, 540.0) - uTime * 37.0) - 0.5;
+      color.rgb += (g1 * 0.7 + g2 * 0.3) * uGrain;
 
       gl_FragColor = color;
     }

@@ -18,7 +18,7 @@ function applyDom(m: ViewMode) {
 function pushMuseum(m: ViewMode) {
   getMuseumApp()?.setState({
     viewMode: m,
-    immersionScale: m === "reading" ? 0.35 : 1,
+    immersionScale: m === "reading" ? 0.42 : 1,
   })
 }
 

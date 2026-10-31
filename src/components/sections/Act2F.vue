@@ -13,10 +13,12 @@ import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import { directorForSection } from "../../content/holdBeats"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const evidenceStrip = stripForSection("act2f")
+const holdDirector = directorForSection("act2f")
 const clip = clipForSection("act2f")
 const pan = voById("f-pan")
 const portrait = voById("f-portrait")
@@ -60,10 +62,14 @@ const invisible = voById("f-invisible")
       <p>{{ nodeF.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold :exit-stinger="0" exit-vo-id="f-enter" label="Core F · 展览与纪念装置" :height-vh="100">
-      <img :src="nodeF.statue.src" :alt="nodeF.statue.alt" />
-      <template #caption>{{ nodeF.vo }}</template>
-    </ChapterHold>
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="120"
+    />
 
     <div class="section-inner">
       <figure id="f-statue" class="hero">

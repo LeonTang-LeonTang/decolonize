@@ -88,7 +88,7 @@ onMounted(() => {
     }
     const st = app.getState()
     museumActive.value =
-      canvas.dataset.museumActive === "1" || (!!st.portal && st.portalT > 0.05)
+      canvas.dataset.museumActive === "1" || (!!st.portal && st.portalT > 0.02)
   }, 150)
 })
 
@@ -102,7 +102,7 @@ watch(mode, () => {
   const m = mode.value
   getMuseumApp()?.setState({
     viewMode: m,
-    immersionScale: m === "reading" ? 0.35 : 1,
+    immersionScale: m === "reading" ? 0.42 : 1,
   })
 })
 

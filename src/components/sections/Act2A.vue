@@ -14,6 +14,7 @@ import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import StickyScrubVideo from "../ui/StickyScrubVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import { directorForSection } from "../../content/holdBeats"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 
 const left = nodeA.paintings[0]
@@ -21,6 +22,7 @@ const right = nodeA.paintings[1]
 const timeline = nodeA.timeline
 const elsewhere = nodeA.elsewhere
 const evidenceStrip = stripForSection("act2a")
+const holdDirector = directorForSection("act2a")
 const clip = clipForSection("act2a")
 const scrub = scrubClips.a
 const saleh = voById("a-saleh")
@@ -65,10 +67,14 @@ const hint = voById("a-slider-hint")
       <p>{{ nodeA.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold :exit-stinger="2" exit-vo-id="a-enter" label="Core A · 两幅画对决（静帧）" :height-vh="95">
-      <img :src="left.src" :alt="left.title" />
-      <template #caption>{{ nodeA.vo }}</template>
-    </ChapterHold>
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="120"
+    />
 
     <StickyScrubVideo
       :src="scrub.src"

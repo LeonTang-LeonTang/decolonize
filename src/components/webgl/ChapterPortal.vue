@@ -42,16 +42,30 @@ onMounted(() => {
       getMuseumApp()?.setState({
         portal: props.portal,
         portalT: self.progress,
+        // Pass 8: keep immersionScale high inside portals (reading still softens prose chrome)
+        immersionScale: isReading.value ? 0.94 : 1,
       })
     },
     onEnter: () => {
-      getMuseumApp()?.setState({ portal: props.portal, portalT: 0 })
+      getMuseumApp()?.setState({
+        portal: props.portal,
+        portalT: 0.01,
+        immersionScale: isReading.value ? 0.94 : 1,
+      })
     },
     onLeave: () => {
-      getMuseumApp()?.setState({ portal: null, portalT: 0 })
+      // Keep last frame briefly — hard-clear only after leave completes
+      getMuseumApp()?.setState({ portal: props.portal, portalT: 1 })
+      requestAnimationFrame(() => {
+        getMuseumApp()?.setState({ portal: null, portalT: 0 })
+      })
     },
     onEnterBack: () => {
-      getMuseumApp()?.setState({ portal: props.portal, portalT: 1 })
+      getMuseumApp()?.setState({
+        portal: props.portal,
+        portalT: 1,
+        immersionScale: isReading.value ? 0.94 : 1,
+      })
     },
     onLeaveBack: () => {
       getMuseumApp()?.setState({ portal: null, portalT: 0 })

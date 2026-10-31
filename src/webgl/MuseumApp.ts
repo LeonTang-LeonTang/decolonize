@@ -81,8 +81,8 @@ export class MuseumApp {
   private dprCap = 1.75
   private baseFov = 42
   private xrEnabled = false
-  private onLost: (() => void) | null = null
-  private portalBg = new THREE.Color(0x3a3024)
+  private onLost: ((ev?: Event) => void) | null = null
+  private portalBg = new THREE.Color(0x4a3c2c)
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -92,12 +92,16 @@ export class MuseumApp {
       alpha: true,
       powerPreference: "high-performance",
       stencil: false,
+      // Pass 8: keep last frame for headless screenshots / context restore
+      preserveDrawingBuffer: true,
+      failIfMajorPerformanceCaveat: false,
     })
     // Slight warm clear so failed/empty frames still read as a museum void, not pure black
-    this.renderer.setClearColor(0x2a2218, 0)
+    this.renderer.setClearColor(0x3a3024, 0)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 1.72
+    // Pass 8: brighter exposure so mid-portal rooms read under ANGLE/SwiftShader
+    this.renderer.toneMappingExposure = 1.95
     this.renderer.shadowMap.enabled = false
     // WebXR — enabled only after a successful isSessionSupported probe
     this.renderer.xr.enabled = false
@@ -105,8 +109,8 @@ export class MuseumApp {
     this.camera = new THREE.PerspectiveCamera(this.baseFov, 1, 0.1, 80)
     this.camera.position.copy(this.ambientCam.position)
 
-    this.scene.fog = new THREE.FogExp2(0x3a3024, 0.008)
-    const hemi = new THREE.HemisphereLight(0xfff0dc, 0x3a3024, 1.35)
+    this.scene.fog = new THREE.FogExp2(0x4a3c2c, 0.0045)
+    const hemi = new THREE.HemisphereLight(0xfff5e4, 0x4a3c2c, 1.65)
     this.scene.add(hemi)
 
     this.gallery = new MuseumGallery(this.scene)
@@ -120,6 +124,7 @@ export class MuseumApp {
     }
 
     this.resize()
+    this.wireContextRecovery()
   }
 
   async init(): Promise<void> {
@@ -204,6 +209,34 @@ export class MuseumApp {
     }
   }
 
+  /** Pass 8 — survive CONTEXT_LOST under automated Chrome / ANGLE */
+  private wireContextRecovery() {
+    this.onLost = (ev?: Event) => {
+      const e = ev as WebGLContextEvent | undefined
+      e?.preventDefault?.()
+      console.warn("[museum] webglcontextlost — pausing loop; will resume on restore")
+      this.stop()
+      this.canvas.dataset.contextLost = "1"
+    }
+    this.canvas.addEventListener("webglcontextlost", this.onLost as EventListener, false)
+    this.canvas.addEventListener(
+      "webglcontextrestored",
+      () => {
+        console.warn("[museum] webglcontextrestored — resizing + restarting")
+        this.canvas.dataset.contextLost = "0"
+        try {
+          this.resize()
+          // Force a solid portal clear so restored frame isn't black
+          this.renderer.setClearColor(0x4a3c2c, this.state.portal ? 1 : 0)
+          this.start()
+        } catch (err) {
+          console.warn("[museum] restore failed", err)
+        }
+      },
+      false,
+    )
+  }
+
   private async probeXR() {
     try {
       if (!("xr" in navigator) || !navigator.xr) return
@@ -221,16 +254,18 @@ export class MuseumApp {
     this.post?.setEnabled(true)
     if (portal && PORTAL_TO_MODE[portal]) {
       this.gallery.setMode(PORTAL_TO_MODE[portal])
-      // Pass5b/6: portal immersion high; reading mode softens slightly but stays visible
-      const scale = this.state.viewMode === "reading" ? 0.82 : 1
-      this.targetImmersion = (0.94 + portalT * 0.06) * scale
+      // Pass 8: portals stay near-full immersion even in 阅读模式 (ThesisStrip stays on)
+      const scale = this.state.viewMode === "reading" ? 0.94 : 1
+      this.targetImmersion = Math.max(0.96, 0.96 + portalT * 0.04) * scale
+      // Snap immersion immediately when entering so headless shots don't catch fade-in black
+      if (portalT > 0.04 && this.immersion < 0.85) this.immersion = Math.max(this.immersion, 0.9)
       const coreId = PORTAL_TO_CORE[portal]
       if (coreId) {
         void this.layers.setCore(coreId)
-        this.layers.setTargetOpacity(0.28 * (1 - portalT * 0.55))
+        this.layers.setTargetOpacity(0.22 * (1 - portalT * 0.55))
       } else {
         // intro corridor
-        this.layers.setTargetOpacity(0.2 * (1 - portalT * 0.6))
+        this.layers.setTargetOpacity(0.16 * (1 - portalT * 0.6))
       }
     } else {
       this.gallery.setMode("idle")
@@ -256,7 +291,7 @@ export class MuseumApp {
 
     this.immersion = THREE.MathUtils.damp(this.immersion, this.targetImmersion, 3.2, dt)
     // Drive opacity + data attrs; Vue owns .museum-gl--active class (do not toggle here)
-    const portalActive = !!this.state.portal && this.state.portalT > 0.05
+    const portalActive = !!this.state.portal && this.state.portalT > 0.02
     this.canvas.dataset.museumActive = portalActive ? "1" : "0"
     this.canvas.dataset.portalT = this.state.portalT.toFixed(3)
     this.canvas.dataset.portal = this.state.portal || ""
@@ -264,7 +299,8 @@ export class MuseumApp {
     if (portalActive) {
       // Full opacity — unmistakable museum; CSS .museum-gl--active also forces 1
       this.canvas.style.opacity = "1"
-      this.renderer.setClearColor(0x3a3024, 1)
+      this.canvas.style.visibility = "visible"
+      this.renderer.setClearColor(0x4a3c2c, 1)
       this.scene.background = this.portalBg
       this.post?.setPortalMode(true)
       this.post?.setEnabled(true)

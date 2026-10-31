@@ -13,10 +13,12 @@ import EmbeddedStill from "../ui/EmbeddedStill.vue"
 import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import { directorForSection } from "../../content/holdBeats"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const evidenceStrip = stripForSection("act2d")
+const holdDirector = directorForSection("act2d")
 const clip = clipForSection("act2d")
 const digits = voById("d-digits")
 const correction = voById("d-correction")
@@ -59,10 +61,14 @@ const showCorrection = ref(true)
       <p>{{ nodeD.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold :exit-stinger="5" exit-vo-id="d-enter" label="Core D · 246247… 装置母题" :height-vh="100">
-      <img :src="nodeD.hero.src" :alt="nodeD.hero.alt" />
-      <template #caption>{{ nodeD.vo }}</template>
-    </ChapterHold>
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="120"
+    />
 
     <div class="section-inner">
       <figure class="hero">

@@ -38,8 +38,8 @@ export class MuseumGallery {
     this.scene = scene
     this.root.name = "MuseumGallery"
     // Pass5b: MeshBasic shell — unmistakable walls/floors even if lights/bloom crush PBR
-    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x6a5844 })
-    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x4a4034 })
+    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x8a7054 })
+    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x5e5040 })
     this.buildShell(this.corridor, 28, "corridor")
     this.corridor.visible = false
     this.root.add(this.corridor)
@@ -106,19 +106,18 @@ export class MuseumGallery {
   update(t: number, dt: number) {
     if (!this.ready || this.mode === "idle") return
     const pose = this.cameraPose(t)
+    // Pass 8 MeshBasic frames stay fully opaque (headless-proof); soft scale pulse near camera
     for (const h of this.hung) {
       if (!h.group.parent?.visible) continue
       const dist = h.group.position.distanceTo(pose.position)
       const near = THREE.MathUtils.clamp(1 - dist / 8, 0, 1)
-      h.targetEmissive = 0.18 + near * 0.55
-      const mat = h.mesh.material as THREE.MeshStandardMaterial
-      mat.emissiveIntensity = THREE.MathUtils.damp(
-        mat.emissiveIntensity,
-        h.targetEmissive,
-        4,
-        dt,
-      )
+      h.targetEmissive = 1
+      const targetScale = 1 + near * 0.04
+      const cur = h.group.scale.x
+      const next = THREE.MathUtils.damp(cur, targetScale, 3.5, dt)
+      h.group.scale.setScalar(next)
     }
+    void t
   }
 
   dispose() {
@@ -142,7 +141,7 @@ export class MuseumGallery {
 
     const ceil = new THREE.Mesh(
       new THREE.PlaneGeometry(8, length),
-      new THREE.MeshBasicMaterial({ color: 0x3a3228 }),
+      new THREE.MeshBasicMaterial({ color: 0x4a4034 }),
     )
     ceil.rotation.x = Math.PI / 2
     ceil.position.set(0, 3.4, floor.position.z)
@@ -157,7 +156,7 @@ export class MuseumGallery {
 
     const back = new THREE.Mesh(
       new THREE.PlaneGeometry(8, 3.4),
-      new THREE.MeshBasicMaterial({ color: 0x5a4a38 }),
+      new THREE.MeshBasicMaterial({ color: 0x6e5a44 }),
     )
     back.position.set(0, 1.7, floor.position.z - half)
 
@@ -166,21 +165,21 @@ export class MuseumGallery {
     label.position.set(0, 2.85, floor.position.z - half + 0.02)
     parent.add(label)
 
-    const key = new THREE.SpotLight(0xfff4e0, 55, 52, Math.PI / 3.8, 0.35, 1.0)
+    const key = new THREE.SpotLight(0xfff4e0, 72, 52, Math.PI / 3.6, 0.32, 0.95)
     key.position.set(0, 3.1, kind === "corridor" ? 8 : 5)
     key.target.position.set(0, 1.4, kind === "corridor" ? -4 : -1)
     parent.add(key, key.target)
 
-    const fill = new THREE.PointLight(0xffe8c0, 18, 30, 1.4)
+    const fill = new THREE.PointLight(0xffe8c0, 26, 32, 1.3)
     fill.position.set(0, 2.4, kind === "corridor" ? 0 : 1)
 
-    const fill2 = new THREE.PointLight(0xffe6c8, 14, 24, 1.5)
+    const fill2 = new THREE.PointLight(0xffe6c8, 20, 26, 1.35)
     fill2.position.set(2.2, 2.2, kind === "corridor" ? -2 : -1.2)
 
-    const rim = new THREE.DirectionalLight(0xe8d5a3, 1.15)
+    const rim = new THREE.DirectionalLight(0xe8d5a3, 1.45)
     rim.position.set(-2, 4, 6)
 
-    const amb = new THREE.AmbientLight(0xe8dcc0, 0.62)
+    const amb = new THREE.AmbientLight(0xe8dcc0, 0.85)
 
     parent.add(floor, ceil, left, right, back, fill, fill2, rim, amb)
   }
@@ -190,19 +189,21 @@ export class MuseumGallery {
     canvas.width = 1024
     canvas.height = 128
     const ctx = canvas.getContext("2d")!
-    ctx.fillStyle = "#2a2218"
+    ctx.fillStyle = "#1a1610"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.strokeStyle = "#c4a574"
-    ctx.lineWidth = 4
+    ctx.fillStyle = "#3a3024"
+    ctx.fillRect(12, 12, canvas.width - 24, canvas.height - 24)
+    ctx.strokeStyle = "#e8d5a3"
+    ctx.lineWidth = 5
     ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16)
-    ctx.fillStyle = "#e8d5a3"
-    ctx.font = "bold 48px Georgia, serif"
+    ctx.fillStyle = "#f0e2c0"
+    ctx.font = "bold 46px Georgia, serif"
     ctx.textAlign = "center"
     ctx.textBaseline = "middle"
     const title =
       kind === "corridor"
-        ? "CORRIDOR · 展廊总览"
-        : `ROOM ${kind.replace("core", "").toUpperCase()} · 三维展厅`
+        ? "CORRIDOR · 展廊总览 · WEBGL"
+        : `ROOM ${kind.replace("core", "").toUpperCase()} · 三维展厅 · ON`
     ctx.fillText(title, canvas.width / 2, canvas.height / 2)
     const tex = new THREE.CanvasTexture(canvas)
     tex.colorSpace = THREE.SRGBColorSpace
@@ -229,13 +230,12 @@ export class MuseumGallery {
       const w = h * aspect
 
       const geo = new THREE.PlaneGeometry(w, h)
-      const mat = new THREE.MeshStandardMaterial({
+      // Pass 8: prefer MeshBasic for reliable headless/ANGLE visibility;
+      // keep a warm emissive Standard only as optional — Basic is the proof path
+      const mat = new THREE.MeshBasicMaterial({
         map: tex,
-        roughness: fallback ? 0.55 : 0.65,
-        metalness: 0.05,
-        emissive: new THREE.Color(fallback ? 0xb08a4a : 0xffffff),
-        emissiveIntensity: fallback ? 0.95 : 0.72,
-        emissiveMap: fallback ? null : tex,
+        color: fallback ? 0xc4a574 : 0xffffff,
+        toneMapped: false,
       })
       const mesh = new THREE.Mesh(geo, mat)
 

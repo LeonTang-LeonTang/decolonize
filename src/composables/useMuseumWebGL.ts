@@ -30,6 +30,8 @@ export function useMuseumWebGL(canvasRef: Ref<HTMLCanvasElement | null>) {
       const app = new MuseumApp(canvas)
       singleton = app
       appRef.value = app
+      // Pass 8: headless capture / debug hook (not a public API)
+      ;(window as unknown as { __museumApp?: unknown }).__museumApp = app
       await app.init()
       app.start()
       ready.value = true
@@ -49,6 +51,11 @@ export function useMuseumWebGL(canvasRef: Ref<HTMLCanvasElement | null>) {
     singleton?.dispose()
     singleton = null
     appRef.value = null
+    try {
+      delete (window as unknown as { __museumApp?: unknown }).__museumApp
+    } catch {
+      /* ignore */
+    }
   })
 
   const pushState = (partial: Partial<MuseumState>) => {

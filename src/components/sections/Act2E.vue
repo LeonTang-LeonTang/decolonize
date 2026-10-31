@@ -14,12 +14,14 @@ import AnalysisPanel from "../ui/AnalysisPanel.vue"
 import SupportTip from "../ui/SupportTip.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
 import ChapterHold from "../ui/ChapterHold.vue"
+import { directorForSection } from "../../content/holdBeats"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
 const chart = nodeE.charts[0]
 const borderMaps = nodeE.charts.slice(1)
 const evidenceStrip = stripForSection("act2e")
+const holdDirector = directorForSection("act2e")
 const clip = clipForSection("act2e")
 const borders = voById("e-borders")
 const seam = voById("e-seam")
@@ -61,10 +63,14 @@ const seam = voById("e-seam")
       <p>{{ nodeE.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold :exit-stinger="6" exit-vo-id="e-enter" label="Core E · Sulu Stories" :height-vh="100">
-      <img :src="nodeE.embeds[0].src" :alt="nodeE.embeds[0].title" />
-      <template #caption>{{ nodeE.vo }}</template>
-    </ChapterHold>
+    <ChapterHold
+      v-if="holdDirector"
+      :beats="holdDirector.beats"
+      :label="holdDirector.label"
+      :exit-vo-id="holdDirector.exitVoId"
+      :exit-stinger="holdDirector.exitStinger"
+      :height-vh="120"
+    />
 
     <div class="section-inner">
       <h3 class="sub">Dalrymple 海图 · 平移／缩放</h3>

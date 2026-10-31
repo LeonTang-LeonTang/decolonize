@@ -29,7 +29,7 @@ watch(ready, () => {
   const m = mode.value
   getMuseumApp()?.setState({
     viewMode: m,
-    immersionScale: m === "reading" ? 0.35 : 1,
+    immersionScale: m === "reading" ? 0.42 : 1,
   })
 })
 
@@ -54,7 +54,7 @@ onMounted(() => {
     const st = app.getState()
     museumActive.value =
       canvas.dataset.museumActive === "1" ||
-      (!!st.portal && st.portalT > 0.05)
+      (!!st.portal && st.portalT > 0.02)
     xrOk.value = app.xrAvailable
   }, 120)
 })
@@ -84,6 +84,7 @@ async function onEnterXR() {
       'museum-gl--ready': ready,
       'museum-gl--active': museumActive,
     }"
+    :data-context-lost="false"
     aria-hidden="true"
   />
   <!-- Visible proof the 3D museum layer is on -->
@@ -171,5 +172,10 @@ async function onEnterXR() {
   text-transform: none;
   color: rgba(232, 213, 163, 0.65);
   border-color: rgba(196, 165, 116, 0.28);
+}
+
+/* Pass 8: never let transition leave portals half-transparent */
+.museum-gl--active {
+  transition: none;
 }
 </style>
