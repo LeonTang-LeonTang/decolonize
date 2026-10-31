@@ -5,7 +5,7 @@
 ## Recover
 
 - Pre-pass8 (do not overwrite): `recover/pre-pass8-immersion-20261031` @ `fbd54f6`
-- Post-pass8: `recover/pass8-immersion-20261031` @ 
+- Post-pass8: `recover/pass8-immersion-20261031` @ `1f25f43`
 
 ## What shipped
 
