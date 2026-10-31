@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SlideChapter from "../ui/SlideChapter.vue"
+import EvidenceStrip from "../ui/EvidenceStrip.vue"
+import { stripForSection } from "../../content/evidencePanels"
 import { slideById } from "../../content/slides"
 import { nodeB } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
@@ -16,6 +18,7 @@ import ChapterHold from "../ui/ChapterHold.vue"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, scrubClips, supportClips, voById } from "../../content/media"
 
+const evidenceStrip = stripForSection("act2b")
 const clip = clipForSection("act2b")
 const scrub = scrubClips.b
 const naming = voById("b-naming")
@@ -25,6 +28,7 @@ const cdosea = voById("b-cdosea")
 <template>
   <section :id="nodeB.id" :data-chapter="nodeB.id" class="section chapter">
     <SlideChapter :slide="slideById.act2b" />
+    <EvidenceStrip v-if="evidenceStrip" :strip="evidenceStrip" />
     <p class="slide-evidence-label">证据层 · Core B 展厅／地图／词典</p>
     <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeB.eyebrow }}</p>
@@ -57,7 +61,7 @@ const cdosea = voById("b-cdosea")
       <p>{{ nodeB.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold label="Core B · 何子彦作品簇" :height-vh="100">
+    <ChapterHold :exit-stinger="3" exit-vo-id="b-enter" label="Core B · 何子彦作品簇" :height-vh="100">
       <img :src="nodeB.maps[1].src" :alt="nodeB.maps[1].label" />
       <template #caption>{{ nodeB.vo }}</template>
     </ChapterHold>

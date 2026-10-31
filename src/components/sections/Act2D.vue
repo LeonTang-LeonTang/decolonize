@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SlideChapter from "../ui/SlideChapter.vue"
+import EvidenceStrip from "../ui/EvidenceStrip.vue"
+import { stripForSection } from "../../content/evidencePanels"
 import { slideById } from "../../content/slides"
 import { ref } from "vue"
 import { nodeD } from "../../content/act2"
@@ -14,6 +16,7 @@ import ChapterHold from "../ui/ChapterHold.vue"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
+const evidenceStrip = stripForSection("act2d")
 const clip = clipForSection("act2d")
 const digits = voById("d-digits")
 const correction = voById("d-correction")
@@ -23,6 +26,7 @@ const showCorrection = ref(true)
 <template>
   <section :id="nodeD.id" :data-chapter="nodeD.id" class="section chapter">
     <SlideChapter :slide="slideById.act2d" />
+    <EvidenceStrip v-if="evidenceStrip" :strip="evidenceStrip" />
     <p class="slide-evidence-label">证据层 · Core D 展厅／作品读解</p>
     <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeD.eyebrow }}</p>
@@ -55,7 +59,7 @@ const showCorrection = ref(true)
       <p>{{ nodeD.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold label="Core D · 246247… 装置母题" :height-vh="100">
+    <ChapterHold :exit-stinger="5" exit-vo-id="d-enter" label="Core D · 246247… 装置母题" :height-vh="100">
       <img :src="nodeD.hero.src" :alt="nodeD.hero.alt" />
       <template #caption>{{ nodeD.vo }}</template>
     </ChapterHold>

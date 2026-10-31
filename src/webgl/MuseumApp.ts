@@ -82,7 +82,7 @@ export class MuseumApp {
   private baseFov = 42
   private xrEnabled = false
   private onLost: (() => void) | null = null
-  private portalBg = new THREE.Color(0x2a2218)
+  private portalBg = new THREE.Color(0x3a3024)
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -94,10 +94,10 @@ export class MuseumApp {
       stencil: false,
     })
     // Slight warm clear so failed/empty frames still read as a museum void, not pure black
-    this.renderer.setClearColor(0x1a1610, 0)
+    this.renderer.setClearColor(0x2a2218, 0)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 1.55
+    this.renderer.toneMappingExposure = 1.72
     this.renderer.shadowMap.enabled = false
     // WebXR — enabled only after a successful isSessionSupported probe
     this.renderer.xr.enabled = false
@@ -105,8 +105,8 @@ export class MuseumApp {
     this.camera = new THREE.PerspectiveCamera(this.baseFov, 1, 0.1, 80)
     this.camera.position.copy(this.ambientCam.position)
 
-    this.scene.fog = new THREE.FogExp2(0x2a2218, 0.012)
-    const hemi = new THREE.HemisphereLight(0xffe8c8, 0x2a2218, 1.15)
+    this.scene.fog = new THREE.FogExp2(0x3a3024, 0.008)
+    const hemi = new THREE.HemisphereLight(0xfff0dc, 0x3a3024, 1.35)
     this.scene.add(hemi)
 
     this.gallery = new MuseumGallery(this.scene)
@@ -216,6 +216,9 @@ export class MuseumApp {
 
   private syncMode() {
     const { portal, portalT, activeChapter } = this.state
+    this.post?.setViewMode(this.state.viewMode)
+    // Prefer post stack in 展厅模式; reading keeps it but softer (setViewMode)
+    this.post?.setEnabled(true)
     if (portal && PORTAL_TO_MODE[portal]) {
       this.gallery.setMode(PORTAL_TO_MODE[portal])
       // Pass5b/6: portal immersion high; reading mode softens slightly but stays visible
@@ -261,7 +264,7 @@ export class MuseumApp {
     if (portalActive) {
       // Full opacity — unmistakable museum; CSS .museum-gl--active also forces 1
       this.canvas.style.opacity = "1"
-      this.renderer.setClearColor(0x2a2218, 1)
+      this.renderer.setClearColor(0x3a3024, 1)
       this.scene.background = this.portalBg
       this.post?.setPortalMode(true)
       this.post?.setEnabled(true)
@@ -270,7 +273,7 @@ export class MuseumApp {
       const floor = this.state.viewMode === "reading" ? 0.06 : 0.18
       const ceil = this.state.viewMode === "reading" ? 0.42 : 0.85
       this.canvas.style.opacity = String(THREE.MathUtils.clamp(this.immersion, floor, ceil))
-      this.renderer.setClearColor(0x1a1610, 0)
+      this.renderer.setClearColor(0x2a2218, 0)
       this.scene.background = null
       this.post?.setPortalMode(false)
       this.post?.setEnabled(true)
@@ -298,12 +301,12 @@ export class MuseumApp {
 
     // Skip camera lerp while presenting XR (headset owns the view)
     if (!this.renderer.xr.isPresenting) {
-      this.curPos.lerp(targetPos, 1 - Math.exp(-3.5 * dt))
-      this.curLook.lerp(targetLook, 1 - Math.exp(-3.2 * dt))
+      this.curPos.lerp(targetPos, 1 - Math.exp(-2.4 * dt))
+      this.curLook.lerp(targetLook, 1 - Math.exp(-2.2 * dt))
       this.camera.position.copy(this.curPos)
       this.camera.lookAt(this.curLook)
       if (Math.abs(this.camera.fov - targetFov) > 0.05) {
-        this.camera.fov = THREE.MathUtils.damp(this.camera.fov, targetFov, 3, dt)
+        this.camera.fov = THREE.MathUtils.damp(this.camera.fov, targetFov, 2.2, dt)
         this.camera.updateProjectionMatrix()
       }
     }

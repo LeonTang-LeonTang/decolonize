@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SlideChapter from "../ui/SlideChapter.vue"
+import EvidenceStrip from "../ui/EvidenceStrip.vue"
+import { stripForSection } from "../../content/evidencePanels"
 import { slideById } from "../../content/slides"
 import { nodeC } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
@@ -13,6 +15,7 @@ import ChapterHold from "../ui/ChapterHold.vue"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
+const evidenceStrip = stripForSection("act2c")
 const clip = clipForSection("act2c")
 const t1832 = voById("c-1832")
 const letters = voById("c-letters")
@@ -21,6 +24,7 @@ const letters = voById("c-letters")
 <template>
   <section :id="nodeC.id" :data-chapter="nodeC.id" class="section chapter">
     <SlideChapter :slide="slideById.act2c" />
+    <EvidenceStrip v-if="evidenceStrip" :strip="evidenceStrip" />
     <p class="slide-evidence-label">证据层 · Core C 展厅／作品读解</p>
     <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeC.eyebrow }}</p>
@@ -53,7 +57,7 @@ const letters = voById("c-letters")
       <p>{{ nodeC.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold label="Core C · Letters from Panduranga" :height-vh="100">
+    <ChapterHold :exit-stinger="4" exit-vo-id="c-enter" label="Core C · Letters from Panduranga" :height-vh="100">
       <img :src="nodeC.embeds[0].src" :alt="nodeC.embeds[0].title" />
       <template #caption>{{ nodeC.vo }}</template>
     </ChapterHold>

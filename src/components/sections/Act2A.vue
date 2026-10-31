@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SlideChapter from "../ui/SlideChapter.vue"
+import EvidenceStrip from "../ui/EvidenceStrip.vue"
+import { stripForSection } from "../../content/evidencePanels"
 import { slideById } from "../../content/slides"
 import { nodeA } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
@@ -18,6 +20,7 @@ const left = nodeA.paintings[0]
 const right = nodeA.paintings[1]
 const timeline = nodeA.timeline
 const elsewhere = nodeA.elsewhere
+const evidenceStrip = stripForSection("act2a")
 const clip = clipForSection("act2a")
 const scrub = scrubClips.a
 const saleh = voById("a-saleh")
@@ -29,6 +32,7 @@ const hint = voById("a-slider-hint")
 <template>
   <section :id="nodeA.id" :data-chapter="nodeA.id" class="section chapter">
     <SlideChapter :slide="slideById.act2a" />
+    <EvidenceStrip v-if="evidenceStrip" :strip="evidenceStrip" />
     <p class="slide-evidence-label">证据层 · Core A 展厅／compare／读解</p>
     <div class="section-inner prose-card evidence-body">
       <p class="eyebrow">{{ nodeA.eyebrow }}</p>
@@ -61,7 +65,7 @@ const hint = voById("a-slider-hint")
       <p>{{ nodeA.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold label="Core A · 两幅画对决（静帧）" :height-vh="95">
+    <ChapterHold :exit-stinger="2" exit-vo-id="a-enter" label="Core A · 两幅画对决（静帧）" :height-vh="95">
       <img :src="left.src" :alt="left.title" />
       <template #caption>{{ nodeA.vo }}</template>
     </ChapterHold>

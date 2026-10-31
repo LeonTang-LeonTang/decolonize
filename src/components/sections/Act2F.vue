@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SlideChapter from "../ui/SlideChapter.vue"
+import EvidenceStrip from "../ui/EvidenceStrip.vue"
+import { stripForSection } from "../../content/evidencePanels"
 import { slideById } from "../../content/slides"
 import { nodeF } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
@@ -14,6 +16,7 @@ import ChapterHold from "../ui/ChapterHold.vue"
 import ChapterPortal from "../webgl/ChapterPortal.vue"
 import { clipForSection, voById } from "../../content/media"
 
+const evidenceStrip = stripForSection("act2f")
 const clip = clipForSection("act2f")
 const pan = voById("f-pan")
 const portrait = voById("f-portrait")
@@ -24,6 +27,7 @@ const invisible = voById("f-invisible")
 <template>
   <section :id="nodeF.id" :data-chapter="nodeF.id" class="section chapter">
     <SlideChapter :slide="slideById.act2f" />
+    <EvidenceStrip v-if="evidenceStrip" :strip="evidenceStrip" />
     <p class="slide-evidence-label">证据层 · Core F 展厅／作品读解</p>
     <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeF.eyebrow }}</p>
@@ -56,7 +60,7 @@ const invisible = voById("f-invisible")
       <p>{{ nodeF.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold label="Core F · 展览与纪念装置" :height-vh="100">
+    <ChapterHold :exit-stinger="0" exit-vo-id="f-enter" label="Core F · 展览与纪念装置" :height-vh="100">
       <img :src="nodeF.statue.src" :alt="nodeF.statue.alt" />
       <template #caption>{{ nodeF.vo }}</template>
     </ChapterHold>

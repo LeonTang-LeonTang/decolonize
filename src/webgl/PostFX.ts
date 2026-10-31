@@ -7,14 +7,15 @@ import { vignetteGrainShader } from "./shaders/vignetteGrain.frag"
 
 /**
  * Museum canvas post stack: RenderPass → bloom-lite → custom vignette/grain GLSL.
- * Tone mapping stays on the WebGLRenderer (ACES) — no OutputPass to avoid double-map.
- * Kaizen ships bespoke nanogl stretch/foam/lily shaders; this is the Vite-stable stand-in.
+ * Pass 7: subtle postFX preferred in 展厅模式; reading mode keeps stack but softer
+ * so Pass 5b visibility does not regress.
  */
 export class PostFX {
   readonly composer: EffectComposer
   private grain: ShaderPass
   private bloom: UnrealBloomPass
   private enabled = true
+  private museumMode = false
 
   constructor(
     renderer: THREE.WebGLRenderer,
@@ -26,8 +27,8 @@ export class PostFX {
 
     const size = new THREE.Vector2()
     renderer.getSize(size)
-    // Pass5b: bloom tiny — heavy bloom crushed museum midtones to a black void
-    this.bloom = new UnrealBloomPass(size.clone(), 0.04, 0.4, 0.92)
+    // Keep bloom tiny — heavy bloom crushed museum midtones to a black void
+    this.bloom = new UnrealBloomPass(size.clone(), 0.035, 0.35, 0.93)
     this.composer.addPass(this.bloom)
 
     this.grain = new ShaderPass(vignetteGrainShader)
@@ -43,11 +44,34 @@ export class PostFX {
     this.enabled = on
   }
 
+  /** 展厅模式 = richer grain/bloom; 阅读 = subdued (visibility first) */
+  setViewMode(mode: "reading" | "museum") {
+    this.museumMode = mode === "museum"
+    this.applyLook()
+  }
+
   /** Soften bloom/vignette while portals are fully lit — keep GLSL visible, not crushing */
   setPortalMode(on: boolean) {
-    this.bloom.strength = on ? 0.025 : 0.05
+    if (on) {
+      this.bloom.strength = this.museumMode ? 0.04 : 0.02
+      if (this.grain.uniforms.uVignette) {
+        this.grain.uniforms.uVignette.value = this.museumMode ? 0.22 : 0.18
+      }
+      if (this.grain.uniforms.uGrain) {
+        this.grain.uniforms.uGrain.value = this.museumMode ? 0.045 : 0.02
+      }
+    } else {
+      this.applyLook()
+    }
+  }
+
+  private applyLook() {
+    this.bloom.strength = this.museumMode ? 0.055 : 0.028
     if (this.grain.uniforms.uVignette) {
-      this.grain.uniforms.uVignette.value = on ? 0.28 : 0.55
+      this.grain.uniforms.uVignette.value = this.museumMode ? 0.42 : 0.28
+    }
+    if (this.grain.uniforms.uGrain) {
+      this.grain.uniforms.uGrain.value = this.museumMode ? 0.06 : 0.025
     }
   }
 

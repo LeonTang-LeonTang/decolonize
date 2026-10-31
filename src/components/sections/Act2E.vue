@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SlideChapter from "../ui/SlideChapter.vue"
+import EvidenceStrip from "../ui/EvidenceStrip.vue"
+import { stripForSection } from "../../content/evidencePanels"
 import { slideById } from "../../content/slides"
 import { nodeE } from "../../content/act2"
 import WorkCard from "../ui/WorkCard.vue"
@@ -17,6 +19,7 @@ import { clipForSection, voById } from "../../content/media"
 
 const chart = nodeE.charts[0]
 const borderMaps = nodeE.charts.slice(1)
+const evidenceStrip = stripForSection("act2e")
 const clip = clipForSection("act2e")
 const borders = voById("e-borders")
 const seam = voById("e-seam")
@@ -25,6 +28,7 @@ const seam = voById("e-seam")
 <template>
   <section :id="nodeE.id" :data-chapter="nodeE.id" class="section chapter">
     <SlideChapter :slide="slideById.act2e" />
+    <EvidenceStrip v-if="evidenceStrip" :strip="evidenceStrip" />
     <p class="slide-evidence-label">证据层 · Core E 展厅／作品读解</p>
     <div class="section-inner evidence-body">
       <p class="eyebrow">{{ nodeE.eyebrow }}</p>
@@ -57,7 +61,7 @@ const seam = voById("e-seam")
       <p>{{ nodeE.vo }}</p>
     </ChapterPortal>
 
-    <ChapterHold label="Core E · Sulu Stories" :height-vh="100">
+    <ChapterHold :exit-stinger="6" exit-vo-id="e-enter" label="Core E · Sulu Stories" :height-vh="100">
       <img :src="nodeE.embeds[0].src" :alt="nodeE.embeds[0].title" />
       <template #caption>{{ nodeE.vo }}</template>
     </ChapterHold>

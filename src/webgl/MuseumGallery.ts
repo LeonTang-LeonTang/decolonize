@@ -38,8 +38,8 @@ export class MuseumGallery {
     this.scene = scene
     this.root.name = "MuseumGallery"
     // Pass5b: MeshBasic shell — unmistakable walls/floors even if lights/bloom crush PBR
-    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x5a4a38 })
-    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x3e3428 })
+    this.floorMat = new THREE.MeshBasicMaterial({ color: 0x6a5844 })
+    this.wallMat = new THREE.MeshBasicMaterial({ color: 0x4a4034 })
     this.buildShell(this.corridor, 28, "corridor")
     this.corridor.visible = false
     this.root.add(this.corridor)
@@ -142,7 +142,7 @@ export class MuseumGallery {
 
     const ceil = new THREE.Mesh(
       new THREE.PlaneGeometry(8, length),
-      new THREE.MeshBasicMaterial({ color: 0x2a241c }),
+      new THREE.MeshBasicMaterial({ color: 0x3a3228 }),
     )
     ceil.rotation.x = Math.PI / 2
     ceil.position.set(0, 3.4, floor.position.z)
@@ -157,7 +157,7 @@ export class MuseumGallery {
 
     const back = new THREE.Mesh(
       new THREE.PlaneGeometry(8, 3.4),
-      new THREE.MeshBasicMaterial({ color: 0x4a3c2c }),
+      new THREE.MeshBasicMaterial({ color: 0x5a4a38 }),
     )
     back.position.set(0, 1.7, floor.position.z - half)
 
@@ -166,21 +166,21 @@ export class MuseumGallery {
     label.position.set(0, 2.85, floor.position.z - half + 0.02)
     parent.add(label)
 
-    const key = new THREE.SpotLight(0xfff0d8, 42, 48, Math.PI / 4.2, 0.4, 1.1)
+    const key = new THREE.SpotLight(0xfff4e0, 55, 52, Math.PI / 3.8, 0.35, 1.0)
     key.position.set(0, 3.1, kind === "corridor" ? 8 : 5)
     key.target.position.set(0, 1.4, kind === "corridor" ? -4 : -1)
     parent.add(key, key.target)
 
-    const fill = new THREE.PointLight(0xe8d5a3, 12, 28, 1.6)
+    const fill = new THREE.PointLight(0xffe8c0, 18, 30, 1.4)
     fill.position.set(0, 2.4, kind === "corridor" ? 0 : 1)
 
-    const fill2 = new THREE.PointLight(0xffe6c8, 8, 22, 1.8)
+    const fill2 = new THREE.PointLight(0xffe6c8, 14, 24, 1.5)
     fill2.position.set(2.2, 2.2, kind === "corridor" ? -2 : -1.2)
 
-    const rim = new THREE.DirectionalLight(0xc4a574, 0.85)
+    const rim = new THREE.DirectionalLight(0xe8d5a3, 1.15)
     rim.position.set(-2, 4, 6)
 
-    const amb = new THREE.AmbientLight(0xd4c4a0, 0.45)
+    const amb = new THREE.AmbientLight(0xe8dcc0, 0.62)
 
     parent.add(floor, ceil, left, right, back, fill, fill2, rim, amb)
   }
@@ -234,7 +234,7 @@ export class MuseumGallery {
         roughness: fallback ? 0.55 : 0.65,
         metalness: 0.05,
         emissive: new THREE.Color(fallback ? 0xb08a4a : 0xffffff),
-        emissiveIntensity: fallback ? 0.85 : 0.55,
+        emissiveIntensity: fallback ? 0.95 : 0.72,
         emissiveMap: fallback ? null : tex,
       })
       const mesh = new THREE.Mesh(geo, mat)

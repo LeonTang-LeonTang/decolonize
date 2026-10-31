@@ -2,22 +2,33 @@
 import { computed, ref } from "vue"
 import type { SlideBeat } from "../../content/slides"
 import { useViewMode } from "../../composables/useViewMode"
+import { playStinger } from "../../composables/useAudio"
 
 const props = defineProps<{
   slide: SlideBeat
   /** When true, show evidence CTA that scrolls to target / emits */
   showCta?: boolean
+  /** Soft stinger when expanding into evidence */
+  expandStinger?: number
 }>()
 
 const emit = defineEmits<{ expand: []; next: [] }>()
 const expandedHint = ref(false)
+const holdP = ref(0)
+const holding = ref(false)
 const { isReading } = useViewMode()
+
+let holdRaf = 0
+let holdStart = 0
+const HOLD_MS = 550
 
 const pageLabel = computed(() => `第 ${props.slide.page} / ${props.slide.total} 页`)
 
-const onCta = () => {
+const goEvidence = () => {
   expandedHint.value = true
   emit("expand")
+  if (typeof props.expandStinger === "number") playStinger(props.expandStinger)
+  else playStinger((props.slide.page - 1) % 7)
   const target = props.slide.evidenceTarget
   if (target) {
     const el = document.getElementById(target)
@@ -26,13 +37,44 @@ const onCta = () => {
       return
     }
   }
-  // Fallback: scroll past this sticky slide into evidence body
+  // Prefer evidence strip / body after this slide
+  const strip = document.querySelector(
+    `#${props.slide.id} .estrip, [data-chapter="${props.slide.id}"] .estrip`,
+  ) as HTMLElement | null
+  if (strip) {
+    strip.scrollIntoView({ behavior: "smooth", block: "start" })
+    return
+  }
   const root = document.getElementById(`slide-${props.slide.id}`)
   if (root) {
     const next = root.nextElementSibling as HTMLElement | null
     const y = (next?.offsetTop ?? root.offsetTop + root.offsetHeight) - 72
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" })
   }
+}
+
+const onCta = () => goEvidence()
+
+const startHold = () => {
+  holding.value = true
+  holdStart = performance.now() - holdP.value * HOLD_MS
+  const tick = (now: number) => {
+    if (!holding.value) return
+    holdP.value = Math.min(1, (now - holdStart) / HOLD_MS)
+    if (holdP.value >= 1) {
+      holding.value = false
+      goEvidence()
+      return
+    }
+    holdRaf = requestAnimationFrame(tick)
+  }
+  holdRaf = requestAnimationFrame(tick)
+}
+
+const endHold = () => {
+  holding.value = false
+  if (holdRaf) cancelAnimationFrame(holdRaf)
+  if (holdP.value < 1) holdP.value = Math.max(0, holdP.value * 0.4)
 }
 </script>
 
@@ -63,9 +105,22 @@ const onCta = () => {
             {{ slide.evidenceCta }}
             <span aria-hidden="true"> ↓</span>
           </button>
+          <button
+            type="button"
+            class="slide__hold"
+            :aria-pressed="holding"
+            title="按住以进入证据层"
+            @pointerdown.prevent="startHold"
+            @pointerup="endHold"
+            @pointerleave="endHold"
+            @pointercancel="endHold"
+          >
+            <span class="slide__hold-ring" :style="{ '--p': holdP }"><i /></span>
+            <span>{{ holding ? "松手取消 · 按满进入" : "按住进入证据" }}</span>
+          </button>
           <p class="slide__hint">
             {{ isReading ? "阅读模式：先吃透论点，再展开证据／展厅" : "展厅模式：滚动即可进入沉浸辅证" }}
-            · ←/→ 或空格翻页
+            · ←/→ 或空格翻页 · 按住＝Kristallnacht 式定格推进
           </p>
         </div>
       </div>
@@ -209,12 +264,42 @@ const onCta = () => {
     transform: translateY(-1px);
   }
 }
+.slide__hold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.85rem 0.35rem 0.35rem;
+  border: 1px solid rgba(196, 165, 116, 0.4);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  background: rgba(12, 11, 9, 0.55);
+  touch-action: none;
+  user-select: none;
+}
+.slide__hold-ring {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--p, 0) * 1turn), rgba(196, 165, 116, 0.18) 0);
+  display: grid;
+  place-items: center;
+  i {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: #0c0b09;
+    display: block;
+  }
+}
 .slide__hint {
   font-size: 0.72rem;
   color: var(--ink-dim);
   letter-spacing: 0.04em;
-  max-width: 28em;
+  max-width: 36em;
   line-height: 1.5;
+  flex-basis: 100%;
 }
 @media (prefers-reduced-motion: reduce) {
   .slide {
