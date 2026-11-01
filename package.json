@@ -1,7 +1,7 @@
 {
   "name": "decolonial-mvp",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.11.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,11 +12,13 @@
     "gsap": "^3.15.0",
     "howler": "^2.2.4",
     "lenis": "^1.3.27",
+    "three": "^0.170.0",
     "vue": "^3.5.44"
   },
   "devDependencies": {
     "@types/howler": "^2.2.13",
     "@types/node": "^24.19.2",
+    "@types/three": "^0.170.0",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/tsconfig": "^0.9.1",
     "sass": "^1.107.1",
@@ -24,5 +26,5 @@
     "vite": "^8.3.5",
     "vue-tsc": "^3.3.13"
   },
-  "description": "\u89e3\u6b96\u6c11\u00b7\u5c55\u793a\u4e0e\u56de\u6536 \u2014 \u4e1c\u5357\u4e9a\u89e3\u6b96\u6c11\u827a\u672f\u5a92\u4f53\u4f18\u5148\u6eda\u52a8\u8bba\u6587"
+  "description": "解殖民·展示与回收 — 东南亚解殖民艺术媒体优先滚动论文"
 }

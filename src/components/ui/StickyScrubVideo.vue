@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue"
+import { onMounted, onUnmounted, ref, watch } from "vue"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useReducedMotion } from "../../composables/useReducedMotion"
+import { useAudio } from "../../composables/useAudio"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,14 +17,26 @@ const props = withDefaults(
     heightVh?: number
     label?: string
   }>(),
-  { heightVh: 180 },
+  { heightVh: 120 },
 )
 
 const { reduced } = useReducedMotion()
+const { muted, unlocked, activeVoId } = useAudio()
+const CLIP_VOL = 0.1
+const CLIP_DUCK = 0.025
+
 const root = ref<HTMLElement | null>(null)
 const video = ref<HTMLVideoElement | null>(null)
 const progress = ref(0)
 let st: ScrollTrigger | null = null
+
+const syncAudio = () => {
+  const el = video.value
+  if (!el) return
+  const want = unlocked.value && !muted.value
+  el.muted = !want
+  el.volume = activeVoId.value ? CLIP_DUCK : CLIP_VOL
+}
 
 const seekTo = (p: number) => {
   const el = video.value
@@ -37,7 +50,7 @@ onMounted(() => {
   const wrap = root.value
   if (!el || !wrap) return
   el.pause()
-  el.muted = true
+  syncAudio()
 
   const bind = () => {
     st?.kill()
@@ -63,6 +76,8 @@ onMounted(() => {
   else el.addEventListener("loadedmetadata", bind, { once: true })
 })
 
+watch([muted, unlocked, activeVoId], () => syncAudio())
+
 onUnmounted(() => {
   st?.kill()
 })
@@ -75,12 +90,12 @@ onUnmounted(() => {
         ref="video"
         :src="src"
         :poster="poster"
-        muted
         playsinline
         preload="auto"
         disablepictureinpicture
       />
       <div class="scrub__hud">
+        <span class="scrub__role">沉浸辅证 · scrub</span>
         <span v-if="label" class="scrub__label">{{ label }}</span>
         <span v-if="kind === 'generated-atmosphere'" class="scrub__badge">generated-atmosphere · scrub</span>
         <span v-else-if="kind === 'oa-archival'" class="scrub__badge scrub__badge--oa">OA archival · scrub</span>
@@ -101,12 +116,14 @@ onUnmounted(() => {
 }
 .scrub__stage {
   position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  top: calc(var(--nav-h) + var(--progress-h));
+  height: min(70vh, 640px);
+  width: 100%;
+  margin-left: 0;
   overflow: hidden;
   background: #000;
+  border: 1px solid var(--line);
+  border-radius: 4px;
   video {
     width: 100%;
     height: 100%;
@@ -122,6 +139,11 @@ onUnmounted(() => {
   display: grid;
   gap: 0.45rem;
   pointer-events: none;
+}
+.scrub__role {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-dim);
 }
 .scrub__label {
   font-family: var(--serif);

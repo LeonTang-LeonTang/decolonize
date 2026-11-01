@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import {
   act3Intro,
   scholars,
@@ -7,6 +9,7 @@ import {
   reflectionTable,
   openQuestions,
 } from "../../content/act3"
+import { jointProof, reportThesis } from "../../content/rail"
 import { clipForSection, voById } from "../../content/media"
 import VoCaption from "../ui/VoCaption.vue"
 import ScrollVideo from "../ui/ScrollVideo.vue"
@@ -19,18 +22,37 @@ const empireVo = voById("act3-empire")
 
 <template>
   <section id="act3" data-chapter="act3" class="section act3">
-    <div class="section-inner">
+    <SlideChapter :slide="slideById.act3" />
+    <p class="slide-evidence-label">证据层 · 合证表格／学术对照／开放问题</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ act3Intro.eyebrow }}</p>
-      <h2>{{ act3Intro.title }}</h2>
+      <h2 class="sr-only">{{ act3Intro.title }}</h2>
+      <p class="lead article-prose" style="margin: 1rem 0 1.5rem; max-width: 42em">{{ act3Intro.lead }}</p>
       <VoCaption v-if="enter" :text="enter.zh" vo-id="act3-enter" />
-      <ScrollVideo
-        v-if="clip"
-        :src="clip.src"
-        :poster="clip.poster"
-        :kind="clip.kind"
-        :credit="clip.credit"
-      />
-      <p class="lead" style="margin: 1rem 0 2rem; max-width: 42em">{{ act3Intro.lead }}</p>
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 氛围影像</p>
+        <ScrollVideo
+          v-if="clip"
+          :src="clip.src"
+          :poster="clip.poster"
+          :kind="clip.kind"
+          :credit="clip.credit"
+        />
+      </div>
+
+      <div class="joint" aria-label="六案合证">
+        <p class="eyebrow">{{ jointProof.eyebrow }}</p>
+        <h3>{{ jointProof.title }}</h3>
+        <p class="joint__lead">{{ jointProof.lead }}</p>
+        <ul class="joint__points">
+          <li v-for="pt in jointProof.points" :key="pt.title">
+            <strong>{{ pt.title }}</strong>
+            <p>{{ pt.body }}</p>
+          </li>
+        </ul>
+        <p class="joint__return">{{ jointProof.returnClaim }}</p>
+        <p class="joint__echo"><span>回扣论点</span>{{ reportThesis.claim }}</p>
+      </div>
 
       <div id="act3-scholars">
         <VoCaption v-if="scholarsVo" :text="scholarsVo.zh" vo-id="act3-scholars" />
@@ -208,6 +230,67 @@ table {
   color: var(--ink-muted);
   li {
     margin-bottom: 0.65rem;
+  }
+}
+
+.joint {
+  margin: 0 0 2.75rem;
+  padding: 1.35rem 1.4rem 1.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(196, 165, 116, 0.08), transparent 70%);
+  h3 {
+    font-size: 1.35rem;
+    margin: 0.35rem 0 0.75rem;
+  }
+}
+.joint__lead {
+  color: var(--ink-muted);
+  max-width: 48em;
+  margin-bottom: 1rem;
+}
+.joint__points {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.1rem;
+  li {
+    padding: 0.85rem 0.95rem;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  strong {
+    display: block;
+    font-family: var(--serif);
+    color: var(--accent-soft);
+    margin-bottom: 0.35rem;
+  }
+  p {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+}
+.joint__return {
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.7;
+  max-width: 48em;
+  margin-bottom: 0.85rem;
+}
+.joint__echo {
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  line-height: 1.65;
+  max-width: 48em;
+  span {
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    font-size: 0.68rem;
   }
 }
 </style>

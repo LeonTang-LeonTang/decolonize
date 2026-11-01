@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SlideChapter from "../ui/SlideChapter.vue"
+import { slideById } from "../../content/slides"
 import { act1Intro, flipTerms, powerDevices } from "../../content/act1"
 import { clipForSection, voById } from "../../content/media"
 import FlipCard from "../ui/FlipCard.vue"
@@ -21,18 +23,25 @@ const voFor = (id: string) => {
 
 <template>
   <section id="act1" data-chapter="act1" class="section act1">
-    <div class="section-inner">
+
+  <SlideChapter :slide="slideById['act1']" />
+  <p class="slide-evidence-label">证据层 · 正文与展厅辅证（论点见上页）</p>
+    <div class="section-inner evidence-body">
       <p class="eyebrow">{{ act1Intro.eyebrow }}</p>
-      <h2>{{ act1Intro.title }}</h2>
+      <h2 class="sr-only">{{ act1Intro.title }}</h2>
+      <p class="lead narrow article-prose" style="margin: 1rem 0 1.25rem">{{ act1Intro.lead }}</p>
+      <p class="setup">{{ act1Intro.argumentSetup }}</p>
       <VoCaption v-if="enter" :text="enter.zh" vo-id="act1-enter" />
-      <ScrollVideo
-        v-if="clip"
-        :src="clip.src"
-        :poster="clip.poster"
-        :kind="clip.kind"
-        :credit="clip.credit"
-      />
-      <p class="lead narrow" style="margin: 1rem 0 2.5rem">{{ act1Intro.lead }}</p>
+      <div class="media-insert">
+        <p class="media-insert__role">证据／辅叙 · 氛围影像</p>
+        <ScrollVideo
+          v-if="clip"
+          :src="clip.src"
+          :poster="clip.poster"
+          :kind="clip.kind"
+          :credit="clip.credit"
+        />
+      </div>
 
       <div class="cards">
         <div
@@ -63,6 +72,17 @@ const voFor = (id: string) => {
 <style scoped lang="scss">
 h2 {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+.setup {
+  max-width: 42em;
+  margin: 0 0 2.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--accent-soft);
+  line-height: 1.65;
+  background: rgba(196, 165, 116, 0.05);
 }
 .cards {
   display: grid;
