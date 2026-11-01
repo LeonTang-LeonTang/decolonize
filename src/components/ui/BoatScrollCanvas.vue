@@ -86,8 +86,8 @@ watch(
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 42%, transparent 12%, rgba(6, 5, 4, 0.45) 70%, rgba(6, 5, 4, 0.88) 100%),
-    linear-gradient(180deg, rgba(6, 5, 4, 0.25), rgba(6, 5, 4, 0.55));
+    radial-gradient(ellipse at 50% 38%, transparent 22%, rgba(6, 5, 4, 0.28) 72%, rgba(6, 5, 4, 0.72) 100%),
+    linear-gradient(180deg, rgba(6, 5, 4, 0.12), rgba(6, 5, 4, 0.38));
   z-index: 1;
 }
 .boat-world__horizon-line {

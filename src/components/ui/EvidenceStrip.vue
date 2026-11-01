@@ -190,7 +190,7 @@ onUnmounted(() => {
 }
 .estrip__stage > .parallax {
   z-index: 0;
-  opacity: 0.35;
+  opacity: 0.18;
   mix-blend-mode: soft-light;
 }
 .estrip__stage > .boat-world {
@@ -280,7 +280,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-rows: 1fr auto;
   border: 1px solid rgba(196, 165, 116, 0.18);
-  background: rgba(4, 3, 2, 0.55);
+  background: rgba(4, 3, 2, 0.28);
   backdrop-filter: blur(1px);
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
@@ -289,7 +289,7 @@ onUnmounted(() => {
     height: 100%;
     object-fit: contain;
     object-position: center center;
-    background: rgba(5, 4, 3, 0.35);
+    background: rgba(5, 4, 3, 0.15);
     user-select: none;
   }
   &.is-active {

@@ -69,7 +69,7 @@ export class BoatScrollWorld {
       map: bgTex || undefined,
       color: bgTex ? 0xffffff : 0x1a222c,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.85,
       depthWrite: false,
     })
     this.horizon = new THREE.Mesh(horizonGeo, horizonMat)
@@ -92,10 +92,10 @@ export class BoatScrollWorld {
 
     const waveTex = await this.loadTexture("/media/boat-world/waves-pot.png").catch(() => null)
     const waveSpecs = [
-      { z: -1.2, y: -1.35, w: 18, h: 2.4, speed: 0.22, amp: 0.08, opacity: 0.55, color: 0x6a8aaa },
-      { z: -2.6, y: -1.55, w: 22, h: 2.8, speed: 0.14, amp: 0.11, opacity: 0.42, color: 0x4a6a88 },
-      { z: -4.4, y: -1.75, w: 26, h: 3.2, speed: 0.09, amp: 0.14, opacity: 0.32, color: 0x2e4a66 },
-      { z: -6.5, y: -1.95, w: 30, h: 3.6, speed: 0.06, amp: 0.1, opacity: 0.22, color: 0x1a3348 },
+      { z: -1.2, y: -1.15, w: 18, h: 2.6, speed: 0.22, amp: 0.1, opacity: 0.72, color: 0x7a9aba },
+      { z: -2.6, y: -1.4, w: 22, h: 3.0, speed: 0.14, amp: 0.13, opacity: 0.58, color: 0x5a7a98 },
+      { z: -4.4, y: -1.65, w: 26, h: 3.4, speed: 0.09, amp: 0.16, opacity: 0.45, color: 0x3e5a76 },
+      { z: -6.5, y: -1.85, w: 30, h: 3.8, speed: 0.06, amp: 0.12, opacity: 0.32, color: 0x2a4558 },
     ]
     for (let i = 0; i < waveSpecs.length; i++) {
       const s = waveSpecs[i]
