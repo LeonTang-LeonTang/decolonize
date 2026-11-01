@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * Pass 10 — Boat-dense comic evidence strip.
- * Vertical scroll scrubs a denser horizontal panel sequence of REAL pack media.
- * VO-adjacent gutter labels; article/PPT spine remains above this strip.
+ * Pass 11 — Boat 3D scroll world + comic evidence strip.
+ * Vertical scroll scrubs horizontal panels; BoatScrollCanvas adds horizon/wave depth.
+ * Article/PPT spine remains above this strip.
  */
 import { computed, onMounted, onUnmounted, ref } from "vue"
 import { gsap } from "gsap"
@@ -10,8 +10,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import type { EvidenceStripDef } from "../../content/evidencePanels"
 import { parallaxBySection } from "../../content/holdBeats"
 import ParallaxBackdrop from "./ParallaxBackdrop.vue"
+import BoatScrollCanvas from "./BoatScrollCanvas.vue"
 import { useReducedMotion } from "../../composables/useReducedMotion"
 import { useViewMode } from "../../composables/useViewMode"
+import type { BoatPanelInput } from "../../webgl/BoatScrollWorld"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -29,8 +31,23 @@ const parallaxLayers = computed(() => parallaxBySection[props.strip.sectionId] |
 const n = computed(() => props.strip.panels.length)
 const activePanel = computed(() => props.strip.panels[activeIdx.value])
 
-/** Denser runway: more panels → longer comic scroll */
-const runwayVh = computed(() => Math.max(240, 55 + n.value * 48))
+/** Boat world panel inputs — subsample for GPU budget */
+const boatPanels = computed<BoatPanelInput[]>(() => {
+  const panels = props.strip.panels
+  const step = Math.max(1, Math.floor(panels.length / 6))
+  const out: BoatPanelInput[] = []
+  for (let i = 0; i < panels.length; i += step) {
+    out.push({
+      src: panels[i].src,
+      t: panels.length <= 1 ? 0.5 : i / (panels.length - 1),
+      depth: -2.0 - (out.length % 4) * 0.9,
+    })
+  }
+  return out.slice(0, 7)
+})
+
+/** Longer runway: 3D voyage + denser comic */
+const runwayVh = computed(() => Math.max(280, 70 + n.value * 52))
 
 let st: ScrollTrigger | null = null
 
@@ -41,7 +58,7 @@ onMounted(() => {
     trigger: root.value,
     start: "top top",
     end: "bottom bottom",
-    scrub: 0.5,
+    scrub: 0.45,
     onUpdate: (self) => {
       progress.value = self.progress
       const maxX = Math.max(0, trackEl.scrollWidth - trackEl.clientWidth)
@@ -85,20 +102,26 @@ onUnmounted(() => {
   <section
     v-else
     ref="root"
-    class="estrip estrip--comic"
+    class="estrip estrip--comic estrip--boat3d"
     :data-core="strip.core"
     :data-mode="isReading ? 'reading' : 'museum'"
     :style="{ height: runwayVh + 'vh' }"
     :aria-label="strip.label"
   >
     <div class="estrip__stage">
+      <BoatScrollCanvas
+        :panels="boatPanels"
+        :progress="progress"
+        :label="'boat-' + strip.core"
+      />
+      <!-- Soft CSS parallax retained as secondary texture under 3D wash -->
       <ParallaxBackdrop
         v-if="parallaxLayers.length"
         :layers="parallaxLayers"
         :label="'parallax-' + strip.core"
       />
       <header class="estrip__head">
-        <span class="estrip__role">Boat 式漫画长卷 · 真实包媒体 · 密铺</span>
+        <span class="estrip__role">Boat 3D 航程 · 漫画长卷 · 真实包媒体</span>
         <h3 class="estrip__label">{{ strip.label }}</h3>
         <p class="estrip__thesis">{{ strip.thesis }}</p>
         <div class="estrip__meter" aria-hidden="true">
@@ -107,6 +130,7 @@ onUnmounted(() => {
         <p class="estrip__idx">
           格 {{ activeIdx + 1 }} / {{ n }}
           <span v-if="activePanel?.voLabel" class="estrip__idx-vo">· {{ activePanel.voLabel }}</span>
+          <span class="estrip__idx-depth">· 航程 {{ Math.round(progress * 100) }}%</span>
         </p>
       </header>
 
@@ -158,7 +182,7 @@ onUnmounted(() => {
   min-height: 360px;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  background: #060504;
+  background: #05060a;
   border-top: 1px solid rgba(196, 165, 116, 0.22);
   border-bottom: 1px solid rgba(196, 165, 116, 0.18);
   overflow: hidden;
@@ -166,15 +190,20 @@ onUnmounted(() => {
 }
 .estrip__stage > .parallax {
   z-index: 0;
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
+}
+.estrip__stage > .boat-world {
+  z-index: 0;
 }
 .estrip__head,
 .estrip__viewport,
 .estrip__live {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 .estrip[data-mode="reading"] .estrip__stage {
-  background: linear-gradient(180deg, #0a0907 0%, #060504 100%);
+  background: linear-gradient(180deg, #080a10 0%, #05060a 100%);
 }
 .estrip__head {
   padding: 0.65rem 1.1rem 0.4rem;
@@ -183,8 +212,8 @@ onUnmounted(() => {
   width: 100%;
   display: grid;
   gap: 0.15rem;
-  background: linear-gradient(180deg, rgba(6, 5, 4, 0.96), rgba(6, 5, 4, 0.5));
-  z-index: 2;
+  background: linear-gradient(180deg, rgba(5, 6, 10, 0.92), rgba(5, 6, 10, 0.35));
+  z-index: 3;
 }
 .estrip__role {
   font-size: 0.56rem;
@@ -226,6 +255,10 @@ onUnmounted(() => {
   color: var(--accent-soft);
   letter-spacing: 0.08em;
 }
+.estrip__idx-depth {
+  color: rgba(140, 170, 200, 0.75);
+  letter-spacing: 0.08em;
+}
 .estrip__viewport {
   position: relative;
   overflow: hidden;
@@ -235,31 +268,36 @@ onUnmounted(() => {
   display: flex;
   height: 100%;
   will-change: transform;
-  gap: 0.35rem;
-  padding: 0 0.35rem;
+  gap: 0.45rem;
+  padding: 0 0.45rem;
 }
-/* Pass 10 comic density: narrower panels so more frames feel continuous */
+/* Comic panels float above the 3D sea with glass edge */
 .estrip__panel {
-  flex: 0 0 min(62vw, 560px);
+  flex: 0 0 min(58vw, 520px);
   height: 100%;
   margin: 0;
   position: relative;
   display: grid;
   grid-template-rows: 1fr auto;
-  border: 1px solid rgba(196, 165, 116, 0.14);
-  background: #040302;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid rgba(196, 165, 116, 0.18);
+  background: rgba(4, 3, 2, 0.55);
+  backdrop-filter: blur(1px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     object-position: center center;
-    background: #050403;
+    background: rgba(5, 4, 3, 0.35);
     user-select: none;
   }
   &.is-active {
-    border-color: rgba(196, 165, 116, 0.42);
-    box-shadow: 0 0 0 1px rgba(196, 165, 116, 0.18);
+    border-color: rgba(196, 165, 116, 0.5);
+    box-shadow:
+      0 0 0 1px rgba(196, 165, 116, 0.22),
+      0 16px 48px rgba(0, 0, 0, 0.45);
+    transform: translateY(-4px);
   }
 }
 .estrip__panel-cap {
@@ -268,7 +306,7 @@ onUnmounted(() => {
   grid-template-rows: auto auto;
   gap: 0.15rem 0.45rem;
   padding: 0.4rem 0.55rem 0.5rem;
-  background: rgba(4, 3, 2, 0.92);
+  background: rgba(4, 3, 2, 0.88);
   border-top: 1px solid rgba(196, 165, 116, 0.12);
   .estrip__num {
     grid-row: 1;
@@ -305,8 +343,9 @@ onUnmounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  background: linear-gradient(0deg, rgba(6, 5, 4, 0.97), rgba(6, 5, 4, 0.7));
+  background: linear-gradient(0deg, rgba(5, 6, 10, 0.96), rgba(5, 6, 10, 0.55));
   border-top: 1px solid rgba(196, 165, 116, 0.14);
+  z-index: 3;
   p {
     font-family: var(--serif);
     font-size: clamp(0.95rem, 2vw, 1.12rem);

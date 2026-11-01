@@ -58,6 +58,7 @@ const showCorrection = ref(true)
       :label="holdDirector.label"
       :exit-vo-id="holdDirector.exitVoId"
       :exit-stinger="holdDirector.exitStinger"
+      :section-id="'act2d'"
       :height-vh="130"
     />
 

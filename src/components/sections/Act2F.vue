@@ -59,6 +59,7 @@ const invisible = voById("f-invisible")
       :label="holdDirector.label"
       :exit-vo-id="holdDirector.exitVoId"
       :exit-stinger="holdDirector.exitStinger"
+      :section-id="'act2f'"
       :height-vh="130"
     />
 

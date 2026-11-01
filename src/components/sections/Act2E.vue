@@ -60,6 +60,7 @@ const seam = voById("e-seam")
       :label="holdDirector.label"
       :exit-vo-id="holdDirector.exitVoId"
       :exit-stinger="holdDirector.exitStinger"
+      :section-id="'act2e'"
       :height-vh="130"
     />
 

@@ -174,7 +174,7 @@ const b = bridgeByTo
     <HeroSection />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act1']?.wipe || 'Ⅰ · 定义'" />
+      <ChapterWipe to-id="act1" :label="b['act1']?.wipe || 'Ⅰ · 定义'" />
       <BridgeCaption
         v-if="b['act1']"
         :wipe="b['act1'].wipe"
@@ -185,7 +185,7 @@ const b = bridgeByTo
     <Act1Section />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act2intro']?.wipe || 'Ⅱ · 论证'" />
+      <ChapterWipe to-id="act2intro" :label="b['act2intro']?.wipe || 'Ⅱ · 论证'" />
       <BridgeCaption
         v-if="b['act2intro']"
         :wipe="b['act2intro'].wipe"
@@ -198,7 +198,7 @@ const b = bridgeByTo
     <Act2A />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act2b']?.wipe || '例证 B'" />
+      <ChapterWipe to-id="act2b" :label="b['act2b']?.wipe || '例证 B'" />
       <BridgeCaption
         v-if="b['act2b']"
         :wipe="b['act2b'].wipe"
@@ -209,7 +209,7 @@ const b = bridgeByTo
     <Act2B />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act2c']?.wipe || '例证 C'" />
+      <ChapterWipe to-id="act2c" :label="b['act2c']?.wipe || '例证 C'" />
       <BridgeCaption
         v-if="b['act2c']"
         :wipe="b['act2c'].wipe"
@@ -220,7 +220,7 @@ const b = bridgeByTo
     <Act2C />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act2d']?.wipe || '例证 D'" />
+      <ChapterWipe to-id="act2d" :label="b['act2d']?.wipe || '例证 D'" />
       <BridgeCaption
         v-if="b['act2d']"
         :wipe="b['act2d'].wipe"
@@ -231,7 +231,7 @@ const b = bridgeByTo
     <Act2D />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act2e']?.wipe || '例证 E'" />
+      <ChapterWipe to-id="act2e" :label="b['act2e']?.wipe || '例证 E'" />
       <BridgeCaption
         v-if="b['act2e']"
         :wipe="b['act2e'].wipe"
@@ -242,7 +242,7 @@ const b = bridgeByTo
     <Act2E />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act2f']?.wipe || '例证 F'" />
+      <ChapterWipe to-id="act2f" :label="b['act2f']?.wipe || '例证 F'" />
       <BridgeCaption
         v-if="b['act2f']"
         :wipe="b['act2f'].wipe"
@@ -255,7 +255,7 @@ const b = bridgeByTo
     <Act2Support />
 
     <div class="rail-bridge">
-      <ChapterWipe :label="b['act3']?.wipe || 'Ⅳ · 总结'" />
+      <ChapterWipe to-id="act3" :label="b['act3']?.wipe || 'Ⅳ · 总结'" />
       <BridgeCaption
         v-if="b['act3']"
         :wipe="b['act3'].wipe"

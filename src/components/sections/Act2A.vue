@@ -64,6 +64,7 @@ const hint = voById("a-slider-hint")
       :label="holdDirector.label"
       :exit-vo-id="holdDirector.exitVoId"
       :exit-stinger="holdDirector.exitStinger"
+      :section-id="'act2a'"
       :height-vh="130"
     />
 

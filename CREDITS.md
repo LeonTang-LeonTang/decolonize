@@ -87,3 +87,7 @@ UI grammar references: Make Me Pulse Kaizen public (`/workspace/refs/kaizen-gh`)
 | Picture frame moulding | `/public/models/picture-frame.gltf` | Purpose-built CC0-style gilt frame sticks. Empty decorative frames; hung stills remain separate planes from `frames.ts`. |
 
 Artwork / educational stills hanging in rooms B–F reuse Pass 3 media already credited above. No AI-fake artworks.
+
+## Pass 11 — Boat world textures (educational reference)
+
+Horizon / wave / fog / cloud / boat silhouette sprites under `public/media/boat-world/` adapted from the public educational demo [The Boat](https://meet-forever.github.io/theboat/) (R3F scroll experiment). Used as atmospheric grammar reference for the class-report site — not historical evidence artworks.

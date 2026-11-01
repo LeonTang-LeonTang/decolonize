@@ -60,6 +60,7 @@ const cdosea = voById("b-cdosea")
       :label="holdDirector.label"
       :exit-vo-id="holdDirector.exitVoId"
       :exit-stinger="holdDirector.exitStinger"
+      :section-id="'act2b'"
       :height-vh="130"
     />
 

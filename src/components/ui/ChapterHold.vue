@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * Pass 8 — Kristallnacht multi-beat chapter director.
- * Sequence 2–3 hold beats (claim → artwork reveal → effect) with dark transitions.
- * Scroll resistance + press-and-hold to advance beats / unlock exit.
+ * Pass 11 — Kristallnacht multi-beat chapter director + data-driven claim cards.
+ * Sequence claim → artwork → effect with dark transitions.
+ * Claim typography / flash timing from cinematicDirector (Leon-editable).
  * Single-slot API kept when `beats` is omitted (Pass 7 compat).
  */
 import { computed, onMounted, onUnmounted, ref, watch } from "vue"
@@ -11,6 +11,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useReducedMotion } from "../../composables/useReducedMotion"
 import { playStinger, playVo } from "../../composables/useAudio"
 import { beatRoleLabel, type HoldBeat } from "../../content/holdBeats"
+import {
+  beatTiming,
+  claimStyleForSection,
+  type ClaimCardStyle,
+} from "../../content/cinematicDirector"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -25,6 +30,10 @@ const props = withDefaults(
     exitStinger?: number
     /** Pass 8 multi-beat sequence; when set, drives claim→artwork→effect */
     beats?: HoldBeat[]
+    /** Section id for cinematicDirector claim style (act2a…) */
+    sectionId?: string
+    /** Optional claim style override */
+    claimStyle?: ClaimCardStyle
   }>(),
   {
     heightVh: 110,
@@ -58,6 +67,16 @@ let lastBeat = -1
 const multi = computed(() => (props.beats?.length ?? 0) >= 2)
 const beatCount = computed(() => props.beats?.length ?? 1)
 const activeBeat = computed(() => (multi.value ? props.beats![beatIdx.value] : null))
+const claimCfg = computed<ClaimCardStyle>(() => {
+  if (props.claimStyle) return props.claimStyle
+  if (props.sectionId) return claimStyleForSection(props.sectionId)
+  return claimStyleForSection("act2a")
+})
+const activeFlashMs = computed(() => {
+  const role = activeBeat.value?.role
+  if (role) return beatTiming(role).flashMs
+  return claimCfg.value.flashMs
+})
 
 const runwayVh = computed(() => {
   const base = props.heightVh
@@ -75,11 +94,12 @@ const syncBeatFromScrub = (p: number) => {
     darkFlash.value = 1
     beatIdx.value = idx
     emit("beat-change", idx)
-    // Soft fade flash
+    // Soft fade flash — duration from cinematicDirector beat timing
     requestAnimationFrame(() => {
       const start = performance.now()
+      const dur = activeFlashMs.value
       const tick = (now: number) => {
-        const t = Math.min(1, (now - start) / 560)
+        const t = Math.min(1, (now - start) / dur)
         darkFlash.value = 1 - t
         if (t < 1) requestAnimationFrame(tick)
         else darkFlash.value = 0
@@ -109,8 +129,9 @@ const startHold = () => {
         emit("beat-change", next)
         requestAnimationFrame(() => {
           const start = performance.now()
+          const dur = activeFlashMs.value
           const fade = (tnow: number) => {
-            const t = Math.min(1, (tnow - start) / 520)
+            const t = Math.min(1, (tnow - start) / dur)
             darkFlash.value = 1 - t
             if (t < 1) requestAnimationFrame(fade)
             else darkFlash.value = 0
@@ -238,8 +259,14 @@ void lastBeat
           :data-role="b.role"
         >
           <img :src="b.src" :alt="b.alt" draggable="false" />
-          <div v-if="b.role === 'claim'" class="hold__claim-card" aria-hidden="false">
-            <span class="hold__claim-kicker">主张卡 · 课堂清晰度</span>
+          <div
+            v-if="b.role === 'claim'"
+            class="hold__claim-card"
+            :class="'hold__claim-card--' + claimCfg.weight"
+            aria-hidden="false"
+            data-cinematic="claim"
+          >
+            <span class="hold__claim-kicker">{{ claimCfg.kicker }}</span>
             <p class="hold__claim-text">{{ b.caption }}</p>
           </div>
         </figure>
@@ -251,7 +278,7 @@ void lastBeat
 
       <div class="hold__hud">
         <span class="hold__role">
-          {{ multi ? "沉浸辅证 · 多拍定格导演" : "沉浸辅证 · 章节定格" }}
+          {{ multi ? "沉浸辅证 · Kristallnacht 定格导演" : "沉浸辅证 · 章节定格" }}
         </span>
         <span v-if="label" class="hold__label">{{ label }}</span>
 
@@ -551,5 +578,29 @@ void lastBeat
 }
 .hold__dark {
   background: #000;
+}
+
+.hold__claim-card--monument .hold__claim-text {
+  font-size: clamp(1.35rem, 3.6vw, 2.05rem);
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+.hold__claim-card--editorial .hold__claim-text {
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+  font-weight: 600;
+}
+.hold__claim-card--whisper .hold__claim-text {
+  font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+  font-weight: 500;
+  font-style: italic;
+  opacity: 0.95;
+}
+.hold__claim-card--monument {
+  border-left-width: 4px;
+  background: rgba(1, 0, 0, 0.88);
+}
+.hold__claim-card--whisper {
+  border-left-color: rgba(196, 165, 116, 0.55);
+  background: rgba(2, 1, 0, 0.72);
 }
 </style>

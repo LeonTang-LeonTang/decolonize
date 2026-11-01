@@ -56,6 +56,7 @@ const letters = voById("c-letters")
       :label="holdDirector.label"
       :exit-vo-id="holdDirector.exitVoId"
       :exit-stinger="holdDirector.exitStinger"
+      :section-id="'act2c'"
       :height-vh="130"
     />
 
